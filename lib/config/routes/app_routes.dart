@@ -1,0 +1,14 @@
+const String authentication = 'authentication';
+const String consultBotanists = 'consult_botanists';
+const String botanistDetails = 'botanist_details';
+const String home = 'home';
+const String chat = 'chat';
+const String chatbot = 'chatbot';
+const String reviews = 'reviews';
+const String identify = 'identify';
+const String addReminder = 'add_reminder';
+const String attendGardeners = 'consult_gardeners';
+const String reminderDetails = 'reminder_details';
+const String addCommunityPost = 'add_community_post';
+const String communityPostDetails = 'community_post_details';
+const String collectionPlants = 'collection_plants';

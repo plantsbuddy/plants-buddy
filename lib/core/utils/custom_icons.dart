@@ -1,0 +1,12 @@
+const String plantsBuddy = 'assets/icons/plants_buddy.svg';
+const String plant = 'assets/icons/plant.svg';
+const String plantDisease = 'assets/icons/plant_disease.svg';
+const String pest = 'assets/icons/pest.svg';
+const String botanist = 'assets/icons/botanist.svg';
+const String plantCare = 'assets/icons/plant-care.svg';
+const String history = 'assets/icons/history.png';
+const String chatbot = 'assets/icons/chatbot.png';
+const String gardener = 'assets/icons/gardener.png';
+const String noCommunityPosts = 'assets/icons/no_community_posts.svg';
+const String emptyCommunitySearch = 'assets/icons/empty_community_search.svg';
+const String noReminders = 'assets/icons/no_reminders.svg';

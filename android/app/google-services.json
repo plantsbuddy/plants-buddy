@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "998258867987",
+    "project_id": "plants-buddy",
+    "storage_bucket": "plants-buddy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998258867987:android:959b40b86300fcdb3924e6",
+        "android_client_info": {
+          "package_name": "com.comsats.plants_buddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998258867987-nuec3557chajsevn2mu4v4l2b319peeu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlwCoWAZfwkhLobPe_dyretHin-ZPDI7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998258867987-nuec3557chajsevn2mu4v4l2b319peeu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
