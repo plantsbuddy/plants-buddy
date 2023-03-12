@@ -10,7 +10,7 @@ MaterialPageRoute route() {
   return MaterialPageRoute(
     builder: (_) {
       return BlocProvider<AuthenticationBloc>(
-        create: (context) => AuthenticationBloc(sl(), sl(), sl(), sl(), sl()),
+        create: (context) => AuthenticationBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()),
         child: AuthenticationScreen(),
       );
     },

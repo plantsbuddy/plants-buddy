@@ -31,19 +31,19 @@ class AppRouter {
         return home.route();
 
       case app_routes.attendGardeners:
-        return consult_gardeners.route();
+        return consult_gardeners.route(settings.arguments);
 
       case app_routes.consultBotanists:
-        return consult_botanists.route();
+        return consult_botanists.route(settings.arguments);
 
       case app_routes.botanistDetails:
-        return botanist_details.route();
+        return botanist_details.route(settings.arguments);
 
       case app_routes.reviews:
-        return reviews.route();
+        return reviews.route(settings.arguments);
 
       case app_routes.chat:
-        return chat.route();
+        return chat.route(settings.arguments);
 
       case app_routes.identify:
         return identification.route(settings.arguments);

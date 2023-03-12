@@ -11,6 +11,7 @@ class WriteAReview extends StatefulWidget {
 
 class _WriteAReviewState extends State<WriteAReview> {
   late final TextEditingController _controller;
+  int stars = 1;
 
   @override
   void initState() {
@@ -26,6 +27,7 @@ class _WriteAReviewState extends State<WriteAReview> {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
+          Text('star'),
           Flexible(
             child: Container(
               margin: EdgeInsets.only(left: 20),

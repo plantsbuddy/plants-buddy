@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plants_buddy/features/botanists/domain/entities/appointment.dart';
+import 'package:plants_buddy/features/botanists/logic/botanist_appointment_bloc/botanist_appointment_bloc.dart';
 
 import '../appointments_list_botanist.dart';
 
@@ -26,7 +29,7 @@ class _AppointmentsPageBotanistState extends State<AppointmentsPageBotanist> wit
       child: Column(
         children: [
           TabBar(
-            overlayColor:MaterialStateProperty.all<Color>(Colors.transparent),
+            overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
             tabs: [
               Tab(text: 'Requests'),
               Tab(text: 'Pending'),
@@ -42,14 +45,28 @@ class _AppointmentsPageBotanistState extends State<AppointmentsPageBotanist> wit
               tabBarIndicatorSize: TabBarIndicatorSize.tab,
             ),
           ),
-          Expanded(
-            child: TabBarView(
-              children: [
-                AppointmentsListBotanist(),
-                AppointmentsListBotanist(),
-                AppointmentsListBotanist(),
-              ],
-            ),
+          BlocBuilder<BotanistAppointmentBloc, BotanistAppointmentState>(
+            buildWhen: (previous, current) => previous.receivedAppointments != current.receivedAppointments,
+            builder: (context, state) {
+              return Expanded(
+                child: TabBarView(
+                  children: [
+                    AppointmentsListBotanist(
+                      appointments: state.pendingAppointments,
+                      appointmentsType: AppointmentStatus.pending,
+                    ),
+                    AppointmentsListBotanist(
+                      appointments: state.scheduledAppointments,
+                      appointmentsType: AppointmentStatus.scheduled,
+                    ),
+                    AppointmentsListBotanist(
+                      appointments: state.completedAppointments,
+                      appointmentsType: AppointmentStatus.completed,
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),

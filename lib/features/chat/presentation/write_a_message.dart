@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plants_buddy/features/chat/domain/entities/conversation.dart';
+import 'package:plants_buddy/features/chat/domain/entities/message.dart';
 import 'package:plants_buddy/features/chat/logic/chat_bloc.dart';
-import 'package:plants_buddy/features/community/logic/community_post_bloc/community_post_bloc.dart';
 
 class WriteAMessage extends StatefulWidget {
-  const WriteAMessage({Key? key}) : super(key: key);
+  const WriteAMessage(this.conversation, {Key? key}) : super(key: key);
+
+  final Conversation conversation;
 
   @override
   State<WriteAMessage> createState() => _WriteAMessage();
@@ -51,8 +54,23 @@ class _WriteAMessage extends State<WriteAMessage> {
           ),
           ElevatedButton(
             onPressed: () {
-              //context.read<ChatBloc>().add();
-              _controller.clear();
+              if (_controller.text.trim().isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Please write a message...'),
+                    behavior: SnackBarBehavior.floating,
+                    duration: Duration(milliseconds: 1500),
+                  ),
+                );
+              } else {
+                context.read<ChatBloc>().add(ChatSendMessagePressed(Message(
+                      body: _controller.text.trim(),
+                      timestamp: DateTime.now().millisecondsSinceEpoch,
+                      sender: widget.conversation.currentUser,
+                      receiver: widget.conversation.otherUser,
+                    )));
+                _controller.clear();
+              }
             },
             child: Icon(
               Icons.send,

@@ -1,17 +1,23 @@
-abstract class AuthenticationRepository {
-  Future<void> signupUser({
-    required String name,
-    required String email,
-    required String password,
-  });
+import '../entities/botanist.dart';
+import '../entities/gardener.dart';
+import '../entities/user.dart';
 
-  Future<void> loginUser({required String email, required String password});
+abstract class AuthenticationRepository {
+  Future<User?> get user;
+
+  Future<void> signupGardener(Gardener gardener);
+
+  Future<void> signupBotanist(Botanist botanist);
+
+  Future<User?> loginUser({required String email, required String password});
 
   Future<void> sendPasswordResetLink(String email);
 
   Future<void> sendEmailVerificationLink();
 
-  Future<void> updateUsername(String name);
-
-  Future<void> updateProfilePicture(String picturePath);
+  Future<String> updateProfile({
+    required String? selectedImagePath,
+    required bool picDeleted,
+    required String name,
+  });
 }

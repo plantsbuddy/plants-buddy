@@ -14,8 +14,10 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
   late final TextEditingController emailController;
   late final TextEditingController nameController;
   late final TextEditingController passwordController;
+  late final TextEditingController consultationChargesController;
   late final TextEditingController specializationController;
   late final TextEditingController descriptionController;
+  late final TextEditingController cityController;
   late final TextEditingController qualificationController;
   late final TextEditingController phoneNumberController;
 
@@ -24,10 +26,12 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
     emailController = TextEditingController();
     nameController = TextEditingController();
     passwordController = TextEditingController();
+    consultationChargesController = TextEditingController();
     specializationController = TextEditingController();
     descriptionController = TextEditingController();
     qualificationController = TextEditingController();
     phoneNumberController = TextEditingController();
+    cityController = TextEditingController();
     super.initState();
   }
 
@@ -71,7 +75,7 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: 'Specialization',
-                  errorText: state.signupNameError,
+                  errorText: state.signupSpecialtyError,
                   contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 ),
               ),
@@ -84,7 +88,7 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
                 minLines: 1,
                 decoration: InputDecoration(
                   labelText: 'Description',
-                  errorText: state.signupNameError,
+                  errorText: state.signupDescriptionError,
                   contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 ),
               ),
@@ -100,7 +104,29 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: 'Qualification',
-                  errorText: state.signupNameError,
+                  errorText: state.signupQualificationError,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                ),
+              ),
+              SizedBox(height: 15),
+              TextField(
+                autofocus: false,
+                controller: cityController,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(
+                  labelText: 'City',
+                  errorText: state.signupQualificationError,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                ),
+              ),
+              SizedBox(height: 15),
+              TextField(
+                autofocus: false,
+                controller: consultationChargesController,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(
+                  labelText: 'Consultation charges',
+                  errorText: state.signupConsultationChargesError,
                   contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 ),
               ),
@@ -111,7 +137,7 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: 'Phone number',
-                  errorText: state.signupNameError,
+                  errorText: state.signupPhoneNumberError,
                   contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 ),
               ),
@@ -142,10 +168,16 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
               ElevatedButton(
                 child: Text('SIGN UP'),
                 onPressed: () => context.read<AuthenticationBloc>().add(
-                      AuthenticationSignupPressed(
+                      AuthenticationSignupBotanistPressed(
                         name: nameController.text,
                         email: emailController.text,
                         password: passwordController.text,
+                        description: descriptionController.text,
+                        phoneNumber: phoneNumberController.text,
+                        qualification: qualificationController.text,
+                        specialty: specializationController.text,
+                        city: cityController.text,
+                        consultationCharges: consultationChargesController.text,
                       ),
                     ),
                 style: ElevatedButton.styleFrom(
@@ -169,7 +201,9 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
     specializationController.dispose();
     qualificationController.dispose();
     descriptionController.dispose();
+    consultationChargesController.dispose();
     phoneNumberController.dispose();
+    cityController.dispose();
     super.dispose();
   }
 }

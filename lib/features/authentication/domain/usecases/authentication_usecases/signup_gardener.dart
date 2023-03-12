@@ -1,12 +1,13 @@
 import 'package:plants_buddy/core/errors/exceptions.dart';
 import 'package:plants_buddy/features/shared_preferences/domain/repositories/shared_preferences_repository.dart';
 
+import '../../entities/gardener.dart';
 import '../../repositories/authentication_repository.dart';
 
-class SignupUser {
+class SignupGardener {
   final AuthenticationRepository _authenticationRepository;
 
-  SignupUser(this._authenticationRepository);
+  SignupGardener(this._authenticationRepository);
 
   Future<void> call({
     required String name,
@@ -29,7 +30,9 @@ class SignupUser {
       throw WeakPasswordException();
     }
 
-    await _authenticationRepository.signupUser(name: name.trim(), email: email.trim(), password: password.trim());
+    final gardener = Gardener(username: name.trim(), email: email.trim(), password: password.trim(), profilePicture: 'https://cdn-icons-png.flaticon.com/512/149/149071.png');
+
+    await _authenticationRepository.signupGardener(gardener);
     //await _authenticationService.sendEmailLink(email);
   }
 }

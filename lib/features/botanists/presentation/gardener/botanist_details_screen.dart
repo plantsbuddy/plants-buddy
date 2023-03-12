@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
-import 'package:plants_buddy/features/botanists/presentation/gardener/make_appointment_screen.dart';
+import 'package:plants_buddy/features/authentication/logic/authentication_bloc.dart';
+import 'package:plants_buddy/features/botanists/presentation/gardener/book_appointment_sheet.dart';
+import 'package:plants_buddy/features/chat/domain/entities/conversation.dart';
+import 'package:plants_buddy/features/chat/logic/chat_bloc.dart';
+
+import '../../../authentication/domain/entities/botanist.dart';
+import '../../logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
 
 class BotanistDetailsScreen extends StatelessWidget {
-  const BotanistDetailsScreen({Key? key}) : super(key: key);
+  const BotanistDetailsScreen(this.botanist, {Key? key}) : super(key: key);
+
+  final Botanist botanist;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +32,12 @@ class BotanistDetailsScreen extends StatelessWidget {
                 top: 30,
                 child: IconButton(
                   style: IconButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5)
-                  ),
+                      backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5)),
                   onPressed: () => Navigator.of(context).pop(),
-                  icon: Icon(Icons.arrow_back_rounded, color: Colors.white,),
+                  icon: Icon(
+                    Icons.arrow_back_rounded,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               Container(
@@ -44,10 +55,53 @@ class BotanistDetailsScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 15),
                       child: Text(
-                        'Mohsin Ismail',
+                        botanist.username,
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                     ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(width: 7),
+                        Icon(
+                          Icons.location_pin,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.error.withOpacity(0.8),
+                        ),
+                        SizedBox(width: 7),
+                        Text(
+                          botanist.city,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        Spacer(),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Theme.of(context).colorScheme.tertiary,
+                            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                          ).copyWith(
+                            elevation: ButtonStyleButton.allOrNull(0.0),
+                          ),
+                          icon: Icon(
+                            Icons.message,
+                            size: 20,
+                          ),
+                          label: Text('Chat'),
+                          onPressed: () {
+                            final conversation = Conversation(
+                              currentUser: context.read<AuthenticationBloc>().state.currentUser!,
+                              otherUser: botanist,
+                              unreadMessagesCount: 0,
+                            );
+
+                            Navigator.of(context).pushNamed(app_routes.chat, arguments: {
+                              'chat_bloc': context.read<ChatBloc>(),
+                              'conversation': conversation,
+                            });
+                          },
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 10),
                     Row(
                       children: [
                         Expanded(
@@ -58,7 +112,7 @@ class BotanistDetailsScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Plant Pathology',
+                                    botanist.specialty,
                                     style: TextStyle(fontSize: 20),
                                   ),
                                   Row(
@@ -88,7 +142,7 @@ class BotanistDetailsScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '25',
+                                  botanist.consultationCharges.toString(),
                                   style: TextStyle(fontSize: 22),
                                 ),
                                 Row(
@@ -134,7 +188,7 @@ class BotanistDetailsScreen extends StatelessWidget {
                               height: 7,
                             ),
                             Text(
-                              'A botanist is a scientist who specializes in the study of plants, including their structure, classification, growth, and reproduction. Botanists may work in a variety of settings, such as universities, botanical gardens, government agencies, or private companies. They use a range of scientific methods to explore and understand the complexities of plant life, from microscopic cellular structures to the broad patterns of plant distribution and adaptation in different environments.',
+                              botanist.description,
                               style: Theme.of(context).textTheme.bodyLarge,
                               textAlign: TextAlign.justify,
                             ),
@@ -150,7 +204,7 @@ class BotanistDetailsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'BS. Software Engineering',
+                              botanist.qualification,
                               style: TextStyle(fontSize: 20),
                             ),
                             Row(
@@ -178,7 +232,7 @@ class BotanistDetailsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '+92 317 2157898',
+                              botanist.phoneNumber,
                               style: TextStyle(fontSize: 20),
                             ),
                             Row(
@@ -201,7 +255,10 @@ class BotanistDetailsScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 15),
                     GestureDetector(
-                      onTap: () => Navigator.of(context).pushNamed(app_routes.reviews),
+                      onTap: () => Navigator.of(context).pushNamed(
+                        app_routes.reviews,
+                        arguments: context.read<GardenerAppointmentBloc>(),
+                      ),
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -235,21 +292,66 @@ class BotanistDetailsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 20),
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => showModalBottomSheet(
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (_) => MakeAppointmentScreen(),
+                    BlocListener<GardenerAppointmentBloc, GardenerAppointmentState>(
+                      listener: (context, state) {
+                        if (state.dialogShowing) {
+                          showDialog(
+                            context: context,
+                            builder: (_) => Dialog(
+                              backgroundColor: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+                                child: Row(
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    Text('Booking appointment'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          Future.delayed(const Duration(milliseconds: 300), () => Navigator.of(context).pop());
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Appointment request sent'),
+                              behavior: SnackBarBehavior.floating,
+                              duration: Duration(milliseconds: 1500),
+                            ),
+                          );
+                        }
+                      },
+                      listenWhen: (previous, current) => previous.dialogShowing != current.dialogShowing,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 20, bottom: 10),
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (_) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider.value(
+                                  value: context.read<GardenerAppointmentBloc>(),
+                                ),
+                                BlocProvider.value(
+                                  value: context.read<AuthenticationBloc>(),
+                                ),
+                              ],
+                              child: BookAppointmentSheet(botanist),
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 13),
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                          child: Text('Book Appointment'),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 13),
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        child: Text('Book Appointment'),
                       ),
                     ),
                   ],

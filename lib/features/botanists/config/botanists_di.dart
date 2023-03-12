@@ -1,5 +1,9 @@
 import 'package:get_it/get_it.dart';
 
+import '../data/appointment_service_impl.dart';
+import '../domain/repositories/appointment_service.dart';
+import '../domain/usecases/botanists_usecases.dart';
+
 final sl = GetIt.instance;
 
 void init() {
@@ -8,13 +12,17 @@ void init() {
 }
 
 void _initUseCases() {
-  // sl.registerLazySingleton<SignupUser>(() => SignupUser(sl()));
-  // sl.registerLazySingleton<LoginUser>(() => LoginUser(sl()));
-  // sl.registerLazySingleton<UpdateUsername>(() => UpdateUsername(sl()));
-  // sl.registerLazySingleton<SendPasswordResetLink>(() => SendPasswordResetLink(sl()));
-  // sl.registerLazySingleton<SendEmailVerificationLink>(() => SendEmailVerificationLink(sl()));
+  sl.registerLazySingleton<ApproveAppointmentRequest>(() => ApproveAppointmentRequest(sl()));
+  sl.registerLazySingleton<CancelAppointmentRequest>(() => CancelAppointmentRequest(sl()));
+  sl.registerLazySingleton<GetBotanistReviewsStream>(() => GetBotanistReviewsStream(sl()));
+  sl.registerLazySingleton<GetBotanists>(() => GetBotanists(sl()));
+  sl.registerLazySingleton<GetReceivedAppointmentRequestsStream>(() => GetReceivedAppointmentRequestsStream(sl()));
+  sl.registerLazySingleton<GetSentAppointmentRequestsStream>(() => GetSentAppointmentRequestsStream(sl()));
+  sl.registerLazySingleton<PostBotanistReview>(() => PostBotanistReview(sl()));
+  sl.registerLazySingleton<RejectAppointmentRequest>(() => RejectAppointmentRequest(sl()));
+  sl.registerLazySingleton<SendAppointmentRequest>(() => SendAppointmentRequest(sl()));
 }
 
 void _initRepositories() {
-  // sl.registerLazySingleton<AuthenticationRepository>(() => AuthenticationDataSource());
+  sl.registerLazySingleton<AppointmentService>(() => AppointmentServiceImpl());
 }

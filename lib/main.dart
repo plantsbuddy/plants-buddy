@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,14 +31,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: FlexThemeData.light(scheme: FlexScheme.green, useMaterial3: true),
-        darkTheme: FlexThemeData.dark(scheme: FlexScheme.green, useMaterial3: true),
-        themeMode: ThemeMode.light,
-        debugShowCheckedModeBanner: false,
-        onGenerateRoute: _router.generateRoute,
-        initialRoute:
-            routes.home //FirebaseAuth.instance.currentUser == null ? routes.authentication : routes.home,
-        );
+      title: 'Flutter Demo',
+      theme: FlexThemeData.light(scheme: FlexScheme.green, useMaterial3: true),
+      darkTheme: FlexThemeData.dark(scheme: FlexScheme.green, useMaterial3: true),
+      themeMode: ThemeMode.light,
+      debugShowCheckedModeBanner: false,
+      onGenerateRoute: _router.generateRoute,
+      initialRoute: FirebaseAuth.instance.currentUser == null ? routes.authentication : routes.home,
+    );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:plants_buddy/features/authentication/logic/authentication_bloc.dart';
 import 'package:plants_buddy/features/community/logic/community_bloc/community_bloc.dart';
 import 'package:plants_buddy/features/home/logic/home_cubit.dart';
 import 'package:plants_buddy/features/home/presentation/home_screen.dart';
@@ -15,6 +16,9 @@ MaterialPageRoute route() {
         providers: [
           BlocProvider<HomeCubit>(
             create: (context) => HomeCubit(),
+          ),
+          BlocProvider<AuthenticationBloc>(
+            create: (context) => AuthenticationBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl())..add(AuthenticationInitUser()),
           ),
           BlocProvider<CommunityBloc>(
             create: (context) => CommunityBloc(sl(), sl(), sl(), sl())..add(CommunityPostsStreamInitialize()),

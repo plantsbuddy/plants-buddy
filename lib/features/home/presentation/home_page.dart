@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
             style: TextStyle(color: Colors.black.withOpacity(0.6), fontWeight: FontWeight.w600),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),

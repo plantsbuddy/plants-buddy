@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../domain/entities/message.dart';
+
 class SampleFirstPersonFile extends StatelessWidget {
-  const SampleFirstPersonFile({Key? key}) : super(key: key);
+  const SampleFirstPersonFile(this.message, {Key? key}) : super(key: key);
+
+  final Message message;
 
   @override
   Widget build(BuildContext context) {

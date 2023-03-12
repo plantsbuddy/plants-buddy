@@ -10,3 +10,6 @@ const String gardener = 'assets/icons/gardener.png';
 const String noCommunityPosts = 'assets/icons/no_community_posts.svg';
 const String emptyCommunitySearch = 'assets/icons/empty_community_search.svg';
 const String noReminders = 'assets/icons/no_reminders.svg';
+const String noAppointments = 'assets/icons/no_appointments.svg';
+const String noChats = 'assets/icons/no_conversations.png';
+const String noMessages = 'assets/icons/no_messages.png';

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
 import 'package:plants_buddy/core/utils/custom_icons.dart' as custom_icons;
+import 'package:plants_buddy/features/authentication/logic/authentication_bloc.dart';
+import 'package:plants_buddy/features/authentication/presentation/update_profile_sheet.dart';
 
 class MorePage extends StatelessWidget {
   const MorePage({Key? key}) : super(key: key);
@@ -11,7 +14,7 @@ class MorePage extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+          padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
           margin: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -22,22 +25,74 @@ class MorePage extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(70),
                 child: Image.network(
-                  'https://static.onecms.io/wp-content/uploads/sites/34/2019/12/fragrant-flowers-intro-getty-1219.jpg',
+                  context.select((AuthenticationBloc bloc) => bloc.state.currentUser!.profilePicture),
                   fit: BoxFit.cover,
                   width: 45,
                   height: 45,
                 ),
               ),
               SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Mohsin Ismail', style: Theme.of(context).textTheme.titleMedium),
-                  Text(
-                    'mohsin_ismail@gmail.com',
-                    style: TextStyle(color: Theme.of(context).dividerColor.withOpacity(0.5)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.select((AuthenticationBloc bloc) => bloc.state.currentUser!.username),
+                        style: Theme.of(context).textTheme.titleMedium),
+                    Text(
+                      context.select((AuthenticationBloc bloc) => bloc.state.currentUser!.email),
+                      style: TextStyle(color: Theme.of(context).dividerColor.withOpacity(0.5)),
+                    ),
+                  ],
+                ),
+              ),
+              BlocListener<AuthenticationBloc, AuthenticationState>(
+                listener: (context, state) {
+                  if (state.dialogShowing) {
+                    showDialog(
+                      context: context,
+                      builder: (_) => Dialog(
+                        backgroundColor: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+                          child: Row(
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text('Updating profile'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    Future.delayed(const Duration(milliseconds: 300), () => Navigator.of(context).pop());
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Profile updated'),
+                        behavior: SnackBarBehavior.floating,
+                        duration: Duration(milliseconds: 1500),
+                      ),
+                    );
+                  }
+                },
+                listenWhen: (previous, current) => previous.dialogShowing != current.dialogShowing,
+                child: IconButton(
+                  onPressed: () => showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<AuthenticationBloc>(),
+                      child: UpdateProfileSheet(),
+                    ),
                   ),
-                ],
+                  icon: Icon(
+                    Icons.edit,
+                    color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
+                  ),
+                ),
               ),
             ],
           ),
@@ -47,7 +102,8 @@ class MorePage extends StatelessWidget {
           child: GridView.count(
             children: [
               GestureDetector(
-                onTap: () => Navigator.of(context).pushNamed(app_routes.consultBotanists),
+                onTap: () => Navigator.of(context)
+                    .pushNamed(app_routes.consultBotanists, arguments: context.read<AuthenticationBloc>()),
                 child: Card(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -76,7 +132,8 @@ class MorePage extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () => Navigator.of(context).pushNamed(app_routes.attendGardeners),
+                onTap: () => Navigator.of(context)
+                    .pushNamed(app_routes.attendGardeners, arguments: context.read<AuthenticationBloc>()),
                 child: Card(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),

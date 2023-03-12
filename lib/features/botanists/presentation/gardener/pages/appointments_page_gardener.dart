@@ -1,23 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plants_buddy/features/botanists/domain/entities/appointment.dart';
+import 'package:plants_buddy/features/botanists/logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
 
 import '../components/appointments_list_gardener.dart';
 
-class AppointmentsPageGardener extends StatefulWidget {
+class AppointmentsPageGardener extends StatelessWidget {
   const AppointmentsPageGardener({Key? key}) : super(key: key);
-
-  @override
-  State<AppointmentsPageGardener> createState() => _AppointmentsPageGardenerState();
-}
-
-class _AppointmentsPageGardenerState extends State<AppointmentsPageGardener> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    _tabController = TabController(length: 3, vsync: this);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +16,7 @@ class _AppointmentsPageGardenerState extends State<AppointmentsPageGardener> wit
       child: Column(
         children: [
           TabBar(
-            overlayColor:MaterialStateProperty.all<Color>(Colors.transparent),
+            overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
             tabs: [
               Tab(text: 'Requests'),
               Tab(text: 'Pending'),
@@ -42,14 +32,22 @@ class _AppointmentsPageGardenerState extends State<AppointmentsPageGardener> wit
               tabBarIndicatorSize: TabBarIndicatorSize.tab,
             ),
           ),
-          Expanded(
-            child: TabBarView(
-              children: [
-                AppointmentsListGardener(),
-                AppointmentsListGardener(),
-                AppointmentsListGardener(),
-              ],
-            ),
+          BlocBuilder<GardenerAppointmentBloc, GardenerAppointmentState>(
+            buildWhen: (previous, current) => previous.sentAppointmentRequests != current.sentAppointmentRequests,
+            builder: (context, state) {
+              return Expanded(
+                child: TabBarView(
+                  children: [
+                    AppointmentsListGardener(
+                        appointments: state.pendingAppointments, appointmentsType: AppointmentStatus.pending),
+                    AppointmentsListGardener(
+                        appointments: state.scheduledAppointments, appointmentsType: AppointmentStatus.scheduled),
+                    AppointmentsListGardener(
+                        appointments: state.completedAppointments, appointmentsType: AppointmentStatus.completed),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plants_buddy/features/botanists/logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
+
+import '../../../domain/entities/appointment.dart';
 
 class SampleAppointmentItemGardener extends StatelessWidget {
-  const SampleAppointmentItemGardener({Key? key}) : super(key: key);
+  const SampleAppointmentItemGardener(this.appointment, {Key? key}) : super(key: key);
+
+  final Appointment appointment;
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +31,22 @@ class SampleAppointmentItemGardener extends StatelessWidget {
                 SizedBox(
                   width: 15,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Mohsin Ismail',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Text(
-                      'Plant pathology',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        appointment.botanist.username,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(
+                        appointment.notes,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 10,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -62,7 +72,7 @@ class SampleAppointmentItemGardener extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
                     ),
                     SizedBox(width: 5),
-                    Text('27/03/2023'),
+                    Text(appointment.formattedDate),
                   ],
                 ),
                 Row(
@@ -73,7 +83,7 @@ class SampleAppointmentItemGardener extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
                     ),
                     SizedBox(width: 5),
-                    Text('6:00 AM'),
+                    Text(appointment.formattedTime),
                   ],
                 ),
                 Row(
@@ -81,10 +91,10 @@ class SampleAppointmentItemGardener extends StatelessWidget {
                     Icon(
                       Icons.circle_rounded,
                       size: 10,
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                      color: _getStatusColor(context),
                     ),
                     SizedBox(width: 5),
-                    Text('Pending'),
+                    Text(_getStatusText()),
                   ],
                 ),
               ],
@@ -101,10 +111,35 @@ class SampleAppointmentItemGardener extends StatelessWidget {
                     ).copyWith(
                       elevation: ButtonStyleButton.allOrNull(0.0),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) {
+                          return AlertDialog(
+                            title: Text(
+                                'Confirm ${appointment.status == AppointmentStatus.pending ? 'cancellation' : 'deletion'}'),
+                            content: Text(
+                                'Are you sure you want to ${appointment.status == AppointmentStatus.pending ? 'cancel' : 'delete'} this appointment request?'),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Back')),
+                              TextButton(
+                                onPressed: () {
+                                  context
+                                      .read<GardenerAppointmentBloc>()
+                                      .add(GardenerCancelAppointmentRequest(appointment));
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('I\'m sure'),
+                                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Text('Cancel'),
+                      child: Text(appointment.status == AppointmentStatus.pending ? 'Cancel' : 'Delete'),
                     ),
                   ),
                 ),
@@ -113,5 +148,35 @@ class SampleAppointmentItemGardener extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getStatusColor(BuildContext context) {
+    switch (appointment.status) {
+      case AppointmentStatus.pending:
+        return Colors.brown;
+      case AppointmentStatus.scheduled:
+        return Colors.orangeAccent;
+      case AppointmentStatus.completed:
+        return Theme.of(context).colorScheme.primary.withOpacity(0.8);
+      case AppointmentStatus.cancelled:
+        return Theme.of(context).colorScheme.error.withOpacity(0.6);
+      case AppointmentStatus.rejected:
+        return Theme.of(context).colorScheme.error.withOpacity(0.6);
+    }
+  }
+
+  String _getStatusText() {
+    switch (appointment.status) {
+      case AppointmentStatus.pending:
+        return 'Pending';
+      case AppointmentStatus.scheduled:
+        return 'Scheduled';
+      case AppointmentStatus.completed:
+        return 'Completed';
+      case AppointmentStatus.cancelled:
+        return 'Cancelled';
+      case AppointmentStatus.rejected:
+        return 'Rejected';
+    }
   }
 }

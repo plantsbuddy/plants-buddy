@@ -82,7 +82,7 @@ class _PageSignupGardenerState extends State<PageSignupGardener> {
               ElevatedButton(
                 child: Text('SIGN UP'),
                 onPressed: () => context.read<AuthenticationBloc>().add(
-                      AuthenticationSignupPressed(
+                      AuthenticationSignupGardenerPressed(
                         name: nameController.text,
                         email: emailController.text,
                         password: passwordController.text,

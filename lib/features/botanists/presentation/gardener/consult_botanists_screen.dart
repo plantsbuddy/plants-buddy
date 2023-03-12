@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plants_buddy/features/botanists/logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
 import 'package:plants_buddy/features/botanists/presentation/gardener/pages/payments_page_gardener.dart';
 
 import '../common/chat_page.dart';
@@ -48,6 +50,7 @@ class _ConsultBotanistsScreenState extends State<ConsultBotanistsScreen> {
       case 0:
         return AppointmentsPageGardener();
       case 1:
+        context.read<GardenerAppointmentBloc>().add(GardenerGetBotanists());
         return BotanistsPage();
       case 2:
         return ChatPage();

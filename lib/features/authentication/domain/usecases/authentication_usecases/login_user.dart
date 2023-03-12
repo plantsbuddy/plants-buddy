@@ -1,5 +1,6 @@
 import 'package:plants_buddy/core/errors/exceptions.dart';
 
+import '../../entities/user.dart';
 import '../../repositories/authentication_repository.dart';
 
 class LoginUser {
@@ -7,7 +8,7 @@ class LoginUser {
 
   LoginUser(this._authenticationRepository);
 
-  Future<void> call({required String email, required String password}) async {
+  Future<User?> call({required String email, required String password}) async {
     if (email.trim().isEmpty) {
       throw EmptyEmailException();
     }
@@ -16,6 +17,6 @@ class LoginUser {
       throw EmptyPasswordException();
     }
 
-    await _authenticationRepository.loginUser(email: email.trim(), password: password.trim());
+    return _authenticationRepository.loginUser(email: email.trim(), password: password.trim());
   }
 }

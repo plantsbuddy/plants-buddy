@@ -3,12 +3,34 @@ part of 'authentication_bloc.dart';
 @immutable
 abstract class AuthenticationEvent {}
 
+class AuthenticationInitUser extends AuthenticationEvent {}
+
 class AuthenticationInitializeEmailLinkListener extends AuthenticationEvent {}
 
-class AuthenticationSignupPressed extends AuthenticationEvent {
+class AuthenticationSignupGardenerPressed extends AuthenticationEvent {
   final String name, email, password;
 
-  AuthenticationSignupPressed({required this.name, required this.email, required this.password});
+  AuthenticationSignupGardenerPressed({
+    required this.name,
+    required this.email,
+    required this.password,
+  });
+}
+
+class AuthenticationSignupBotanistPressed extends AuthenticationEvent {
+  final String name, email, password, city, consultationCharges, specialty, description, qualification, phoneNumber;
+
+  AuthenticationSignupBotanistPressed({
+    required this.name,
+    required this.email,
+    required this.password,
+    required this.consultationCharges,
+    required this.city,
+    required this.specialty,
+    required this.description,
+    required this.qualification,
+    required this.phoneNumber,
+  });
 }
 
 class AuthenticationLoginPressed extends AuthenticationEvent {
@@ -25,16 +47,16 @@ class AuthenticationResendLinkPressed extends AuthenticationEvent {}
 
 class AuthenticationPasswordVisibilityToggled extends AuthenticationEvent {}
 
-class AuthenticationUpdateUsername extends AuthenticationEvent {
-  final String username;
+class AuthenticationUpdateProfile extends AuthenticationEvent {
+  final String? profilePicturePath;
+  final String name;
+  final bool picDeleted;
 
-  AuthenticationUpdateUsername(this.username);
-}
-
-class AuthenticationUpdateProfilePicture extends AuthenticationEvent {
-  final String profilePicturePath;
-
-  AuthenticationUpdateProfilePicture(this.profilePicturePath);
+  AuthenticationUpdateProfile({
+    required this.name,
+    required this.profilePicturePath,
+    required this.picDeleted,
+  });
 }
 
 class AuthenticationChangePagePressed extends AuthenticationEvent {
