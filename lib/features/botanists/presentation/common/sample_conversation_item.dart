@@ -30,7 +30,7 @@ class SampleConversationItem extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(70),
                 child: Image.network(
-                  'https://upload.wikimedia.org/wikipedia/commons/3/3a/John_G._Dow.jpg',
+                  conversation.otherUser.profilePicture,
                   height: 60,
                   fit: BoxFit.cover,
                   width: 60,
@@ -67,8 +67,7 @@ class SampleConversationItem extends StatelessWidget {
                           conversation.lastMessage != null
                               ? Text(
                                   '${conversation.lastMessage!.sender == conversation.currentUser ? 'You' : conversation.otherUser.username}: ${conversation.lastMessage!.body}',
-                                  style: TextStyle(
-                                      color: Colors.black54, fontWeight: unreadMessagesExist ? FontWeight.bold : null),
+                                  style: TextStyle(color: Colors.black54),
                                 )
                               : Text(
                                   'No messages',

@@ -14,8 +14,12 @@ class BotanistAppointmentState extends Equatable {
   List<Appointment> get scheduledAppointments =>
       receivedAppointments.where((request) => request.status == AppointmentStatus.scheduled).toList();
 
-  List<Appointment> get completedAppointments =>
-      receivedAppointments.where((request) => request.status == AppointmentStatus.completed).toList();
+  List<Appointment> get completedAppointments => receivedAppointments
+      .where((request) =>
+          request.status == AppointmentStatus.rejected ||
+          request.status == AppointmentStatus.completed ||
+          request.status == AppointmentStatus.cancelled)
+      .toList();
 
   @override
   List<Object?> get props => [receivedAppointments];

@@ -15,4 +15,10 @@ class BotanistRejectAppointmentRequest extends BotanistAppointmentEvent {
   BotanistRejectAppointmentRequest(this.appointment);
 }
 
+class BotanistDeleteAppointmentRequestPressed extends BotanistAppointmentEvent {
+  final Appointment appointment;
+
+  BotanistDeleteAppointmentRequestPressed(this.appointment);
+}
+
 class BotanistInitializeReceivedAppointmentRequestsStream extends BotanistAppointmentEvent {}

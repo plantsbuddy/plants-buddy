@@ -20,6 +20,7 @@ void _initUseCases() {
   sl.registerLazySingleton<UpdateProfile>(() => UpdateProfile(sl()));
   sl.registerLazySingleton<SendPasswordResetLink>(() => SendPasswordResetLink(sl()));
   sl.registerLazySingleton<SendEmailVerificationLink>(() => SendEmailVerificationLink(sl()));
+  sl.registerLazySingleton<LogoutUser>(() => LogoutUser(sl()));
 }
 
 void _initRepositories() {

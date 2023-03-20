@@ -23,20 +23,21 @@ class BotanistDetailsScreen extends StatelessWidget {
             //crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.network(
-                'https://static.onecms.io/wp-content/uploads/sites/34/2019/12/fragrant-flowers-intro-getty-1219.jpg',
-                fit: BoxFit.cover,
+                botanist.profilePicture,
+                fit: BoxFit.contain,
+                width: double.infinity,
                 height: 280,
               ),
               Positioned(
                 left: 10,
                 top: 30,
                 child: IconButton(
-                  style: IconButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5)),
+                  style:
+                      IconButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.onPrimary.withOpacity(0.5)),
                   onPressed: () => Navigator.of(context).pop(),
                   icon: Icon(
                     Icons.arrow_back_rounded,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.inverseSurface,
                   ),
                 ),
               ),
@@ -257,7 +258,7 @@ class BotanistDetailsScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () => Navigator.of(context).pushNamed(
                         app_routes.reviews,
-                        arguments: context.read<GardenerAppointmentBloc>(),
+                        arguments: botanist,
                       ),
                       child: Card(
                         child: Padding(
@@ -330,21 +331,25 @@ class BotanistDetailsScreen extends StatelessWidget {
                         margin: EdgeInsets.only(top: 20, bottom: 10),
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () => showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (_) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider.value(
-                                  value: context.read<GardenerAppointmentBloc>(),
-                                ),
-                                BlocProvider.value(
-                                  value: context.read<AuthenticationBloc>(),
-                                ),
-                              ],
-                              child: BookAppointmentSheet(botanist),
-                            ),
-                          ),
+                          onPressed: () {
+                            //todo: check here if card details added and have balance
+
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (_) => MultiBlocProvider(
+                                providers: [
+                                  BlocProvider.value(
+                                    value: context.read<GardenerAppointmentBloc>(),
+                                  ),
+                                  BlocProvider.value(
+                                    value: context.read<AuthenticationBloc>(),
+                                  ),
+                                ],
+                                child: BookAppointmentSheet(botanist),
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 13),
                             backgroundColor: Theme.of(context).colorScheme.primary,

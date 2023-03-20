@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
@@ -67,16 +66,12 @@ class AppointmentServiceImpl implements AppointmentService {
   @override
   Future<void> cancelAppointmentRequest(Appointment appointment) async {
     final appointmentRef = _appointmentsRef.doc(appointment.id);
+    //
+    // final appointmentMap = await appointmentRef.get();
+    //
+    // final status = appointmentMap.get('status') as int;
 
-    final appointmentMap = await appointmentRef.get();
-
-    final status = appointmentMap.get('status') as int;
-
-    if (status == 0) {
-      await appointmentRef.update({'status': 3});
-    } else {
-      await appointmentRef.delete();
-    }
+    await appointmentRef.update({'status': 3});
   }
 
   @override
@@ -86,7 +81,7 @@ class AppointmentServiceImpl implements AppointmentService {
 
   @override
   Future<void> rejectAppointmentRequest(Appointment appointment) async {
-    await _appointmentsRef.doc(appointment.id).delete();
+    await _appointmentsRef.doc(appointment.id).update({'status': 4});
   }
 
   @override
@@ -134,7 +129,7 @@ class AppointmentServiceImpl implements AppointmentService {
   Future<Stream<List<Appointment>>> getReceivedAppointmentRequests() async {
     final currentBotanistUid = FirebaseAuth.instance.currentUser!.uid;
 
-    _usersRef
+    _appointmentsRef
         .where('botanist', isEqualTo: currentBotanistUid)
         .snapshots()
         .listen((receivedAppointmentsSnapshots) async {
@@ -155,7 +150,7 @@ class AppointmentServiceImpl implements AppointmentService {
   @override
   Future<void> postBotanistReview({required String botanist, required BotanistReview botanistReview}) async {
     await _usersRef.doc(botanist).collection('reviews').add({
-      'author': botanistReview.author,
+      'author': FirebaseAuth.instance.currentUser!.uid,
       'review': botanistReview.review,
       'time': botanistReview.time,
       'stars': botanistReview.stars,
@@ -194,5 +189,11 @@ class AppointmentServiceImpl implements AppointmentService {
       date: appointmentRequestMap.get('date') as int,
       status: AppointmentStatus.values[appointmentRequestMap.get('status') as int],
     );
+  }
+
+  @override
+  Future<void> deleteAppointmentRequest(Appointment appointment) async {
+    final appointmentRef = _appointmentsRef.doc(appointment.id);
+    await appointmentRef.delete();
   }
 }

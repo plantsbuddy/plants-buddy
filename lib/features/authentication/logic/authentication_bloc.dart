@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
 import 'package:open_mail_app/open_mail_app.dart';
 import 'package:plants_buddy/core/errors/exceptions.dart';
@@ -18,6 +17,7 @@ part 'authentication_state.dart';
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final LoginUser _loginUser;
   final InitUser _initUser;
+  final LogoutUser _logoutUser;
 
   final UpdateProfile _updateProfile;
   final SignupGardener _signupGardener;
@@ -33,6 +33,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     this._signupBotanist,
     this._sendEmailVerificationLink,
     this._sendPasswordResetLink,
+    this._logoutUser,
   ) : super(AuthenticationState.initial()) {
     on<AuthenticationInitUser>(onAuthenticationInitUser);
     on<AuthenticationSignupGardenerPressed>(onAuthenticationSignupGardenerPressed);
@@ -44,12 +45,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<AuthenticationSendVerificationLinkPressed>(onAuthenticationSendVerificationLinkPressed);
     on<AuthenticationPasswordVisibilityToggled>(onAuthenticationPasswordVisibilityToggled);
     on<AuthenticationUpdateProfile>(onAuthenticationUpdateProfile);
+    on<AuthenticationLogoutPressed>(onAuthenticationLogoutPressed);
   }
 
   Future<FutureOr<void>> onAuthenticationInitUser(
       AuthenticationInitUser event, Emitter<AuthenticationState> emit) async {
     final user = await _initUser();
-    emit(state.copyWith(userLoggedIn: true, currentUser: user));
+    emit(state.copyWith(userLoggedIn: true, currentUser: () => user));
   }
 
   Future<FutureOr<void>> onAuthenticationSignupGardenerPressed(
@@ -153,7 +155,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       // print(FirebaseAuth.instance.currentUser == null ? 'Null before' : 'Not null before');
       final currentUser = await _loginUser(email: event.email, password: event.password);
 
-      emit(state.copyWith(userLoggedIn: true, currentUser: currentUser));
+      emit(state.copyWith(userLoggedIn: true, currentUser: () => currentUser));
     } on EmptyEmailException {
       emit(state.copyWith(loginEmailError: () => 'Please fill this field'));
     } on EmptyPasswordException {
@@ -246,7 +248,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
     emit(state.copyWith(
       dialogShowing: false,
-      currentUser: state.currentUser!.copy(username: event.name, profilePicture: pictureUrl),
+      currentUser: () => state.currentUser!.copy(username: event.name, profilePicture: pictureUrl),
     ));
+  }
+
+  Future<FutureOr<void>> onAuthenticationLogoutPressed(
+      AuthenticationLogoutPressed event, Emitter<AuthenticationState> emit) async {
+    await _logoutUser();
+    emit(state.copyWith(currentUser: () => null));
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
 import 'package:plants_buddy/core/utils/custom_icons.dart' as custom_icons;
+import 'package:plants_buddy/features/identification/logic/identification_bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -66,7 +67,7 @@ class HomePage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: GestureDetector(
-                  onTap: () => Navigator.of(context).pushNamed(app_routes.identify, arguments: 0),
+                  onTap: () => Navigator.of(context).pushNamed(app_routes.identify, arguments: IdentificationType.plant),
                   child: Column(
                     children: [
                       Container(
@@ -92,7 +93,7 @@ class HomePage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: GestureDetector(
-                  onTap: () => Navigator.of(context).pushNamed(app_routes.identify, arguments: 1),
+                  onTap: () => Navigator.of(context).pushNamed(app_routes.identify, arguments: IdentificationType.disease),
                   child: Column(
                     children: [
                       Container(
@@ -119,7 +120,7 @@ class HomePage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: GestureDetector(
-                  onTap: () => Navigator.of(context).pushNamed(app_routes.identify, arguments: 2),
+                  onTap: () => Navigator.of(context).pushNamed(app_routes.identify, arguments: IdentificationType.pest),
                   child: Column(
                     children: [
                       Container(

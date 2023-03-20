@@ -39,6 +39,8 @@ class AuthenticationLoginPressed extends AuthenticationEvent {
   AuthenticationLoginPressed({required this.email, required this.password});
 }
 
+class AuthenticationLogoutPressed extends AuthenticationEvent {}
+
 class AuthenticationSendVerificationLinkPressed extends AuthenticationEvent {}
 
 class AuthenticationOpenEmailAppPressed extends AuthenticationEvent {}

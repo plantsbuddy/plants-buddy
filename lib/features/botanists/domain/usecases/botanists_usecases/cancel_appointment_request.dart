@@ -7,6 +7,10 @@ class CancelAppointmentRequest {
   CancelAppointmentRequest(this._appointmentService);
 
   Future<void> call(Appointment appointment) async {
-    await _appointmentService.cancelAppointmentRequest(appointment);
+    if (appointment.status == AppointmentStatus.pending) {
+      return _appointmentService.cancelAppointmentRequest(appointment);
+    } else {
+      return _appointmentService.deleteAppointmentRequest(appointment);
+    }
   }
 }

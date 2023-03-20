@@ -16,7 +16,6 @@ class PostBotanistReview {
     // }
 
     final botanistReview = BotanistReview(
-      author: FirebaseAuth.instance.currentUser!.uid,
       review: review.trim(),
       time: DateTime.now().millisecondsSinceEpoch,
       stars: stars,

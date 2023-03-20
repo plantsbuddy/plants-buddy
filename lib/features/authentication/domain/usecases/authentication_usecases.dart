@@ -5,4 +5,4 @@ export 'authentication_usecases/init_user.dart';
 export 'authentication_usecases/update_profile.dart';
 export 'authentication_usecases/send_password_reset_link.dart';
 export 'authentication_usecases/send_email_verification_link.dart';
-
+export 'authentication_usecases/logout_user.dart';

@@ -13,3 +13,4 @@ const String noReminders = 'assets/icons/no_reminders.svg';
 const String noAppointments = 'assets/icons/no_appointments.svg';
 const String noChats = 'assets/icons/no_conversations.png';
 const String noMessages = 'assets/icons/no_messages.png';
+const String noCard = 'assets/icons/no_card.png';

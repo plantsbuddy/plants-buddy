@@ -42,6 +42,8 @@ class ReminderTimeNotSelectedException implements Exception {}
 
 class ReminderTitleNotWrittenException implements Exception {}
 
+class PaymentDetailsNotAddedException implements Exception {}
+
 // class AppointmentDateNotSelectedException implements Exception {}
 //
 // class AppointmentTimeNotSelectedException implements Exception {}

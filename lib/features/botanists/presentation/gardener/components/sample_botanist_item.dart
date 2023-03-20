@@ -30,7 +30,7 @@ class SampleBotanistItem extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(70),
                   child: Image.network(
-                    'https://upload.wikimedia.org/wikipedia/commons/3/3a/John_G._Dow.jpg',
+                    botanist.profilePicture,
                     height: 60,
                     fit: BoxFit.cover,
                     width: 60,

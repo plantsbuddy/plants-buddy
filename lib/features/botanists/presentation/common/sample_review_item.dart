@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '../../domain/entities/botanist_review.dart';
+
 class SampleReviewItem extends StatelessWidget {
-  const SampleReviewItem({Key? key}) : super(key: key);
+  const SampleReviewItem(this.review, {Key? key}) : super(key: key);
+
+  final BotanistReview review;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,7 @@ class SampleReviewItem extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(70),
                   child: Image.network(
-                    'https://upload.wikimedia.org/wikipedia/commons/3/3a/John_G._Dow.jpg',
+                    review.author!.profilePicture,
                     height: 45,
                     fit: BoxFit.cover,
                     width: 45,
@@ -31,7 +35,7 @@ class SampleReviewItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Mohsin Ismail',
+                          review.author!.username,
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         SizedBox(height: 2),
@@ -45,12 +49,12 @@ class SampleReviewItem extends StatelessWidget {
                               ),
                             SizedBox(width: 10),
                             Text(
-                              '4.0',
+                              review.stars.toString(),
                               style: Theme.of(context).textTheme.titleSmall,
                             ),
                             Spacer(),
                             Text(
-                              '1 mo ago',
+                              review.timeAgo,
                               style: TextStyle(color: Colors.black54),
                             ),
                           ],
@@ -63,7 +67,7 @@ class SampleReviewItem extends StatelessWidget {
             ),
             SizedBox(height: 12),
             Text(
-              'Mohsin Ismail Baloch Istan ',
+              review.review,
               style: TextStyle(color: Colors.black54),
             ),
           ],

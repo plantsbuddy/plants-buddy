@@ -18,33 +18,20 @@ part 'gardener_appointment_state.dart';
 class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerAppointmentState> {
   final CancelAppointmentRequest _cancelAppointmentRequest;
   final SendAppointmentRequest _sendAppointmentRequest;
-  final GetBotanistReviewsStream _getBotanistReviewsStream;
-  final PostBotanistReview _postBotanistReview;
   final GetBotanists _getBotanists;
   final GetSentAppointmentRequestsStream _getSentAppointmentRequestsStream;
 
   GardenerAppointmentBloc(
     this._getBotanists,
     this._getSentAppointmentRequestsStream,
-    this._postBotanistReview,
-    this._getBotanistReviewsStream,
     this._sendAppointmentRequest,
     this._cancelAppointmentRequest,
   ) : super(GardenerAppointmentState.initial()) {
     on<GardenerCancelAppointmentRequest>(onGardenerCancelAppointmentRequest);
     on<GardenerSendAppointmentRequest>(onGardenerSendAppointmentRequest);
-    on<GardenerInitializeBotanistReviewsStream>(onGardenerInitializeBotanistReviewsStream);
     on<GardenerInitializeSentAppointmentRequestsStream>(onGardenerInitializeSentAppointmentRequestsStream);
-    on<GardenerPostBotanistReview>(onGardenerPostBotanistReview);
     on<GardenerGetBotanists>(onGardenerGetBotanists);
-  }
-
-  FutureOr<void> onGardenerInitializeBotanistReviewsStream(
-      GardenerInitializeBotanistReviewsStream event, Emitter<GardenerAppointmentState> emit) async {
-    final botanistReviewsStream = await _getBotanistReviewsStream(event.botanist);
-
-    await emit.forEach(botanistReviewsStream,
-        onData: (botanistReviews) => state.copyWith(botanistReviews: botanistReviews));
+    on<GardenerDeleteAppointmentRequest>(onGardenerDeleteAppointmentRequest);
   }
 
   FutureOr<void> onGardenerInitializeSentAppointmentRequestsStream(
@@ -75,19 +62,15 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
     emit(state.copyWith(dialogShowing: false));
   }
 
-  Future<FutureOr<void>> onGardenerPostBotanistReview(
-      GardenerPostBotanistReview event, Emitter<GardenerAppointmentState> emit) async {
-    await _postBotanistReview(
-      botanist: event.botanist,
-      review: event.review,
-      stars: event.stars,
-    );
-  }
-
   Future<FutureOr<void>> onGardenerGetBotanists(
       GardenerGetBotanists event, Emitter<GardenerAppointmentState> emit) async {
     final botanists = await _getBotanists();
 
     emit(state.copyWith(botanists: botanists));
+  }
+
+  Future<FutureOr<void>> onGardenerDeleteAppointmentRequest(
+      GardenerDeleteAppointmentRequest event, Emitter<GardenerAppointmentState> emit) async {
+    await _cancelAppointmentRequest(event.appointment);
   }
 }

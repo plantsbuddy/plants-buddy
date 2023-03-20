@@ -9,15 +9,18 @@ class SampleSecondPersonMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text(
-        message.body,
-      ),
-      margin: EdgeInsets.only(bottom: 10, left: 10, right: 100),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(15),
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Container(
+        child: Text(
+          message.body,
+        ),
+        margin: EdgeInsets.only(bottom: 10, left: 10, right: 100),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(15),
+        ),
       ),
     );
   }

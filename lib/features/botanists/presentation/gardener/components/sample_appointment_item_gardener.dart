@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/features/botanists/logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 import '../../../domain/entities/appointment.dart';
 
@@ -22,7 +23,7 @@ class SampleAppointmentItemGardener extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(120),
                   child: Image.network(
-                    'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/109354797/original/db7435d5305bb7b8a843e405af7d00952c82f9a3/implement-android-ui-design-in-xml.png',
+                    appointment.botanist.profilePicture,
                     width: 45,
                     height: 45,
                     fit: BoxFit.fitHeight,
@@ -104,50 +105,107 @@ class SampleAppointmentItemGardener extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.error,
-                      backgroundColor: Theme.of(context).colorScheme.errorContainer,
-                    ).copyWith(
-                      elevation: ButtonStyleButton.allOrNull(0.0),
-                    ),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) {
-                          return AlertDialog(
-                            title: Text(
-                                'Confirm ${appointment.status == AppointmentStatus.pending ? 'cancellation' : 'deletion'}'),
-                            content: Text(
-                                'Are you sure you want to ${appointment.status == AppointmentStatus.pending ? 'cancel' : 'delete'} this appointment request?'),
-                            actions: [
-                              TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Back')),
-                              TextButton(
-                                onPressed: () {
-                                  context
-                                      .read<GardenerAppointmentBloc>()
-                                      .add(GardenerCancelAppointmentRequest(appointment));
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('I\'m sure'),
-                                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Text(appointment.status == AppointmentStatus.pending ? 'Cancel' : 'Delete'),
-                    ),
-                  ),
+                  child: _getButton(context),
                 ),
               ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _getButton(BuildContext context) {
+    switch (appointment.status) {
+      case AppointmentStatus.pending:
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+          ).copyWith(
+            elevation: ButtonStyleButton.allOrNull(0.0),
+          ),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) {
+                return AlertDialog(
+                  title: Text('Confirm cancellation'),
+                  content: Text('Are you sure you want to cancel this appointment request?'),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Back')),
+                    TextButton(
+                      onPressed: () {
+                        context.read<GardenerAppointmentBloc>().add(GardenerCancelAppointmentRequest(appointment));
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('I\'m sure'),
+                      style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Text('Cancel'),
+          ),
+        );
+      case AppointmentStatus.scheduled:
+        return ZegoSendCallInvitationButton(
+          isVideoCall: true,
+          invitees: [ZegoUIKitUser(id: appointment.botanist.uid, name: appointment.botanist.username)],
+          resourceID: "zegouikit_call",
+          iconSize: const Size(40, 40),
+          buttonSize: const Size(50, 50),
+          // clickableBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          icon: ButtonIcon(
+            icon: Icon(
+              Icons.videocam_rounded,
+              color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          ),
+          verticalLayout: false,
+        );
+      case AppointmentStatus.completed:
+      case AppointmentStatus.cancelled:
+      case AppointmentStatus.rejected:
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+          ).copyWith(
+            elevation: ButtonStyleButton.allOrNull(0.0),
+          ),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) {
+                return AlertDialog(
+                  title: Text('Confirm deletion'),
+                  content: Text('Are you sure you want to delete this appointment request?'),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Back')),
+                    TextButton(
+                      onPressed: () {
+                        context.read<GardenerAppointmentBloc>().add(GardenerDeleteAppointmentRequest(appointment));
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Delete'),
+                      style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Text('Delete'),
+          ),
+        );
+    }
   }
 
   Color _getStatusColor(BuildContext context) {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/features/botanists/logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
-import 'package:plants_buddy/features/botanists/presentation/gardener/pages/payments_page_gardener.dart';
+import 'package:plants_buddy/features/payment/presentation/payment_page_no_details.dart';
+import 'package:plants_buddy/features/payment/presentation/payments_page_gardener.dart';
 
 import '../common/chat_page.dart';
 import 'pages/appointments_page_gardener.dart';
@@ -55,7 +56,7 @@ class _ConsultBotanistsScreenState extends State<ConsultBotanistsScreen> {
       case 2:
         return ChatPage();
       case 3:
-        return PaymentsPageGardener();
+        return PaymentPageNoDetails();
 
       default:
         return BotanistsPage();

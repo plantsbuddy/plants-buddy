@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/features/botanists/domain/entities/appointment.dart';
 import 'package:plants_buddy/features/botanists/logic/botanist_appointment_bloc/botanist_appointment_bloc.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class SampleAppointmentItemBotanist extends StatelessWidget {
   const SampleAppointmentItemBotanist(this.appointment, {Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(120),
                   child: Image.network(
-                    'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/109354797/original/db7435d5305bb7b8a843e405af7d00952c82f9a3/implement-android-ui-design-in-xml.png',
+                    appointment.gardener.profilePicture,
                     width: 45,
                     height: 45,
                     fit: BoxFit.fitHeight,
@@ -98,73 +99,131 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
                 ),
               ],
             ),
-            if (true)
-              Padding(
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
                 padding: const EdgeInsets.only(top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 25),
-                        foregroundColor: Theme.of(context).colorScheme.error,
-                        backgroundColor: Theme.of(context).colorScheme.errorContainer,
-                      ).copyWith(
-                        elevation: ButtonStyleButton.allOrNull(0.0),
-                      ),
-                      onPressed: () => showDialog(
-                        context: context,
-                        builder: (_) {
-                          return AlertDialog(
-                            title: Text('Confirm rejection'),
-                            content: Text('Are you sure you want to reject this appointment request?'),
-                            actions: [
-                              TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
-                              TextButton(
-                                onPressed: () {
-                                  context
-                                      .read<BotanistAppointmentBloc>()
-                                      .add(BotanistRejectAppointmentRequest(appointment));
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Reject'),
-                                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                      child: Text('Reject'),
-                    ),
-                    SizedBox(width: 15),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 25),
-                        foregroundColor: Theme.of(context).colorScheme.tertiary,
-                        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                      ).copyWith(
-                        elevation: ButtonStyleButton.allOrNull(0.0),
-                      ),
-                      onPressed: () {
-                        context.read<BotanistAppointmentBloc>().add(BotanistApproveAppointmentRequest(appointment));
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Appointment approved...'),
-                            behavior: SnackBarBehavior.floating,
-                            duration: Duration(milliseconds: 1500),
-                          ),
-                        );
-                      },
-                      child: Text('Approve'),
-                    ),
-                  ],
-                ),
+                child: _getButtons(context),
               ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _getButtons(BuildContext context) {
+    switch (appointment.status) {
+      case AppointmentStatus.pending:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                foregroundColor: Theme.of(context).colorScheme.error,
+                backgroundColor: Theme.of(context).colorScheme.errorContainer,
+              ).copyWith(
+                elevation: ButtonStyleButton.allOrNull(0.0),
+              ),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (_) {
+                  return AlertDialog(
+                    title: Text('Confirm rejection'),
+                    content: Text('Are you sure you want to reject this appointment request?'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
+                      TextButton(
+                        onPressed: () {
+                          context.read<BotanistAppointmentBloc>().add(BotanistRejectAppointmentRequest(appointment));
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Reject'),
+                        style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              child: Text('Reject'),
+            ),
+            SizedBox(width: 15),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                foregroundColor: Theme.of(context).colorScheme.tertiary,
+                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              ).copyWith(
+                elevation: ButtonStyleButton.allOrNull(0.0),
+              ),
+              onPressed: () {
+                context.read<BotanistAppointmentBloc>().add(BotanistApproveAppointmentRequest(appointment));
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Appointment approved...'),
+                    behavior: SnackBarBehavior.floating,
+                    duration: Duration(milliseconds: 1500),
+                  ),
+                );
+              },
+              child: Text('Approve'),
+            ),
+          ],
+        );
+      case AppointmentStatus.scheduled:
+        return ZegoSendCallInvitationButton(
+          isVideoCall: true,
+          invitees: [ZegoUIKitUser(id: appointment.gardener.uid, name: appointment.gardener.username)],
+          resourceID: "zegouikit_call",
+          iconSize: const Size(40, 40),
+          buttonSize: const Size(50, 50),
+          // clickableBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          icon: ButtonIcon(
+            icon: Icon(
+              Icons.videocam_rounded,
+              color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          ),
+          verticalLayout: false,
+
+        );
+      case AppointmentStatus.completed:
+      case AppointmentStatus.cancelled:
+      case AppointmentStatus.rejected:
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 25),
+            foregroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+          ).copyWith(
+            elevation: ButtonStyleButton.allOrNull(0.0),
+          ),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text('Confirm deletion'),
+                content: Text('Are you sure you want to delete this appointment request?'),
+                actions: [
+                  TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
+                  TextButton(
+                    onPressed: () {
+                      context.read<BotanistAppointmentBloc>().add(BotanistRejectAppointmentRequest(appointment));
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Delete'),
+                    style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                  ),
+                ],
+              );
+            },
+          ),
+          child: Text('Delete'),
+        );
+    }
   }
 
   Color _getStatusColor(BuildContext context) {

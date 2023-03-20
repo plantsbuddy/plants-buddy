@@ -65,7 +65,20 @@ class ChatServiceImpl implements ChatService {
             receiver: senderUid == currentUser.uid ? otherUser : currentUser,
           );
         } on StateError {
-          lastMessage = null;
+          final messages =
+              await _conversationsRef.doc(conversationMap.id).collection('messages').orderBy('timestamp').get();
+
+          if (messages.docs.isNotEmpty) {
+            final senderUid = messages.docs.last.get('sender') as String;
+
+            lastMessage = Message(
+              id: messages.docs.last.id,
+              body: messages.docs.last.get('body') as String,
+              timestamp: messages.docs.last.get('timestamp') as int,
+              sender: senderUid == currentUser.uid ? currentUser : otherUser,
+              receiver: senderUid == currentUser.uid ? otherUser : currentUser,
+            );
+          }
         }
 
         final conversation = Conversation(
@@ -122,8 +135,24 @@ class ChatServiceImpl implements ChatService {
         .collection('messages')
         .orderBy('timestamp')
         .snapshots()
-        .listen((messagesSnapshots) {
+        .listen((messagesSnapshots) async {
       final List<Message> messages = [];
+
+      final conversationRef = _conversationsRef.doc(_currentConversation.id);
+
+      try {
+        final lastMessageId = (await conversationRef.get()).get('last_message');
+
+        final lastMessageDoc = await conversationRef.collection('messages').doc(lastMessageId).get();
+
+        if (lastMessageDoc.get('receiver') == conversation.currentUser.uid) {
+          for (var messageMap in messagesSnapshots.docs) {
+            await conversationRef.collection('messages').doc(messageMap.id).update({'read': true});
+          }
+
+          await conversationRef.update({'last_message': FieldValue.delete()});
+        }
+      } on StateError {}
 
       for (var messageMap in messagesSnapshots.docs) {
         final senderUid = messageMap.get('sender') as String;
@@ -170,7 +199,6 @@ class ChatServiceImpl implements ChatService {
 
   @override
   Future<void> downloadFile(Message message) async {
-    // TODO: implement downloadFile
     throw UnimplementedError();
   }
 }

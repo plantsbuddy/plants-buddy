@@ -6,6 +6,7 @@ import 'package:plants_buddy/features/chat/logic/chat_bloc.dart';
 
 import '../../authentication/domain/entities/user.dart';
 import '../../authentication/logic/authentication_bloc.dart';
+import '../../payment/logic/payment_bloc.dart';
 import '../logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
 
 MaterialPageRoute route(Object? authenticationBloc) {
@@ -18,13 +19,16 @@ MaterialPageRoute route(Object? authenticationBloc) {
       return MultiBlocProvider(
         providers: [
           BlocProvider<GardenerAppointmentBloc>(
-            create: (_) => GardenerAppointmentBloc(sl(), sl(), sl(), sl(), sl(), sl())
+            create: (_) => GardenerAppointmentBloc(sl(), sl(), sl(), sl())
               ..add(GardenerInitializeSentAppointmentRequestsStream()),
           ),
           BlocProvider.value(value: authenticationBloc),
           BlocProvider<ChatBloc>(
             create: (_) => ChatBloc(sl(), sl(), sl(), sl(), sl(), sl())
               ..add(ChatInitializeConversationsStream(authenticationBloc.state.currentUser!)),
+          ),
+          BlocProvider<PaymentBloc>(
+            create: (_) => PaymentBloc(),
           ),
         ],
         child: ConsultBotanistsScreen(),

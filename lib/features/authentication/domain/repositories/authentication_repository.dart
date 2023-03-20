@@ -15,6 +15,8 @@ abstract class AuthenticationRepository {
 
   Future<void> sendEmailVerificationLink();
 
+  Future<void> logoutUser();
+
   Future<String> updateProfile({
     required String? selectedImagePath,
     required bool picDeleted,

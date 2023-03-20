@@ -25,7 +25,7 @@ class ChatInterface extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(70),
               child: Image.network(
-                'https://upload.wikimedia.org/wikipedia/commons/3/3a/John_G._Dow.jpg',
+                conversation.otherUser.profilePicture,
                 height: 40,
                 fit: BoxFit.cover,
                 width: 40,

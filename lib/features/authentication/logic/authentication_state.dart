@@ -66,7 +66,7 @@ class AuthenticationState extends Equatable {
 
   AuthenticationState copyWith({
     int? pageIndex,
-    User? currentUser,
+    User? Function()? currentUser,
     bool? dialogShowing,
     bool? userLoggedIn,
     bool? passwordVisible,
@@ -86,7 +86,7 @@ class AuthenticationState extends Equatable {
   }) =>
       AuthenticationState(
         pageIndex: pageIndex ?? this.pageIndex,
-        currentUser: currentUser ?? this.currentUser,
+        currentUser: currentUser == null ? this.currentUser : currentUser(),
         dialogShowing: dialogShowing ?? this.dialogShowing,
         userLoggedIn: userLoggedIn ?? this.userLoggedIn,
         passwordVisible: passwordVisible ?? this.passwordVisible,
@@ -99,7 +99,7 @@ class AuthenticationState extends Equatable {
         signupDescriptionError: signupDescriptionError == null ? this.signupDescriptionError : signupDescriptionError(),
         signupCityError: signupCityError == null ? this.signupCityError : signupCityError(),
         signupQualificationError:
-        signupQualificationError == null ? this.signupQualificationError : signupQualificationError(),
+            signupQualificationError == null ? this.signupQualificationError : signupQualificationError(),
         signupPhoneNumberError: signupPhoneNumberError == null ? this.signupPhoneNumberError : signupPhoneNumberError(),
         signupSpecialtyError: signupSpecialtyError == null ? this.signupSpecialtyError : signupSpecialtyError(),
         loginEmailError: loginEmailError == null ? this.loginEmailError : loginEmailError(),
@@ -109,8 +109,7 @@ class AuthenticationState extends Equatable {
       );
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         pageIndex,
         currentUser,
         dialogShowing,

@@ -17,7 +17,7 @@ MaterialPageRoute route(Object? authenticationBloc) {
       return MultiBlocProvider(
         providers: [
           BlocProvider<BotanistAppointmentBloc>(
-            create: (_) => BotanistAppointmentBloc(sl(), sl(), sl()),
+            create: (_) => BotanistAppointmentBloc(sl(), sl(), sl(), sl())..add(BotanistInitializeReceivedAppointmentRequestsStream()),
           ),
           BlocProvider.value(value: authenticationBloc),
           BlocProvider<ChatBloc>(

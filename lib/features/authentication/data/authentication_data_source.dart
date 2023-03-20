@@ -197,4 +197,9 @@ class AuthenticationDataSource implements AuthenticationRepository {
     final userDoc = await userRef.get();
     return userDoc.get('pictureUrl') as String;
   }
+
+  @override
+  Future<void> logoutUser() async {
+    await _auth.signOut();
+  }
 }

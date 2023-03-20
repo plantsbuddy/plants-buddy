@@ -1,20 +1,23 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
+import '../../../authentication/domain/entities/user.dart';
 
 class BotanistReview extends Equatable {
-  final String author;
+  final User? author;
   final String review;
   final int time;
   final int stars;
 
   BotanistReview({
-    required this.author,
+    this.author,
     required this.review,
     required this.time,
     required this.stars,
   });
 
-  String get formattedDate => DateFormat('d MMMM, yyyy ').format(DateTime.fromMillisecondsSinceEpoch(time));
+  String get timeAgo => timeago.format(DateTime.fromMillisecondsSinceEpoch(time), locale: 'en_short');
 
   @override
   List<Object?> get props => [author, review, time, stars];

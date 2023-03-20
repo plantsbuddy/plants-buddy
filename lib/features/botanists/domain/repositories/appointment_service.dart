@@ -14,6 +14,7 @@ abstract class AppointmentService {
   Future<void> rejectAppointmentRequest(Appointment appointment);
 
   Future<void> cancelAppointmentRequest(Appointment appointment);
+  Future<void> deleteAppointmentRequest(Appointment appointment);
 
   Future<List<Botanist>> getBotanists();
 

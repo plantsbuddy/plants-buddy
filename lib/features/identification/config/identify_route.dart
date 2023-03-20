@@ -4,16 +4,16 @@ import 'package:get_it/get_it.dart';
 import 'package:plants_buddy/features/identification/logic/identification_bloc.dart';
 import 'package:plants_buddy/features/identification/presentation/identify_screen.dart';
 
-MaterialPageRoute route(Object? selectedIndex) {
+MaterialPageRoute route(Object? indentificationType) {
   final sl = GetIt.instance;
 
-  selectedIndex as int;
+  indentificationType as IdentificationType;
 
   return MaterialPageRoute(
     builder: (_) {
       return BlocProvider<IdentificationBloc>(
-        create: (_) => IdentificationBloc(),
-        child: IdentifyScreen(selectedIndex),
+        create: (_) => IdentificationBloc(identificationType: indentificationType, sl(), sl(), sl(),sl(),),
+        child: IdentifyScreen(),
       );
     },
   );

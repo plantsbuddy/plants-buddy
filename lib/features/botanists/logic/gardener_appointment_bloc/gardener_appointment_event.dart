@@ -9,6 +9,12 @@ class GardenerCancelAppointmentRequest extends GardenerAppointmentEvent {
   GardenerCancelAppointmentRequest(this.appointment);
 }
 
+class GardenerDeleteAppointmentRequest extends GardenerAppointmentEvent {
+  final Appointment appointment;
+
+  GardenerDeleteAppointmentRequest(this.appointment);
+}
+
 class GardenerSendAppointmentRequest extends GardenerAppointmentEvent {
   final String notes;
   final User botanist;
@@ -25,23 +31,7 @@ class GardenerSendAppointmentRequest extends GardenerAppointmentEvent {
   });
 }
 
-class GardenerInitializeBotanistReviewsStream extends GardenerAppointmentEvent {
-  final Botanist botanist;
 
-  GardenerInitializeBotanistReviewsStream(this.botanist);
-}
-
-class GardenerPostBotanistReview extends GardenerAppointmentEvent {
-  final String review;
-  final Botanist botanist;
-  final int stars;
-
-  GardenerPostBotanistReview({
-    required this.botanist,
-    required this.review,
-    required this.stars,
-  });
-}
 
 class GardenerGetBotanists extends GardenerAppointmentEvent {}
 
