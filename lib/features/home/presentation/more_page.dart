@@ -5,6 +5,7 @@ import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
 import 'package:plants_buddy/core/utils/custom_icons.dart' as custom_icons;
 import 'package:plants_buddy/features/authentication/logic/authentication_bloc.dart';
 import 'package:plants_buddy/features/authentication/presentation/update_profile_sheet.dart';
+import 'package:plants_buddy/features/payment/logic/payment_bloc.dart';
 
 class MorePage extends StatelessWidget {
   const MorePage({Key? key}) : super(key: key);
@@ -125,8 +126,9 @@ class MorePage extends StatelessWidget {
                       TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
                       TextButton(
                         onPressed: () {
-                          context.read<AuthenticationBloc>().add(AuthenticationLogoutPressed());
                           Navigator.of(context).pop();
+                          context.read<AuthenticationBloc>().add(AuthenticationLogoutPressed());
+                          Navigator.of(context).pushNamed(app_routes.authentication);
                         },
                         child: Text('Logout'),
                         style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
@@ -145,7 +147,10 @@ class MorePage extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.of(context)
-                      .pushNamed(app_routes.consultBotanists, arguments: context.read<AuthenticationBloc>()),
+                      .pushNamed(app_routes.consultBotanists, arguments: {
+                    'authentication_bloc': context.read<AuthenticationBloc>(),
+                    'payment_bloc': context.read<PaymentBloc>(),
+                  }),
                   child: Card(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -174,8 +179,10 @@ class MorePage extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => Navigator.of(context)
-                      .pushNamed(app_routes.attendGardeners, arguments: context.read<AuthenticationBloc>()),
+                  onTap: () => Navigator.of(context).pushNamed(app_routes.attendGardeners, arguments: {
+                    'authentication_bloc': context.read<AuthenticationBloc>(),
+                    'payment_bloc': context.read<PaymentBloc>(),
+                  }),
                   child: Card(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),

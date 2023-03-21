@@ -16,8 +16,6 @@ class ChatInterface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final messages = context.select((ChatBloc bloc) => bloc.state.messages);
-
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -39,18 +37,30 @@ class ChatInterface extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: messages.isNotEmpty
-                ? ListView.builder(
-                    itemBuilder: (context, index) {
-                      final message = messages[index];
+            child: BlocBuilder<ChatBloc, ChatState>(
+              buildWhen: (previous, current) =>
+                  (previous.messages != current.messages) || (previous.messagesStatus != current.messagesStatus),
+              builder: (context, state) {
+                switch (state.messagesStatus) {
+                  case MessagesStatus.loading:
+                    return Center(child: CircularProgressIndicator());
 
-                      return message.sender.uid == conversation.currentUser.uid
-                          ? SampleFirstPersonMessage(message)
-                          : SampleSecondPersonMessage(message);
-                    },
-                    itemCount: messages.length,
-                  )
-                : NoMessages(conversation.otherUser),
+                    case MessagesStatus.loaded:
+                    return state.messages.isNotEmpty
+                        ? ListView.builder(
+                            itemBuilder: (context, index) {
+                              final message = state.messages[index];
+
+                              return message.sender.uid == conversation.currentUser.uid
+                                  ? SampleFirstPersonMessage(message)
+                                  : SampleSecondPersonMessage(message);
+                            },
+                            itemCount: state.messages.length,
+                          )
+                        : NoMessages(conversation.otherUser);
+                }
+              },
+            ),
           ),
           WriteAMessage(conversation),
         ],

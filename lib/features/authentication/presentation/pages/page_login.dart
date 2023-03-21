@@ -55,13 +55,13 @@ class _PageLoginState extends State<PageLogin> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      state.passwordVisible ? Icons.visibility_off : Icons.visibility,
+                      state.passwordHidden ? Icons.visibility_off : Icons.visibility,
                       color: Theme.of(context).primaryColorDark,
                     ),
                     onPressed: () => context.read<AuthenticationBloc>().add(AuthenticationPasswordVisibilityToggled()),
                   ),
                 ),
-                obscureText: state.passwordVisible,
+                obscureText: state.passwordHidden,
               ),
               SizedBox(height: 10),
               Align(

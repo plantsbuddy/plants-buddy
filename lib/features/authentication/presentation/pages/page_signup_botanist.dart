@@ -56,6 +56,7 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
               SizedBox(height: 15),
               TextField(
                 autofocus: false,
+                keyboardType: TextInputType.emailAddress,
                 controller: emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
@@ -122,6 +123,7 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
               SizedBox(height: 15),
               TextField(
                 autofocus: false,
+                keyboardType: TextInputType.number,
                 controller: consultationChargesController,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
@@ -133,6 +135,7 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
               SizedBox(height: 15),
               TextField(
                 autofocus: false,
+                keyboardType: TextInputType.phone,
                 controller: phoneNumberController,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
@@ -151,13 +154,13 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      state.passwordVisible ? Icons.visibility_off : Icons.visibility,
+                      state.passwordHidden ? Icons.visibility_off : Icons.visibility,
                       color: Theme.of(context).primaryColorDark,
                     ),
                     onPressed: () => context.read<AuthenticationBloc>().add(AuthenticationPasswordVisibilityToggled()),
                   ),
                 ),
-                obscureText: state.passwordVisible,
+                obscureText: state.passwordHidden,
               ),
               SizedBox(height: 5),
               Text(

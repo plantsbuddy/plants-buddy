@@ -35,6 +35,7 @@ class AuthenticationDataSource implements AuthenticationRepository {
         'type': 'gardener',
         'name': gardener.username,
         'email': gardener.email,
+        'password': gardener.password,
         'pictureUrl': 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png',
       });
 
@@ -100,6 +101,7 @@ class AuthenticationDataSource implements AuthenticationRepository {
 
       if (!_auth.currentUser!.emailVerified) {
         await _auth.currentUser!.sendEmailVerification();
+        await _auth.signOut();
         throw EmailNotVerifiedException();
       }
 

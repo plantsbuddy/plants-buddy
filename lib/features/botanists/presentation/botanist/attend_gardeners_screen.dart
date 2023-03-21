@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plants_buddy/features/payment/presentation/payments_page.dart';
 import '../common/chat_page.dart';
 import 'pages/appointments_page_botanist.dart';
 import 'pages/payments_page_botanist.dart';
@@ -42,7 +43,7 @@ class _AttendGardenersScreenState extends State<AttendGardenersScreen> {
         return ChatPage();
 
       case 2:
-        return PaymentsPageBotanist();
+        return PaymentsPage();
 
       default:
         return AppointmentsPageBotanist();

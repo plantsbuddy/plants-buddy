@@ -10,6 +10,7 @@ import '../../../authentication/domain/entities/user.dart';
 import '../../domain/entities/appointment.dart';
 import '../../domain/entities/botanist_review.dart';
 import '../../domain/usecases/botanists_usecases.dart';
+import '../botanist_appointment_bloc/botanist_appointment_bloc.dart';
 
 part 'gardener_appointment_event.dart';
 
@@ -39,7 +40,7 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
     final sentAppointmentRequestsStream = await _getSentAppointmentRequestsStream();
 
     await emit.forEach(sentAppointmentRequestsStream,
-        onData: (sentAppointmentRequests) => state.copyWith(sentAppointmentRequests: sentAppointmentRequests));
+        onData: (sentAppointmentRequests) => state.copyWith(sentAppointmentRequests: sentAppointmentRequests, status: AppointmentsListStatus.loaded));
   }
 
   Future<FutureOr<void>> onGardenerCancelAppointmentRequest(

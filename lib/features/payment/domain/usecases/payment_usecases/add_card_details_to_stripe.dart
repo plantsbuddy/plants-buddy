@@ -10,17 +10,18 @@ class AddCardDetailsToStripe {
   Future<void> call({
     required User user,
     required String cardholderName,
-    required int cardNumber,
-    required int cvv,
-    required int expiryYear,
-    required int expiryMonth,
+    required String cardNumber,
+    required String cvc,
+    required String expiryYear,
+    required String expiryMonth,
   }) async {
     return _paymentService.addCardDetails(
-        user: user,
-        cardholderName: cardholderName,
-        cardNumber: cardNumber,
-        cvv: cvv,
-        expiryYear: expiryYear,
-        expiryMonth: expiryMonth);
+      user: user,
+      cardholderName: cardholderName,
+      cardNumber: cardNumber.trim(),
+      cvc: cvc.trim(),
+      expiryYear: expiryYear.trim(),
+      expiryMonth: expiryMonth.trim(),
+    );
   }
 }

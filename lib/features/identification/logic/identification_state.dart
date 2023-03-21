@@ -1,6 +1,6 @@
 part of 'identification_bloc.dart';
 
-enum IdentificationStatus { initial, loading, identificationPerformed, dataLoaded }
+enum IdentificationStatus { initial, identifying, dataLoaded }
 
 @immutable
 class IdentificationState extends Equatable {

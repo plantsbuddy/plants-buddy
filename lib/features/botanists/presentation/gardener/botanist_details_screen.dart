@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
@@ -7,6 +9,7 @@ import 'package:plants_buddy/features/chat/domain/entities/conversation.dart';
 import 'package:plants_buddy/features/chat/logic/chat_bloc.dart';
 
 import '../../../authentication/domain/entities/botanist.dart';
+import '../../../payment/logic/payment_bloc.dart';
 import '../../logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
 
 class BotanistDetailsScreen extends StatelessWidget {
@@ -24,7 +27,7 @@ class BotanistDetailsScreen extends StatelessWidget {
             children: [
               Image.network(
                 botanist.profilePicture,
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
                 width: double.infinity,
                 height: 280,
               ),
@@ -332,7 +335,25 @@ class BotanistDetailsScreen extends StatelessWidget {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            //todo: check here if card details added and have balance
+                            if (context.read<PaymentBloc>().state.cardNumber == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('You have\'nt provided payment details'),
+                                  behavior: SnackBarBehavior.floating,
+                                  duration: Duration(milliseconds: 1500),
+                                ),
+                              );
+                              return;
+                            } else if (context.read<PaymentBloc>().state.balance < botanist.consultationCharges) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('You don\'t have enough balance'),
+                                  behavior: SnackBarBehavior.floating,
+                                  duration: Duration(milliseconds: 1500),
+                                ),
+                              );
+                              return;
+                            }
 
                             showModalBottomSheet(
                               isScrollControlled: true,

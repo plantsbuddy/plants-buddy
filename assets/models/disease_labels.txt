@@ -1,10 +1,10 @@
-Apple Scab Leaf
-Apple rust leaf
-Citrus canker
-Corn Gray leaf spot
-Corn rust leaf
-Potato leaf late blight
-Squash Powdery mildew leaf
-Tomato Septoria leaf spot
-Tomato leaf late blight
-Tomato leaf mosaic virus
+apple_scab
+apple_rust_leaf
+citrus_canker
+grey_leaf_spot_of_maize
+common_rust_of_maize
+potato_late_blight
+powdery_mildew
+tomato_septoria_leaf_spot
+tomato_late_blight
+tobacco_mosaic_virus

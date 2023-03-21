@@ -5,6 +5,7 @@ import 'package:plants_buddy/features/authentication/domain/entities/botanist.da
 import 'package:plants_buddy/features/authentication/logic/authentication_bloc.dart';
 import 'package:plants_buddy/features/botanists/logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
 import 'package:plants_buddy/features/chat/logic/chat_bloc.dart';
+import 'package:plants_buddy/features/payment/logic/payment_bloc.dart';
 
 class SampleBotanistItem extends StatelessWidget {
   const SampleBotanistItem(this.botanist, {Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class SampleBotanistItem extends StatelessWidget {
         'chat_bloc': context.read<ChatBloc>(),
         'authentication_bloc': context.read<AuthenticationBloc>(),
         'botanist': botanist,
+        'payment_bloc': context.read<PaymentBloc>(),
       }),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

@@ -35,7 +35,7 @@ class BotanistAppointmentBloc extends Bloc<BotanistAppointmentEvent, BotanistApp
 
     await emit.forEach(
       receivedAppointmentRequestsStream,
-      onData: (receivedAppointmentRequests) => BotanistAppointmentState(receivedAppointmentRequests),
+      onData: (receivedAppointmentRequests) => state.copyWith(receivedAppointments: receivedAppointmentRequests, status: AppointmentsListStatus.loaded),
     );
   }
 

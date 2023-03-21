@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
 import 'package:plants_buddy/features/identification/logic/identification_bloc.dart';
 
-class PageIdentificationResults extends StatelessWidget {
-  const PageIdentificationResults({Key? key}) : super(key: key);
+class IdentificationResultsScreen extends StatelessWidget {
+  const IdentificationResultsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,19 @@ class PageIdentificationResults extends StatelessWidget {
               SizedBox(height: 20),
               ...state.identificationResults.map(
                 (result) => GestureDetector(
+                  onTap: () {
+                    switch (state.identificationType) {
+                      case IdentificationType.plant:
+                        Navigator.of(context).pushNamed(app_routes.plantDetails, arguments: result);
+                        break;
+                      case IdentificationType.disease:
+                        Navigator.of(context).pushNamed(app_routes.diseaseDetails, arguments: result);
+                        break;
+                      case IdentificationType.pest:
+                        Navigator.of(context).pushNamed(app_routes.plantDetails, arguments: result);
+                        break;
+                    }
+                  },
                   child: Card(
                     margin: EdgeInsets.symmetric(vertical: 8),
                     child: Padding(
@@ -54,7 +68,9 @@ class PageIdentificationResults extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  result.label,
+                                  result.data.keys.contains('scientific_name')
+                                      ? result.data['scientific_name']
+                                      : result.data['name'],
                                   style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.surfaceTint),
                                 ),
                                 SizedBox(height: 2),

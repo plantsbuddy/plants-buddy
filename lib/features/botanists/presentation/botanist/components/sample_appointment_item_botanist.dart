@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/features/botanists/domain/entities/appointment.dart';
 import 'package:plants_buddy/features/botanists/logic/botanist_appointment_bloc/botanist_appointment_bloc.dart';
+import 'package:plants_buddy/features/payment/logic/payment_bloc.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class SampleAppointmentItemBotanist extends StatelessWidget {
@@ -36,7 +37,7 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        appointment.botanist.username,
+                        appointment.gardener.username,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Text(
@@ -188,7 +189,6 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           ),
           verticalLayout: false,
-
         );
       case AppointmentStatus.completed:
       case AppointmentStatus.cancelled:

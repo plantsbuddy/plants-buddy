@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:plants_buddy/features/authentication/domain/entities/botanist.dart';
 import 'package:plants_buddy/features/authentication/logic/authentication_bloc.dart';
 import 'package:plants_buddy/features/chat/logic/chat_bloc.dart';
+import 'package:plants_buddy/features/payment/logic/payment_bloc.dart';
 import '../logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
 import '../presentation/gardener/botanist_details_screen.dart';
 
@@ -15,6 +16,7 @@ MaterialPageRoute route(Object? arguments) {
   final gardenerAppointmentBloc = arguments['gardener_appointment_bloc'] as GardenerAppointmentBloc;
   final botanist = arguments['botanist'] as Botanist;
   final chatBloc = arguments['chat_bloc'] as ChatBloc;
+  final paymentBloc = arguments['payment_bloc'] as PaymentBloc;
   final authenticationBloc = arguments['authentication_bloc'] as AuthenticationBloc;
 
   return MaterialPageRoute(
@@ -29,6 +31,9 @@ MaterialPageRoute route(Object? arguments) {
           ),
           BlocProvider.value(
             value: authenticationBloc,
+          ),
+          BlocProvider.value(
+            value: paymentBloc,
           ),
         ],
         child: BotanistDetailsScreen(botanist),

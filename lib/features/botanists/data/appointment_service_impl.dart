@@ -15,9 +15,9 @@ class AppointmentServiceImpl implements AppointmentService {
   final CollectionReference _appointmentsRef;
   final CollectionReference _usersRef;
 
-  final _reviewsStreamController = StreamController<List<BotanistReview>>();
-  final _sentAppointmentRequestsController = StreamController<List<Appointment>>();
-  final _receivedAppointmentRequestsController = StreamController<List<Appointment>>();
+  final _reviewsStreamController = StreamController<List<BotanistReview>>.broadcast();
+  final _sentAppointmentRequestsController = StreamController<List<Appointment>>.broadcast();
+  final _receivedAppointmentRequestsController = StreamController<List<Appointment>>.broadcast();
 
   AppointmentServiceImpl()
       : _appointmentsRef = FirebaseFirestore.instance.collection('appointments'),
@@ -103,7 +103,7 @@ class AppointmentServiceImpl implements AppointmentService {
       _reviewsStreamController.add(reviews);
     });
 
-    return _reviewsStreamController.stream;
+    return _reviewsStreamController.stream.asBroadcastStream();
   }
 
   @override
@@ -122,7 +122,7 @@ class AppointmentServiceImpl implements AppointmentService {
       _sentAppointmentRequestsController.add(appointments);
     });
 
-    return _sentAppointmentRequestsController.stream;
+    return _sentAppointmentRequestsController.stream.asBroadcastStream();
   }
 
   @override
@@ -144,7 +144,7 @@ class AppointmentServiceImpl implements AppointmentService {
       _receivedAppointmentRequestsController.add(receivedAppointmentRequests);
     });
 
-    return _receivedAppointmentRequestsController.stream;
+    return _receivedAppointmentRequestsController.stream.asBroadcastStream();
   }
 
   @override

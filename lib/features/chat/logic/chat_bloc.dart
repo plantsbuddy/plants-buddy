@@ -46,7 +46,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     await emit.forEach(
       messagesStream,
-      onData: (messages) => state.copyWith(messages: messages),
+      onData: (messages) => state.copyWith(messages: messages, messagesStatus: MessagesStatus.loaded),
     );
   }
 
@@ -56,7 +56,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     await emit.forEach(
       conversationsStream,
-      onData: (conversations) => state.copyWith(conversations: conversations),
+      onData: (conversations) =>
+          state.copyWith(conversations: conversations, conversationsStatus: ConversationsStatus.loaded),
     );
   }
 }

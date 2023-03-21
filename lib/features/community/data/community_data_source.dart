@@ -17,7 +17,7 @@ class CommunityDataSource implements CommunityRepository {
   CommunityDataSource()
       : _postsCollection = FirebaseFirestore.instance.collection('community_posts'),
         _usersCollection = FirebaseFirestore.instance.collection('users'),
-        _postsController = StreamController<List<CommunityPost>>();
+        _postsController = StreamController<List<CommunityPost>>.broadcast();
 
   @override
   Future<Stream<List<CommunityPost>>> getCommunityPostsStream() async {
@@ -33,7 +33,7 @@ class CommunityDataSource implements CommunityRepository {
       },
     );
 
-    return _postsController.stream;
+    return _postsController.stream.asBroadcastStream();
   }
 
   @override
@@ -99,7 +99,7 @@ class CommunityDataSource implements CommunityRepository {
 
   @override
   Future<Stream<List<Comment>>> getPostCommentsStream(String postId) async {
-    StreamController<List<Comment>> controller = StreamController<List<Comment>>();
+    StreamController<List<Comment>> controller = StreamController<List<Comment>>.broadcast();
     _postsCollection.doc(postId).collection('comments').snapshots().listen((documents) async {
       List<Comment> comments = [];
 
@@ -128,7 +128,7 @@ class CommunityDataSource implements CommunityRepository {
       controller.add(comments);
     });
 
-    return controller.stream;
+    return controller.stream.asBroadcastStream();
   }
 
   Future<CommunityPost> _createPostFromDocument(QueryDocumentSnapshot<Object?> postDocument) async {

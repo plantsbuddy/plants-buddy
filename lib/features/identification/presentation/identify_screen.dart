@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
 import 'package:plants_buddy/features/identification/presentation/pages/page_identify.dart';
 
 import '../logic/identification_bloc.dart';
-import 'pages/page_identification_results.dart';
+import 'identification_results_screen.dart';
 
 class IdentifyScreen extends StatelessWidget {
   IdentifyScreen({Key? key}) : super(key: key);
@@ -12,15 +13,37 @@ class IdentifyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = context.select((IdentificationBloc bloc) => bloc.state.status);
 
-    switch (status) {
-      case IdentificationStatus.initial:
-        return PageIdentify();
-      case IdentificationStatus.loading:
-        return Placeholder();
-      case IdentificationStatus.identificationPerformed:
-        return PageIdentificationResults();
-      case IdentificationStatus.dataLoaded:
-        return Placeholder();
-    }
+    return BlocListener<IdentificationBloc, IdentificationState>(
+      listener: (context, state) {
+        if (state.status == IdentificationStatus.identifying) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                backgroundColor: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+                  child: Row(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text('Identifying ${state.identificationType.toString().split('.')[1]}...'),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        } else if (state.status == IdentificationStatus.dataLoaded) {
+          Future.delayed(const Duration(milliseconds: 200), () => Navigator.of(context).pop());
+          Navigator.of(context)
+              .pushNamed(app_routes.identificationResults, arguments: context.read<IdentificationBloc>());
+        }
+      },
+      listenWhen: (previous, current) => previous.status != current.status,
+      child: PageIdentify(),
+    );
   }
 }

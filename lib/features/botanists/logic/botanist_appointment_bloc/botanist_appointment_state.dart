@@ -1,12 +1,20 @@
 part of 'botanist_appointment_bloc.dart';
 
+enum AppointmentsListStatus { loading, loaded }
+
 @immutable
 class BotanistAppointmentState extends Equatable {
+  final AppointmentsListStatus status;
   final List<Appointment> receivedAppointments;
 
-  BotanistAppointmentState(this.receivedAppointments);
+  BotanistAppointmentState({
+    required this.receivedAppointments,
+    required this.status,
+  });
 
-  BotanistAppointmentState.initial() : receivedAppointments = [];
+  BotanistAppointmentState.initial()
+      : receivedAppointments = [],
+        status = AppointmentsListStatus.loading;
 
   List<Appointment> get pendingAppointments =>
       receivedAppointments.where((request) => request.status == AppointmentStatus.pending).toList();
@@ -21,6 +29,15 @@ class BotanistAppointmentState extends Equatable {
           request.status == AppointmentStatus.cancelled)
       .toList();
 
+  BotanistAppointmentState copyWith({
+    AppointmentsListStatus? status,
+    List<Appointment>? receivedAppointments,
+  }) =>
+      BotanistAppointmentState(
+        receivedAppointments: receivedAppointments ?? this.receivedAppointments,
+        status: status ?? this.status,
+      );
+
   @override
-  List<Object?> get props => [receivedAppointments];
+  List<Object?> get props => [status, receivedAppointments];
 }

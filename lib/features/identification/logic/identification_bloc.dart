@@ -64,7 +64,6 @@ class IdentificationBloc extends Bloc<IdentificationEvent, IdentificationState> 
         await _performIdentification(identificationType: state.identificationType, imagePath: state.image!);
 
     // log(predictions.toString());
-    emit(
-        state.copyWith(status: IdentificationStatus.identificationPerformed, identificationResults: () => predictions ?? []));
+    emit(state.copyWith(status: IdentificationStatus.dataLoaded, identificationResults: () => predictions ?? []));
   }
 }

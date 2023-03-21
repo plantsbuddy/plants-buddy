@@ -10,6 +10,9 @@ import 'package:plants_buddy/features/botanists/config/consult_botanists_route.d
 import 'package:plants_buddy/features/botanists/config/botanist_details_route.dart' as botanist_details;
 import 'package:plants_buddy/features/botanists/config/reviews_route.dart' as reviews;
 import 'package:plants_buddy/features/identification/config/identify_route.dart' as identification;
+import 'package:plants_buddy/features/identification/config/identification_results_route.dart' as identification_results;
+import 'package:plants_buddy/features/identification/config/plant_details_route.dart' as plant_details;
+import 'package:plants_buddy/features/identification/config/disease_details_route.dart' as disease_details;
 import 'package:plants_buddy/features/chat/config/chat_route.dart' as chat;
 import 'package:plants_buddy/features/reminders/config/add_reminder_route.dart' as add_reminder;
 import 'package:plants_buddy/features/reminders/config/reminder_details_route.dart' as reminder_details;
@@ -47,6 +50,15 @@ class AppRouter {
 
       case app_routes.identify:
         return identification.route(settings.arguments);
+
+      case app_routes.identificationResults:
+        return identification_results.route(settings.arguments);
+
+      case app_routes.plantDetails:
+        return plant_details.route(settings.arguments);
+
+      case app_routes.diseaseDetails:
+        return disease_details.route(settings.arguments);
 
       case app_routes.addReminder:
         return add_reminder.route(settings.arguments);

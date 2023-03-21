@@ -1,21 +1,21 @@
-1355936 Cirsium_arvense
-1356382 Dryopteris_filix-mas
-1356692 Lithodora_fruticosa
-1356816 Vaccaria_hispanica
-1357330 Calendula_officinalis
-1358094 Sedum_acre
-1358095 Sedum_album
-1359525 Trifolium_stellatum
-1359669 Nymphaea_alba
-1360555 Hyoscyamus_niger
-1363128 Papaver_rhoeas
-1367432 Lupinus_polyphyllus
-1369960 Tradescantia_spathacea
-1391953 Epipactis_atrorubens
-1393393 Kniphofia_uvaria
-1393449 Lathraea_clandestina
-1398178 Tradescantia_zebrina
-1405685 Acalypha_wilkesiana
-1409185 Aphelandra_squarrosa
-1418146 Fittonia_albivenis
-1420795 Alocasia_sanderiana
+cirsium_arvense
+dryopteris_filix-mas
+lithodora_fruticosa
+vaccaria_hispanica
+calendula_officinalis
+sedum_acre
+sedum_album
+trifolium_stellatum
+nymphaea_alba
+hyoscyamus_niger
+papaver_rhoeas
+lupinus
+tradescantia_spathacea
+epipactis_atrorubens
+kniphofia_uvaria
+lathraea_clandestina
+tradescantia_zebrina
+acalypha_wilkesiana
+aphelandra_squarrosa
+fittonia_albivenis
+alocasia_sanderiana

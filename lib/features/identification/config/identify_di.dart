@@ -15,7 +15,7 @@ void _initUseCases() {
   sl.registerLazySingleton<CaptureImageFromCamera>(() => CaptureImageFromCamera());
   sl.registerLazySingleton<DownloadImageFromUrl>(() => DownloadImageFromUrl());
   sl.registerLazySingleton<GetPlantDetails>(() => GetPlantDetails(sl()));
-  sl.registerLazySingleton<PerformIdentification>(() => PerformIdentification());
+  sl.registerLazySingleton<PerformIdentification>(() => PerformIdentification(sl()));
   sl.registerLazySingleton<PickImageFromGallery>(() => PickImageFromGallery());
 }
 

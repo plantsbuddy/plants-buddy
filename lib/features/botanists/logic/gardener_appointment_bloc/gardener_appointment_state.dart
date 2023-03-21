@@ -2,6 +2,7 @@ part of 'gardener_appointment_bloc.dart';
 
 @immutable
 class GardenerAppointmentState extends Equatable {
+  final AppointmentsListStatus status;
   final List<Appointment> sentAppointmentRequests;
   final List<Botanist> botanists;
   final List<BotanistReview> botanistReviews;
@@ -13,6 +14,7 @@ class GardenerAppointmentState extends Equatable {
     required this.sentAppointmentRequests,
     required this.botanists,
     required this.botanistReviews,
+    required this.status,
     // required this.snackbarMessage,
     this.dialogShowing = false,
   });
@@ -20,6 +22,7 @@ class GardenerAppointmentState extends Equatable {
   GardenerAppointmentState.initial()
       : sentAppointmentRequests = [],
         botanists = [],
+        status = AppointmentsListStatus.loading,
         botanistReviews = [],
         dialogShowing = false;
 
@@ -39,12 +42,14 @@ class GardenerAppointmentState extends Equatable {
       .toList();
 
   GardenerAppointmentState copyWith({
+    AppointmentsListStatus? status,
     List<Appointment>? sentAppointmentRequests,
     List<Botanist>? botanists,
     List<BotanistReview>? botanistReviews,
     bool? dialogShowing,
   }) =>
       GardenerAppointmentState(
+        status: status ?? this.status,
         dialogShowing: dialogShowing ?? this.dialogShowing,
         sentAppointmentRequests: sentAppointmentRequests ?? this.sentAppointmentRequests,
         botanists: botanists ?? this.botanists,
@@ -54,6 +59,7 @@ class GardenerAppointmentState extends Equatable {
 
   @override
   List<Object?> get props => [
+        status,
         sentAppointmentRequests,
         botanists,
         botanistReviews,

@@ -12,12 +12,18 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final conversations = context.select((ChatBloc bloc) => bloc.state.conversations);
+    final status = context.select((ChatBloc bloc) => bloc.state.conversationsStatus);
 
-    return conversations.isNotEmpty
-        ? ListView.builder(
-            itemBuilder: (context, index) => SampleConversationItem(conversations[index]),
-            itemCount: conversations.length,
-          )
-        : NoChats(context.read<AuthenticationBloc>().state.currentUser!);
+    switch (status) {
+      case ConversationsStatus.loading:
+        return Center(child: CircularProgressIndicator());
+      case ConversationsStatus.loaded:
+        return conversations.isNotEmpty
+            ? ListView.builder(
+                itemBuilder: (context, index) => SampleConversationItem(conversations[index]),
+                itemCount: conversations.length,
+              )
+            : NoChats(context.read<AuthenticationBloc>().state.currentUser!);
+    }
   }
 }

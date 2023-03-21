@@ -216,7 +216,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   FutureOr<void> onAuthenticationPasswordVisibilityToggled(
       AuthenticationPasswordVisibilityToggled event, Emitter<AuthenticationState> emit) {
-    emit(state.copyWith(passwordVisible: !state.passwordVisible));
+    emit(state.copyWith(passwordHidden: !state.passwordHidden));
   }
 
   int _determineBackPage(int pageIndex) {

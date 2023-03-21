@@ -13,8 +13,8 @@ class ChatServiceImpl implements ChatService {
 
   late Conversation _currentConversation;
 
-  final _messagesStreamController = StreamController<List<Message>>();
-  final _conversationsStreamController = StreamController<List<Conversation>>();
+  final _messagesStreamController = StreamController<List<Message>>.broadcast();
+  final _conversationsStreamController = StreamController<List<Conversation>>.broadcast();
 
   ChatServiceImpl()
       : _conversationsRef = FirebaseFirestore.instance.collection('conversations'),
@@ -95,7 +95,7 @@ class ChatServiceImpl implements ChatService {
       _conversationsStreamController.add(conversations);
     });
 
-    return _conversationsStreamController.stream;
+    return _conversationsStreamController.stream.asBroadcastStream();
   }
 
   @override
@@ -176,7 +176,7 @@ class ChatServiceImpl implements ChatService {
       _messagesStreamController.add(messages);
     });
 
-    return _messagesStreamController.stream;
+    return _messagesStreamController.stream.asBroadcastStream();
   }
 
   @override

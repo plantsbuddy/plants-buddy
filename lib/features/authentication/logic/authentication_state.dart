@@ -19,7 +19,7 @@ class AuthenticationState extends Equatable {
   final User? currentUser;
   final bool dialogShowing;
   final bool userLoggedIn;
-  final bool passwordVisible;
+  final bool passwordHidden;
 
   AuthenticationState.initial()
       : pageIndex = 0,
@@ -38,7 +38,7 @@ class AuthenticationState extends Equatable {
         dialogShowing = false,
         dialogText = null,
         userLoggedIn = false,
-        passwordVisible = false,
+        passwordHidden = true,
         currentUser = Gardener.initial();
 
   AuthenticationState({
@@ -57,7 +57,7 @@ class AuthenticationState extends Equatable {
     required this.currentUser,
     required this.dialogShowing,
     required this.dialogText,
-    required this.passwordVisible,
+    required this.passwordHidden,
     required this.signupCityError,
     required this.userLoggedIn,
   });
@@ -69,7 +69,7 @@ class AuthenticationState extends Equatable {
     User? Function()? currentUser,
     bool? dialogShowing,
     bool? userLoggedIn,
-    bool? passwordVisible,
+    bool? passwordHidden,
     String? Function()? signupNameError,
     String? Function()? signupEmailError,
     String? Function()? signupPasswordError,
@@ -89,7 +89,7 @@ class AuthenticationState extends Equatable {
         currentUser: currentUser == null ? this.currentUser : currentUser(),
         dialogShowing: dialogShowing ?? this.dialogShowing,
         userLoggedIn: userLoggedIn ?? this.userLoggedIn,
-        passwordVisible: passwordVisible ?? this.passwordVisible,
+        passwordHidden: passwordHidden ?? this.passwordHidden,
         signupNameError: signupNameError == null ? this.signupNameError : signupNameError(),
         signupEmailError: signupEmailError == null ? this.signupEmailError : signupEmailError(),
         signupPasswordError: signupPasswordError == null ? this.signupPasswordError : signupPasswordError(),
@@ -127,6 +127,6 @@ class AuthenticationState extends Equatable {
         loginPasswordError,
         resetEmailError,
         dialogText,
-        passwordVisible,
+        passwordHidden,
       ];
 }

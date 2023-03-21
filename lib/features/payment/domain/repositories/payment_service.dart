@@ -6,10 +6,10 @@ abstract class PaymentService {
   Future<void> addCardDetails({
     required User user,
     required String cardholderName,
-    required int cardNumber,
-    required int cvv,
-    required int expiryYear,
-    required int expiryMonth,
+    required String cardNumber,
+    required String cvc,
+    required String expiryYear,
+    required String expiryMonth,
   });
 
   // Future<bool> checkGardenerAccountBalance();
@@ -19,7 +19,7 @@ abstract class PaymentService {
   Future<List<Transaction>> getTransactionsHistory();
 
   Future<void> performConsultationCharges({
-    required String gardener,
-    required String botanist,
+    required String gardenerUid,
+    required String botanistUid,
   });
 }

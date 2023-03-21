@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       onGenerateRoute: _router.generateRoute,
-      initialRoute: FirebaseAuth.instance.currentUser == null ? routes.authentication : routes.home,
+      initialRoute: routes.diseaseDetails //FirebaseAuth.instance.currentUser == null ? routes.authentication : routes.home,
     );
   }
 }
