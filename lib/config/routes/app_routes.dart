@@ -15,3 +15,5 @@ const String reminderDetails = 'reminder_details';
 const String addCommunityPost = 'add_community_post';
 const String communityPostDetails = 'community_post_details';
 const String collectionPlants = 'collection_plants';
+const String suggestions = 'suggestions';
+const String fullGuide = 'full_guide';

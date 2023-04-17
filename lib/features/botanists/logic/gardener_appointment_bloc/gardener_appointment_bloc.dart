@@ -21,18 +21,21 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
   final SendAppointmentRequest _sendAppointmentRequest;
   final GetBotanists _getBotanists;
   final GetSentAppointmentRequestsStream _getSentAppointmentRequestsStream;
+  final MarkAppointmentAsCompleted _markAppointmentAsCompleted;
 
   GardenerAppointmentBloc(
     this._getBotanists,
     this._getSentAppointmentRequestsStream,
     this._sendAppointmentRequest,
     this._cancelAppointmentRequest,
+    this._markAppointmentAsCompleted,
   ) : super(GardenerAppointmentState.initial()) {
     on<GardenerCancelAppointmentRequest>(onGardenerCancelAppointmentRequest);
     on<GardenerSendAppointmentRequest>(onGardenerSendAppointmentRequest);
     on<GardenerInitializeSentAppointmentRequestsStream>(onGardenerInitializeSentAppointmentRequestsStream);
     on<GardenerGetBotanists>(onGardenerGetBotanists);
     on<GardenerDeleteAppointmentRequest>(onGardenerDeleteAppointmentRequest);
+    on<GardenerMarkAppointmentAsCompleted>(onGardenerMarkAppointmentAsCompleted);
   }
 
   FutureOr<void> onGardenerInitializeSentAppointmentRequestsStream(
@@ -40,7 +43,8 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
     final sentAppointmentRequestsStream = await _getSentAppointmentRequestsStream();
 
     await emit.forEach(sentAppointmentRequestsStream,
-        onData: (sentAppointmentRequests) => state.copyWith(sentAppointmentRequests: sentAppointmentRequests, status: AppointmentsListStatus.loaded));
+        onData: (sentAppointmentRequests) =>
+            state.copyWith(sentAppointmentRequests: sentAppointmentRequests, status: AppointmentsListStatus.loaded));
   }
 
   Future<FutureOr<void>> onGardenerCancelAppointmentRequest(
@@ -73,5 +77,10 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
   Future<FutureOr<void>> onGardenerDeleteAppointmentRequest(
       GardenerDeleteAppointmentRequest event, Emitter<GardenerAppointmentState> emit) async {
     await _cancelAppointmentRequest(event.appointment);
+  }
+
+  FutureOr<void> onGardenerMarkAppointmentAsCompleted(
+      GardenerMarkAppointmentAsCompleted event, Emitter<GardenerAppointmentState> emit) async {
+    await _markAppointmentAsCompleted(event.appointment);
   }
 }

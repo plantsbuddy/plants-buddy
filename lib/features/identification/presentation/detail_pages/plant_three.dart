@@ -1,19 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class PlantDetailsThree extends StatelessWidget {
-  const PlantDetailsThree({Key? key}) : super(key: key);
+  const PlantDetailsThree(this.plant, {Key? key}) : super(key: key);
+  final Map<String, dynamic> plant;
 
   @override
   Widget build(BuildContext context) {
     final textThemes = Theme.of(context).textTheme;
-    final plant = {};
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(15),
-          child: Image.network(
-            'https://www.clearwaycommunitysolar.com/wp-content/uploads/2019/03/iStock-956366756-1024x683.jpg',
+          child: Image.file(
+            File(plant['image']),
             height: 250,
             fit: BoxFit.cover,
           ),
@@ -36,7 +39,7 @@ class PlantDetailsThree extends StatelessWidget {
             Expanded(
               child: Card(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -52,9 +55,11 @@ class PlantDetailsThree extends StatelessWidget {
                             color: Theme.of(context).colorScheme.tertiaryContainer,
                           ),
                           SizedBox(width: 7),
-                          Text(
-                            'Common name',
-                            style: Theme.of(context).textTheme.bodySmall,
+                          Expanded(
+                            child: Text(
+                              'Common name',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
                           ),
                         ],
                       ),

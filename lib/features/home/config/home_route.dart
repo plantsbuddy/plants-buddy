@@ -49,7 +49,8 @@ MaterialPageRoute route() {
               appID: 1726328163 /*input your AppID*/,
               appSign: '63d926efed87785da8233ee6ea43c25da886cc704084b062f8c7838824527533' /*input your AppSign*/,
               userID: FirebaseAuth.instance.currentUser!.uid,
-              userName: state.currentUser?.username ?? 'Botanist',
+              userName: 'Consultation',
+              //state.currentUser?.username ?? 'Botanist',
               notifyWhenAppRunningInBackgroundOrQuit: true,
               isIOSSandboxEnvironment: false,
               androidNotificationConfig: ZegoAndroidNotificationConfig(
@@ -77,9 +78,9 @@ MaterialPageRoute route() {
                           ),
                           TextButton(
                             onPressed: () {
-                              print('mohsin');
+
                               // Check so that payment is processed in botanist's app only, and not twich otherwise
-                              if (state.currentUser!.userType == UserType.botanist) {
+                              // if (state.currentUser!.userType == UserType.botanist) {
                                 final firstUserUid = FirebaseAuth.instance.currentUser!.uid;
                                 final secondUserUid = data.invitees.first.id;
 
@@ -89,7 +90,7 @@ MaterialPageRoute route() {
 
                                 paymentBloc.add(
                                     PaymentPerformConsultationPayment(botanist: botanistUid, gardener: gardenerUid));
-                              }
+                              // }
 
                               Navigator.of(context).pop(true);
                             },

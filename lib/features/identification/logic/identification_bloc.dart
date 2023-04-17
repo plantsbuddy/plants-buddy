@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -58,12 +59,11 @@ class IdentificationBloc extends Bloc<IdentificationEvent, IdentificationState> 
 
   FutureOr<void> onIdentificationPerformIdentificationPressed(
       IdentificationPerformIdentificationPressed event, Emitter<IdentificationState> emit) async {
-    // emit(state.copyWith(status: IdentificationStatus.loading));
+    emit(state.copyWith(status: IdentificationStatus.identifying));
 
     final predictions =
         await _performIdentification(identificationType: state.identificationType, imagePath: state.image!);
 
-    // log(predictions.toString());
     emit(state.copyWith(status: IdentificationStatus.dataLoaded, identificationResults: () => predictions ?? []));
   }
 }

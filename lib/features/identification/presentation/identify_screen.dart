@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
@@ -11,12 +13,11 @@ class IdentifyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final status = context.select((IdentificationBloc bloc) => bloc.state.status);
-
     return BlocListener<IdentificationBloc, IdentificationState>(
       listener: (context, state) {
         if (state.status == IdentificationStatus.identifying) {
           showDialog(
+            barrierDismissible: false,
             context: context,
             builder: (context) {
               return Dialog(
@@ -37,7 +38,7 @@ class IdentifyScreen extends StatelessWidget {
             },
           );
         } else if (state.status == IdentificationStatus.dataLoaded) {
-          Future.delayed(const Duration(milliseconds: 200), () => Navigator.of(context).pop());
+          Navigator.of(context).pop();
           Navigator.of(context)
               .pushNamed(app_routes.identificationResults, arguments: context.read<IdentificationBloc>());
         }

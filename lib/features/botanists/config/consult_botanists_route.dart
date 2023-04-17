@@ -23,7 +23,7 @@ MaterialPageRoute route(Object? data) {
         providers: [
           BlocProvider<GardenerAppointmentBloc>(
             create: (_) =>
-                GardenerAppointmentBloc(sl(), sl(), sl(), sl())..add(GardenerInitializeSentAppointmentRequestsStream()),
+                GardenerAppointmentBloc(sl(), sl(), sl(), sl(),sl())..add(GardenerInitializeSentAppointmentRequestsStream()),
             lazy: false,
           ),
           BlocProvider.value(value: authenticationBloc),

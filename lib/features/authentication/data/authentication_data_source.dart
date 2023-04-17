@@ -194,7 +194,7 @@ class AuthenticationDataSource implements AuthenticationRepository {
       await userRef.update({'pictureUrl': 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png'});
     }
 
-    await userRef.update({'username': name});
+    await userRef.update({'name': name});
 
     final userDoc = await userRef.get();
     return userDoc.get('pictureUrl') as String;

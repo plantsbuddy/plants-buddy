@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
 import 'package:plants_buddy/core/utils/custom_icons.dart' as custom_icons;
+import 'package:plants_buddy/features/authentication/domain/entities/user.dart';
 import 'package:plants_buddy/features/authentication/logic/authentication_bloc.dart';
 import 'package:plants_buddy/features/authentication/presentation/update_profile_sheet.dart';
 import 'package:plants_buddy/features/payment/logic/payment_bloc.dart';
@@ -145,71 +146,72 @@ class MorePage extends StatelessWidget {
           Flexible(
             child: GridView.count(
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.of(context)
-                      .pushNamed(app_routes.consultBotanists, arguments: {
-                    'authentication_bloc': context.read<AuthenticationBloc>(),
-                    'payment_bloc': context.read<PaymentBloc>(),
-                  }),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            custom_icons.botanist,
-                            height: 40,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                            child: Divider(
-                              height: 1,
-                              thickness: 0.1,
+                if (context.read<AuthenticationBloc>().state.currentUser!.userType == UserType.gardener)
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed(app_routes.consultBotanists, arguments: {
+                      'authentication_bloc': context.read<AuthenticationBloc>(),
+                      'payment_bloc': context.read<PaymentBloc>(),
+                    }),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              custom_icons.botanist,
+                              height: 40,
                             ),
-                          ),
-                          Text(
-                            'Botanist\nConsultation',
-                            style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              child: Divider(
+                                height: 1,
+                                thickness: 0.1,
+                              ),
+                            ),
+                            Text(
+                              'Botanist\nConsultation',
+                              style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pushNamed(app_routes.attendGardeners, arguments: {
-                    'authentication_bloc': context.read<AuthenticationBloc>(),
-                    'payment_bloc': context.read<PaymentBloc>(),
-                  }),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            custom_icons.gardener,
-                            height: 40,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                            child: Divider(
-                              height: 1,
-                              thickness: 0.1,
+                if (context.read<AuthenticationBloc>().state.currentUser!.userType == UserType.botanist)
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed(app_routes.attendGardeners, arguments: {
+                      'authentication_bloc': context.read<AuthenticationBloc>(),
+                      'payment_bloc': context.read<PaymentBloc>(),
+                    }),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              custom_icons.gardener,
+                              height: 40,
                             ),
-                          ),
-                          Text(
-                            'Attend\nGardeners',
-                            style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              child: Divider(
+                                height: 1,
+                                thickness: 0.1,
+                              ),
+                            ),
+                            Text(
+                              'Attend\nGardeners',
+                              style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
                 GestureDetector(
                   // onTap: ()=>Navigator.of(context).pushNamed(app_routes.name),
                   child: Card(

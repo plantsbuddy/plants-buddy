@@ -15,6 +15,12 @@ class BotanistRejectAppointmentRequest extends BotanistAppointmentEvent {
   BotanistRejectAppointmentRequest(this.appointment);
 }
 
+class BotanistMarkAppointmentAsCompleted extends BotanistAppointmentEvent {
+  final Appointment appointment;
+
+  BotanistMarkAppointmentAsCompleted(this.appointment);
+}
+
 class BotanistDeleteAppointmentRequestPressed extends BotanistAppointmentEvent {
   final Appointment appointment;
 

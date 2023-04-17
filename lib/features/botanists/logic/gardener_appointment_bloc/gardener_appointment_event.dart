@@ -9,6 +9,12 @@ class GardenerCancelAppointmentRequest extends GardenerAppointmentEvent {
   GardenerCancelAppointmentRequest(this.appointment);
 }
 
+class GardenerMarkAppointmentAsCompleted extends GardenerAppointmentEvent {
+  final Appointment appointment;
+
+  GardenerMarkAppointmentAsCompleted(this.appointment);
+}
+
 class GardenerDeleteAppointmentRequest extends GardenerAppointmentEvent {
   final Appointment appointment;
 

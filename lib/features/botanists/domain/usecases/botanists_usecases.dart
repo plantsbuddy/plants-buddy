@@ -7,3 +7,4 @@ export 'botanists_usecases/get_sent_appointment_requests_stream.dart';
 export 'botanists_usecases/post_botanist_review.dart';
 export 'botanists_usecases/reject_appointment_request.dart';
 export 'botanists_usecases/send_appointment_request.dart';
+export 'botanists_usecases/mark_appointment_as_completed.dart';

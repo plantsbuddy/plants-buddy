@@ -10,15 +10,19 @@ import 'package:plants_buddy/features/botanists/config/consult_botanists_route.d
 import 'package:plants_buddy/features/botanists/config/botanist_details_route.dart' as botanist_details;
 import 'package:plants_buddy/features/botanists/config/reviews_route.dart' as reviews;
 import 'package:plants_buddy/features/identification/config/identify_route.dart' as identification;
-import 'package:plants_buddy/features/identification/config/identification_results_route.dart' as identification_results;
+import 'package:plants_buddy/features/identification/config/identification_results_route.dart'
+    as identification_results;
 import 'package:plants_buddy/features/identification/config/plant_details_route.dart' as plant_details;
 import 'package:plants_buddy/features/identification/config/disease_details_route.dart' as disease_details;
 import 'package:plants_buddy/features/chat/config/chat_route.dart' as chat;
+import 'package:plants_buddy/features/chatbot/config/chatbot_route.dart' as chatbot;
 import 'package:plants_buddy/features/reminders/config/add_reminder_route.dart' as add_reminder;
 import 'package:plants_buddy/features/reminders/config/reminder_details_route.dart' as reminder_details;
 import 'package:plants_buddy/features/community/config/add_community_post_route.dart' as add_community_post;
 import 'package:plants_buddy/features/community/config/community_post_details_route.dart' as community_post_details;
 import 'package:plants_buddy/features/collections/config/collection_plants_route.dart' as collection_plants;
+import 'package:plants_buddy/features/suggestions/config/suggestions_route.dart' as suggestions;
+import 'package:plants_buddy/features/suggestions/config/full_guide_route.dart' as full_guide;
 
 class AppRouter {
   final sl = GetIt.instance;
@@ -48,6 +52,9 @@ class AppRouter {
       case app_routes.chat:
         return chat.route(settings.arguments);
 
+      case app_routes.chatbot:
+        return chatbot.route();
+
       case app_routes.identify:
         return identification.route(settings.arguments);
 
@@ -74,6 +81,12 @@ class AppRouter {
 
       case app_routes.collectionPlants:
         return collection_plants.route();
+
+      case app_routes.suggestions:
+        return suggestions.route();
+
+      case app_routes.fullGuide:
+        return full_guide.route(settings.arguments);
 
       default:
         return home.route();

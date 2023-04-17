@@ -32,13 +32,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: FlexThemeData.light(scheme: FlexScheme.green, useMaterial3: true),
-      darkTheme: FlexThemeData.dark(scheme: FlexScheme.green, useMaterial3: true),
-      themeMode: ThemeMode.light,
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: _router.generateRoute,
-      initialRoute: routes.diseaseDetails //FirebaseAuth.instance.currentUser == null ? routes.authentication : routes.home,
-    );
+        title: 'Flutter Demo',
+        theme: FlexThemeData.light(scheme: FlexScheme.green, useMaterial3: true),
+        darkTheme: FlexThemeData.dark(scheme: FlexScheme.green, useMaterial3: true),
+        themeMode: ThemeMode.light,
+        debugShowCheckedModeBanner: false,
+        onGenerateRoute: _router.generateRoute,
+        initialRoute: routes.chatbot //FirebaseAuth.instance.currentUser == null ? routes.authentication : routes.home,
+        );
   }
 }

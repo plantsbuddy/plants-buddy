@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:plants_buddy/features/identification/domain/entities/identification_result.dart';
 import 'package:plants_buddy/features/identification/domain/repositories/identification_service.dart';
 import 'package:tflite/tflite.dart';
@@ -45,7 +47,7 @@ class PerformIdentification {
           details = await _identificationService.getPlantDetails(identificationResults![i].label);
           break;
         case IdentificationType.disease:
-          details = await _identificationService.getPlantDetails(identificationResults![i].label);
+          details = await _identificationService.getDiseaseDetails(identificationResults![i].label);
           break;
         case IdentificationType.pest:
           details = await _identificationService.getPlantDetails(identificationResults![i].label);

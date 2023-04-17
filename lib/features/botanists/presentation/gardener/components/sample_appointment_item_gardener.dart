@@ -167,6 +167,10 @@ class SampleAppointmentItemGardener extends StatelessWidget {
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           ),
           verticalLayout: false,
+          onPressed: (_, __, ___) {
+            Future.delayed(const Duration(milliseconds: 5000),
+                () => context.read<GardenerAppointmentBloc>().add(GardenerMarkAppointmentAsCompleted(appointment)));
+          },
         );
       case AppointmentStatus.completed:
       case AppointmentStatus.cancelled:

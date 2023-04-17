@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'detail_pages/plant_one.dart';
@@ -25,8 +27,8 @@ class DiseaseDetailsScreen extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: Image.network(
-                  'https://www.clearwaycommunitysolar.com/wp-content/uploads/2019/03/iStock-956366756-1024x683.jpg',
+                child: Image.file(
+                  File(disease['image']),
                   height: 250,
                   fit: BoxFit.cover,
                 ),
@@ -49,7 +51,7 @@ class DiseaseDetailsScreen extends StatelessWidget {
                   Expanded(
                     child: Card(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -65,9 +67,11 @@ class DiseaseDetailsScreen extends StatelessWidget {
                                   color: Theme.of(context).colorScheme.tertiaryContainer,
                                 ),
                                 SizedBox(width: 7),
-                                Text(
-                                  'Common name',
-                                  style: Theme.of(context).textTheme.bodySmall,
+                                Expanded(
+                                  child: Text(
+                                    'Common name',
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
                                 ),
                               ],
                             ),
@@ -76,7 +80,7 @@ class DiseaseDetailsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 5),
                   Expanded(
                     child: Card(
                       child: Padding(
@@ -124,7 +128,7 @@ class DiseaseDetailsScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 3),
                       child: Chip(
                         label: Text(
-                          'Hell',
+                          host,
                           style: textThemes.bodySmall,
                         ),
                         padding: EdgeInsets.zero,
@@ -158,22 +162,25 @@ class DiseaseDetailsScreen extends StatelessWidget {
                         height: 7,
                       ),
                       ...disease['in_a_nutshell'].map(
-                        (name) => Row(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  '•',
-                                  style: textThemes.titleLarge,
-                                ),
-                                SizedBox(width: 10),
-                                Text(
+                        (name) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '•',
+                                style: textThemes.titleLarge,
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
                                   name,
                                   style: textThemes.bodyLarge,
+                                  overflow: TextOverflow.clip,
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -322,18 +329,25 @@ class DiseaseDetailsScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 15),
                     ...disease['preventive_measures'].map(
-                      (measure) => Row(
-                        children: [
-                          Text(
-                            '•',
-                            style: textThemes.titleLarge,
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            measure,
-                            style: textThemes.bodyLarge,
-                          ),
-                        ],
+                      (measure) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 3),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '•',
+                              style: textThemes.titleLarge,
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                measure,
+                                style: textThemes.bodyLarge,
+                                overflow: TextOverflow.clip,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

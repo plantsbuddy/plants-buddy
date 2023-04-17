@@ -35,13 +35,14 @@ class IdentificationResultsScreen extends StatelessWidget {
                   onTap: () {
                     switch (state.identificationType) {
                       case IdentificationType.plant:
-                        Navigator.of(context).pushNamed(app_routes.plantDetails, arguments: result);
+                        Navigator.of(context)
+                            .pushNamed(app_routes.plantDetails, arguments: result.data..['image'] = state.image!);
                         break;
                       case IdentificationType.disease:
-                        Navigator.of(context).pushNamed(app_routes.diseaseDetails, arguments: result);
+                        Navigator.of(context).pushNamed(app_routes.diseaseDetails, arguments: result.data..['image'] = state.image!);
                         break;
                       case IdentificationType.pest:
-                        Navigator.of(context).pushNamed(app_routes.plantDetails, arguments: result);
+                        Navigator.of(context).pushNamed(app_routes.plantDetails, arguments: result.data..['image'] = state.image!);
                         break;
                     }
                   },

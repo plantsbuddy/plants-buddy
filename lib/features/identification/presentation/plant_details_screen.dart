@@ -28,17 +28,17 @@ class PlantDetailsScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               switch (plant['website']) {
-                case 1:
-                  return PlantDetailsOne();
+                case '1':
+                  return PlantDetailsOne(plant);
 
-                case 2:
-                  return PlantDetailsTwo();
+                case '2':
+                  return PlantDetailsTwo(plant);
 
-                case 3:
-                  return PlantDetailsThree();
+                case '3':
+                  return PlantDetailsThree(plant);
 
                 default:
-                  return PlantDetailsOne();
+                  return PlantDetailsOne(plant);
               }
             },
           ),

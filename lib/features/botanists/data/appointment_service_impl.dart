@@ -196,4 +196,9 @@ class AppointmentServiceImpl implements AppointmentService {
     final appointmentRef = _appointmentsRef.doc(appointment.id);
     await appointmentRef.delete();
   }
+
+  @override
+  Future<void> completeAppointment(Appointment appointment) async {
+    await _appointmentsRef.doc(appointment.id).update({'status': 2});
+  }
 }

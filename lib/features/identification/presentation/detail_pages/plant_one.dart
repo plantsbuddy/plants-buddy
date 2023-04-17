@@ -1,21 +1,23 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class PlantDetailsOne extends StatelessWidget {
-  const PlantDetailsOne({Key? key}) : super(key: key);
+  const PlantDetailsOne(this.plant, {Key? key}) : super(key: key);
+
+  final Map<String, dynamic> plant;
 
   @override
   Widget build(BuildContext context) {
     final textThemes = Theme.of(context).textTheme;
-
-    final plant = {};
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(15),
-          child: Image.network(
-            'https://www.clearwaycommunitysolar.com/wp-content/uploads/2019/03/iStock-956366756-1024x683.jpg',
+          child: Image.file(
+              File(plant['image']),
             height: 250,
             fit: BoxFit.cover,
           ),
@@ -81,7 +83,7 @@ class PlantDetailsOne extends StatelessWidget {
             Expanded(
               child: Card(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -259,20 +261,20 @@ class PlantDetailsOne extends StatelessWidget {
                   height: 7,
                 ),
                 ...plant['soil_drainage'].map(
-                  (name) => Row(
+                  (drainage) => Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            '•',
-                            style: textThemes.titleLarge,
-                          ),
-                          SizedBox(width: 15),
-                          Text(
-                            name,
-                            style: textThemes.bodyLarge,
-                          ),
-                        ],
+                      Text(
+                        '•',
+                        style: textThemes.titleLarge,
+                      ),
+                      SizedBox(width: 15),
+                      Expanded(
+                        child: Text(
+                          drainage,
+                          style: textThemes.bodyLarge,
+
+                        ),
                       ),
                     ],
                   ),
