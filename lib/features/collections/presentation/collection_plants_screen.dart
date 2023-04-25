@@ -1,47 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
 
-import '../domain/entities/collection.dart';
-import '../domain/entities/plant.dart';
+import '../logic/collection_plants/collection_plants_bloc.dart';
+import 'no_collection_plants.dart';
+import 'sample_collection_plant.dart';
 
 class CollectionPlantsScreen extends StatelessWidget {
   const CollectionPlantsScreen({Key? key}) : super(key: key);
 
-  // const CollectionPlantsScreen(this._collection, {Key? key}) : super(key: key);
-
-  //final Collection _collection;
-
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<CollectionPlantsBloc>().state;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Fragrant plants'), //Text(_collection.name),
+        title: Text(state.collection.name),
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        itemBuilder: (context, index) {
-          //final Plant plant = _collection.plants[index];
-          return Card(
-            child: ListTile(
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(120),
-                child: Image.network(
-                  'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/109354797/original/db7435d5305bb7b8a843e405af7d00952c82f9a3/implement-android-ui-design-in-xml.png',
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.fitHeight,
-                ),
-              ),
-              title: Text('Cabula Oscura'),
-              subtitle: Text('Ovata'),
-              trailing: Icon(Icons.keyboard_arrow_right),
-            ),
-          );
+      body: Builder(
+        builder: (context) {
+          switch (state.status) {
+            case CollectionPlantsStatus.loading:
+              return Center(child: CircularProgressIndicator());
+            case CollectionPlantsStatus.loaded:
+              return state.collection.plants.isNotEmpty
+                  ? ListView.builder(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      itemBuilder: (context, index) {
+                        return SampleCollectionPlant(state.collection.plants[index]);
+                      },
+                      itemCount: state.collection.plants.length,
+                    )
+                  : NoCollectionPlants();
+          }
         },
-        itemCount: 10, //_collection.plants.length,
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () => Navigator.of(context).pushNamed(
+          app_routes.addPlantToCollection,
+          arguments: {'collection': state.collection},
+        ),
       ),
     );
   }

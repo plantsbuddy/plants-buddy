@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:plants_buddy/features/chatbot/domain/entities/chatbot_message.dart';
 
 class SampleChatbotQuery extends StatelessWidget {
-  const SampleChatbotQuery({Key? key}) : super(key: key);
+  const SampleChatbotQuery(this.message, {Key? key}) : super(key: key);
+
+  final ChatbotMessage message;
 
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.topRight,
       child: Container(
-        child: Text('Hello there how are you'),
+        child: Text(message.body),
         margin: EdgeInsets.only(bottom: 10, left: 100, right: 10),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(

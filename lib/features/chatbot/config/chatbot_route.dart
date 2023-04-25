@@ -11,7 +11,7 @@ MaterialPageRoute route() {
   return MaterialPageRoute(
     builder: (_) {
       return BlocProvider<ChatbotBloc>(
-        create: (context) => ChatbotBloc(),
+        create: (context) => ChatbotBloc(sl()),
         child: ChatbotScreen(),
       );
     },

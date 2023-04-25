@@ -21,6 +21,7 @@ import 'package:plants_buddy/features/reminders/config/reminder_details_route.da
 import 'package:plants_buddy/features/community/config/add_community_post_route.dart' as add_community_post;
 import 'package:plants_buddy/features/community/config/community_post_details_route.dart' as community_post_details;
 import 'package:plants_buddy/features/collections/config/collection_plants_route.dart' as collection_plants;
+import 'package:plants_buddy/features/collections/config/add_plant_to_collection_route.dart' as add_plant_to_collection;
 import 'package:plants_buddy/features/suggestions/config/suggestions_route.dart' as suggestions;
 import 'package:plants_buddy/features/suggestions/config/full_guide_route.dart' as full_guide;
 
@@ -80,7 +81,10 @@ class AppRouter {
         return community_post_details.route(settings.arguments);
 
       case app_routes.collectionPlants:
-        return collection_plants.route();
+        return collection_plants.route(settings.arguments);
+
+      case app_routes.addPlantToCollection:
+        return add_plant_to_collection.route(settings.arguments);
 
       case app_routes.suggestions:
         return suggestions.route();

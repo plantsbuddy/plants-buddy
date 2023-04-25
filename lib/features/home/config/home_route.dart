@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:plants_buddy/features/authentication/domain/entities/user.dart';
 import 'package:plants_buddy/features/authentication/logic/authentication_bloc.dart';
+import 'package:plants_buddy/features/collections/logic/collections_bloc/collections_bloc.dart';
 import 'package:plants_buddy/features/community/logic/community_bloc/community_bloc.dart';
 import 'package:plants_buddy/features/home/logic/home_cubit.dart';
 import 'package:plants_buddy/features/home/presentation/home_screen.dart';
@@ -13,6 +12,7 @@ import 'package:plants_buddy/features/reminders/logic/reminders_bloc/reminders_b
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
+import '../../collections/logic/add_plant_bloc/add_collection_bloc.dart';
 import '../../payment/logic/payment_bloc.dart';
 
 MaterialPageRoute route() {
@@ -37,6 +37,12 @@ MaterialPageRoute route() {
           ),
           BlocProvider<CommunityBloc>(
             create: (context) => CommunityBloc(sl(), sl(), sl(), sl())..add(CommunityPostsStreamInitialize()),
+          ),
+          BlocProvider<CollectionsBloc>(
+            create: (context) => CollectionsBloc(sl(), sl())..add(CollectionsInitializeCollectionsStream()),
+          ),
+          BlocProvider<AddCollectionBloc>(
+            create: (context) => AddCollectionBloc(sl()),
           ),
           BlocProvider<RemindersBloc>(
             create: (context) => RemindersBloc(sl(), sl())..add(RemindersStreamInitialize()),
@@ -78,18 +84,17 @@ MaterialPageRoute route() {
                           ),
                           TextButton(
                             onPressed: () {
-
                               // Check so that payment is processed in botanist's app only, and not twich otherwise
                               // if (state.currentUser!.userType == UserType.botanist) {
-                                final firstUserUid = FirebaseAuth.instance.currentUser!.uid;
-                                final secondUserUid = data.invitees.first.id;
+                              final firstUserUid = FirebaseAuth.instance.currentUser!.uid;
+                              final secondUserUid = data.invitees.first.id;
 
-                                final botanistUid =
-                                    state.currentUser!.userType == UserType.botanist ? firstUserUid : secondUserUid;
-                                final gardenerUid = botanistUid == firstUserUid ? secondUserUid : firstUserUid;
+                              final botanistUid =
+                                  state.currentUser!.userType == UserType.botanist ? firstUserUid : secondUserUid;
+                              final gardenerUid = botanistUid == firstUserUid ? secondUserUid : firstUserUid;
 
-                                paymentBloc.add(
-                                    PaymentPerformConsultationPayment(botanist: botanistUid, gardener: gardenerUid));
+                              paymentBloc
+                                  .add(PaymentPerformConsultationPayment(botanist: botanistUid, gardener: gardenerUid));
                               // }
 
                               Navigator.of(context).pop(true);

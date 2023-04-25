@@ -66,7 +66,7 @@ class AddCommunityPostBloc extends Bloc<AddCommunityPostEvent, AddCommunityPostS
   Future<FutureOr<void>> onAddCommunityPostAttachImagePressed(
       AddCommunityPostAttachImagePressed event, Emitter<AddCommunityPostState> emit) async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 60);
 
     emit(state.copyWith(image: () => File(image!.path).absolute.path));
   }

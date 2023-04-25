@@ -9,6 +9,7 @@ const String chatbot = 'assets/icons/chatbot.png';
 const String chatbotHighRes = 'assets/icons/chatbot_high_res.png';
 const String gardener = 'assets/icons/gardener.png';
 const String noCommunityPosts = 'assets/icons/no_community_posts.svg';
+const String noCollections = 'assets/icons/no_collections.png';
 const String emptyCommunitySearch = 'assets/icons/empty_community_search.svg';
 const String noReminders = 'assets/icons/no_reminders.svg';
 const String noAppointments = 'assets/icons/no_appointments.svg';

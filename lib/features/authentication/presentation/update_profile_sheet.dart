@@ -134,7 +134,7 @@ class _UpdateProfileSheetState extends State<UpdateProfileSheet> {
 
   Future<void> pickProfilePicture() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 60);
 
     if (image != null) {
       setState(() {
@@ -150,6 +150,7 @@ class _UpdateProfileSheetState extends State<UpdateProfileSheet> {
       child: selectedImage != null
           ? Image.file(
               selectedImage!,
+              fit: BoxFit.cover,
               height: 150,
               width: 150,
             )

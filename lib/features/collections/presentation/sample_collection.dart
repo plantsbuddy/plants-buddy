@@ -1,8 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as routes;
+import 'package:plants_buddy/features/collections/domain/entities/collection.dart';
 
 class SampleCollection extends StatelessWidget {
-  const SampleCollection({Key? key}) : super(key: key);
+  const SampleCollection(this.collection, {Key? key}) : super(key: key);
+
+  final Collection collection;
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +22,9 @@ class SampleCollection extends StatelessWidget {
             Expanded(
               child: ClipRRect(
                 child: Image.network(
-                  'https://static.onecms.io/wp-content/uploads/sites/34/2019/12/fragrant-flowers-intro-getty-1219.jpg',
+                  collection.cover,
                   fit: BoxFit.cover,
+                  width: double.infinity,
                 ),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10),
@@ -30,7 +35,7 @@ class SampleCollection extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Text(
-                'Fragrant Plants',
+                collection.name,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,

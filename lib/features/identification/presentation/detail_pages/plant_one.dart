@@ -17,7 +17,7 @@ class PlantDetailsOne extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(15),
           child: Image.file(
-              File(plant['image']),
+            File(plant['image']),
             height: 250,
             fit: BoxFit.cover,
           ),
@@ -273,7 +273,6 @@ class PlantDetailsOne extends StatelessWidget {
                         child: Text(
                           drainage,
                           style: textThemes.bodyLarge,
-
                         ),
                       ),
                     ],

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'core/utils/timeago_messages.dart';
 import 'firebase_options.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -21,6 +22,9 @@ Future<void> main() async {
 
   timeago.setLocaleMessages('en_short', TimeagoMessages());
 
+  // var speechToText = SpeechToText();
+  // final a = await speechToText.initialize();
+
   runApp(MyApp());
 }
 
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
         themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
         onGenerateRoute: _router.generateRoute,
-        initialRoute: routes.chatbot //FirebaseAuth.instance.currentUser == null ? routes.authentication : routes.home,
+        initialRoute: FirebaseAuth.instance.currentUser == null ? routes.authentication : routes.home,
         );
   }
 }
