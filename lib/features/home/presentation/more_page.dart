@@ -7,6 +7,7 @@ import 'package:plants_buddy/features/authentication/domain/entities/user.dart';
 import 'package:plants_buddy/features/authentication/logic/authentication_bloc.dart';
 import 'package:plants_buddy/features/authentication/presentation/update_profile_sheet.dart';
 import 'package:plants_buddy/features/payment/logic/payment_bloc.dart';
+import 'package:plants_buddy/features/suggestions/logic/suggestions_bloc.dart';
 
 class MorePage extends StatelessWidget {
   const MorePage({Key? key}) : super(key: key);
@@ -213,7 +214,8 @@ class MorePage extends StatelessWidget {
                     ),
                   ),
                 GestureDetector(
-                  // onTap: ()=>Navigator.of(context).pushNamed(app_routes.name),
+                  onTap: () => Navigator.of(context)
+                      .pushNamed(app_routes.suggestions, arguments: context.read<SuggestionsBloc>()),
                   child: Card(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),

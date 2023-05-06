@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
-import 'package:plants_buddy/features/identification/logic/identification_bloc.dart';
+import 'package:plants_buddy/features/identification/logic/identification_bloc/identification_bloc.dart';
 
 class IdentificationResultsScreen extends StatelessWidget {
   const IdentificationResultsScreen({Key? key}) : super(key: key);
@@ -39,10 +39,12 @@ class IdentificationResultsScreen extends StatelessWidget {
                             .pushNamed(app_routes.plantDetails, arguments: result.data..['image'] = state.image!);
                         break;
                       case IdentificationType.disease:
-                        Navigator.of(context).pushNamed(app_routes.diseaseDetails, arguments: result.data..['image'] = state.image!);
+                        Navigator.of(context)
+                            .pushNamed(app_routes.diseaseDetails, arguments: result.data..['image'] = state.image!);
                         break;
                       case IdentificationType.pest:
-                        Navigator.of(context).pushNamed(app_routes.plantDetails, arguments: result.data..['image'] = state.image!);
+                        Navigator.of(context)
+                            .pushNamed(app_routes.diseaseDetails, arguments: result.data..['image'] = state.image!);
                         break;
                     }
                   },
@@ -69,9 +71,9 @@ class IdentificationResultsScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  result.data.keys.contains('scientific_name')
-                                      ? result.data['scientific_name']
-                                      : result.data['name'],
+                                  result.data.keys.contains('name')
+                                      ? result.data['name']
+                                      : result.data['scientific_name'],
                                   style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.surfaceTint),
                                 ),
                                 SizedBox(height: 2),
@@ -94,6 +96,20 @@ class IdentificationResultsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                margin: EdgeInsets.all(10),
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(app_routes.addCommunityPost, arguments: {'image': state.image!}),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  child: Text('Post in community'),
                 ),
               ),
             ],

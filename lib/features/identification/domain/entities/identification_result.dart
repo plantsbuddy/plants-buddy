@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 
 class IdentificationResult extends Equatable {
-  final double _confidence;
+  final dynamic _confidence;
   final String label;
   final Map<String, dynamic> data;
 
-  const IdentificationResult({required double confidence, required this.label, this.data = const {}})
+  const IdentificationResult({required dynamic confidence, required this.label, this.data = const {}})
       : _confidence = confidence;
 
-  String get confidence => (_confidence * 100).toStringAsFixed(2);
+  String get confidence => _confidence is double ? (_confidence * 100).toStringAsFixed(2) : _confidence;
 
   IdentificationResult copyWith({
     required Map<String, dynamic> data,

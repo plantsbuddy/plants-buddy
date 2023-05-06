@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../logic/identification_bloc.dart';
+import '../../logic/identification_bloc/identification_bloc.dart';
 
 class PageIdentify extends StatelessWidget {
   const PageIdentify({Key? key}) : super(key: key);

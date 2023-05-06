@@ -54,6 +54,8 @@ class GuidesPage extends StatelessWidget {
                         child: Text(
                           plantationGuides[index].title,
                           style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),

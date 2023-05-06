@@ -12,8 +12,9 @@ import 'package:plants_buddy/features/reminders/logic/reminders_bloc/reminders_b
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
-import '../../collections/logic/add_plant_bloc/add_collection_bloc.dart';
+import '../../collections/logic/add_collection_bloc/add_collection_bloc.dart';
 import '../../payment/logic/payment_bloc.dart';
+import '../../suggestions/logic/suggestions_bloc.dart';
 
 MaterialPageRoute route() {
   final sl = GetIt.instance;
@@ -40,6 +41,9 @@ MaterialPageRoute route() {
           ),
           BlocProvider<CollectionsBloc>(
             create: (context) => CollectionsBloc(sl(), sl())..add(CollectionsInitializeCollectionsStream()),
+          ),
+          BlocProvider<SuggestionsBloc>(
+            create: (context) => SuggestionsBloc(sl(), sl(), sl(), sl(), sl())..add(SuggestionsInitializeTipOfTheDay()),
           ),
           BlocProvider<AddCollectionBloc>(
             create: (context) => AddCollectionBloc(sl()),

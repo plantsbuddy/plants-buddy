@@ -9,6 +9,7 @@ import 'package:plants_buddy/features/botanists/domain/entities/appointment.dart
 import 'package:plants_buddy/features/botanists/domain/entities/botanist_review.dart';
 
 import '../../authentication/domain/entities/user.dart';
+import '../../community/domain/entities/user.dart' as community_user;
 import '../domain/repositories/appointment_service.dart';
 
 class AppointmentServiceImpl implements AppointmentService {
@@ -86,12 +87,20 @@ class AppointmentServiceImpl implements AppointmentService {
 
   @override
   Future<Stream<List<BotanistReview>>> getBotanistReviews(Botanist botanist) async {
-    _usersRef.doc(botanist.uid as String).collection('reviews').snapshots().listen((reviewsSnapshots) {
+    _usersRef.doc(botanist.uid as String).collection('reviews').snapshots().listen((reviewsSnapshots) async {
       final List<BotanistReview> reviews = [];
 
       for (var reviewMap in reviewsSnapshots.docs) {
+        final userDetailsRef = await _usersRef.doc(reviewMap.get('author')).get();
+
+        final author = community_user.User(
+          uid: userDetailsRef.id,
+          name: userDetailsRef.get('name') as String,
+          pictureUrl: userDetailsRef.get('pictureUrl'),
+        );
+
         final review = BotanistReview(
-          author: reviewMap.get('author'),
+          author: author,
           review: reviewMap.get('review'),
           time: reviewMap.get('time'),
           stars: reviewMap.get('stars'),
@@ -104,6 +113,18 @@ class AppointmentServiceImpl implements AppointmentService {
     });
 
     return _reviewsStreamController.stream.asBroadcastStream();
+  }
+
+  @override
+  Future<void> postBotanistReview({required String botanist, required BotanistReview botanistReview}) async {
+    final authorUid = FirebaseAuth.instance.currentUser!.uid;
+
+    await _usersRef.doc(botanist).collection('reviews').doc(authorUid).set({
+      'author': authorUid,
+      'review': botanistReview.review,
+      'time': botanistReview.time,
+      'stars': botanistReview.stars,
+    });
   }
 
   @override
@@ -145,16 +166,6 @@ class AppointmentServiceImpl implements AppointmentService {
     });
 
     return _receivedAppointmentRequestsController.stream.asBroadcastStream();
-  }
-
-  @override
-  Future<void> postBotanistReview({required String botanist, required BotanistReview botanistReview}) async {
-    await _usersRef.doc(botanist).collection('reviews').add({
-      'author': FirebaseAuth.instance.currentUser!.uid,
-      'review': botanistReview.review,
-      'time': botanistReview.time,
-      'stars': botanistReview.stars,
-    });
   }
 
   Future<Appointment> _createAppointmentObject(QueryDocumentSnapshot<Object?> appointmentRequestMap) async {

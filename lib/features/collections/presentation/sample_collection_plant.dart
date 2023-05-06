@@ -2,32 +2,68 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as routes;
 import 'package:plants_buddy/features/collections/domain/entities/collection.dart';
+import 'package:plants_buddy/features/collections/presentation/collection_plant_popup.dart';
+import 'package:plants_buddy/features/identification/presentation/detail_pages/plant_one.dart';
+import 'package:plants_buddy/features/identification/presentation/detail_pages/plant_three.dart';
+import 'package:plants_buddy/features/identification/presentation/detail_pages/plant_two.dart';
+
+import '../domain/entities/collection_plant.dart';
 
 class SampleCollectionPlant extends StatelessWidget {
   const SampleCollectionPlant(this.plant, {Key? key}) : super(key: key);
 
-  final Map<String, dynamic> plant;
+  final CollectionPlant plant;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).pushNamed(routes.collectionPlants),
       child: Card(
-        child: ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(120),
-            child: Image.network(
-              'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/109354797/original/db7435d5305bb7b8a843e405af7d00952c82f9a3/implement-android-ui-design-in-xml.png',
-              width: 60,
-              height: 60,
-              fit: BoxFit.fitHeight,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                plant.details['images'][0],
+                height: 150,
+                width: 115,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          title: Text('Cabula Oscura'),
-          subtitle: Text('Ovata'),
-          trailing: Icon(Icons.keyboard_arrow_right),
+            Expanded(
+              child: SizedBox(
+                height: 150,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        plant.details['common_names'][0],
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      Text(
+                        plant.details['scientific_name'],
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black87),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        plant.details['description'],
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black45),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            CollectionPlantPopup(plant),
+          ],
         ),
       ),
+      onTap: () => Navigator.of(context).pushNamed(routes.plantDetails, arguments: plant.details),
     );
   }
 }

@@ -6,11 +6,12 @@ enum SuggestionsStatus { loading, loaded }
 class SuggestionsState extends Equatable {
   final List<PlantationGuide> plantationGuides;
   final SuggestionsStatus status;
-  final Map<String, String> weatherData;
-  final List<String> weatherBasedSuggestions;
-  final List<String> weatherBasedPlantSuggestions;
+  final Map<String, dynamic> weatherData;
+  final List<dynamic> weatherBasedSuggestions;
+  final List<dynamic> weatherBasedPlantSuggestions;
   final String currentWeatherPlantsType;
   final String tipOfTheDay;
+  final bool tipOfTheDayLoaded;
 
   SuggestionsState.initial()
       : status = SuggestionsStatus.loading,
@@ -19,6 +20,7 @@ class SuggestionsState extends Equatable {
         weatherBasedPlantSuggestions = [],
         currentWeatherPlantsType = '',
         tipOfTheDay = '',
+        tipOfTheDayLoaded = false,
         plantationGuides = [];
 
   const SuggestionsState({
@@ -29,14 +31,16 @@ class SuggestionsState extends Equatable {
     required this.weatherBasedSuggestions,
     required this.weatherBasedPlantSuggestions,
     required this.currentWeatherPlantsType,
+    required this.tipOfTheDayLoaded,
   });
 
   SuggestionsState copyWith({
+    bool? tipOfTheDayLoaded,
     List<PlantationGuide>? plantationGuides,
     SuggestionsStatus? status,
-    Map<String, String>? weatherData,
-    List<String>? weatherBasedSuggestions,
-    List<String>? weatherBasedPlantSuggestions,
+    Map<String, dynamic>? weatherData,
+    List<dynamic>? weatherBasedSuggestions,
+    List<dynamic>? weatherBasedPlantSuggestions,
     String? currentWeatherPlantsType,
     String? tipOfTheDay,
   }) =>
@@ -48,6 +52,7 @@ class SuggestionsState extends Equatable {
         weatherBasedSuggestions: weatherBasedSuggestions ?? this.weatherBasedSuggestions,
         weatherBasedPlantSuggestions: weatherBasedPlantSuggestions ?? this.weatherBasedPlantSuggestions,
         currentWeatherPlantsType: currentWeatherPlantsType ?? this.currentWeatherPlantsType,
+        tipOfTheDayLoaded: tipOfTheDayLoaded ?? this.tipOfTheDayLoaded,
       );
 
   @override
@@ -59,5 +64,6 @@ class SuggestionsState extends Equatable {
         weatherBasedSuggestions,
         weatherData,
         currentWeatherPlantsType,
+        tipOfTheDayLoaded,
       ];
 }

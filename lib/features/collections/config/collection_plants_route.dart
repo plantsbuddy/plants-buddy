@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../domain/entities/collection.dart';
-import '../logic/collection_plants/collection_plants_bloc.dart';
+import '../logic/collection_plants_bloc/collection_plants_bloc.dart';
 import '../presentation/collection_plants_screen.dart';
 
 MaterialPageRoute route(Object? collection) {
@@ -15,7 +15,7 @@ MaterialPageRoute route(Object? collection) {
     builder: (_) {
       return BlocProvider<CollectionPlantsBloc>(
         create: (context) =>
-            CollectionPlantsBloc(collection: collection, sl())..add(CollectionPlantsInitializePlantsStream()),
+            CollectionPlantsBloc(collection: collection, sl(), sl())..add(CollectionPlantsInitializePlantsStream()),
         child: CollectionPlantsScreen(),
       );
     },

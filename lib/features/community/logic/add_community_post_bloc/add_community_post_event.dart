@@ -26,3 +26,9 @@ class AddCommunityPostDescriptionChanged extends AddCommunityPostEvent {
 
   AddCommunityPostDescriptionChanged(this.description);
 }
+
+class AddCommunityPostImageChanged extends AddCommunityPostEvent {
+  final String image;
+
+  AddCommunityPostImageChanged(this.image);
+}

@@ -8,7 +8,7 @@ class GetWeatherBasedSuggestions {
 
   GetWeatherBasedSuggestions(this._suggestionsService);
 
-  Future<List<String>> call() async {
+  Future<List<dynamic>> call() async {
     return _suggestionsService.weatherBasedSuggestions;
   }
 }

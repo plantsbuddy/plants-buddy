@@ -4,7 +4,7 @@ class PickImageFromGallery {
   Future<String?> call() async {
     final ImagePicker picker = ImagePicker();
 
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 60);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
 
     return image?.path;
   }

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../similar_images_slideshow.dart';
+
 class PlantDetailsOne extends StatelessWidget {
   const PlantDetailsOne(this.plant, {Key? key}) : super(key: key);
 
@@ -16,11 +18,7 @@ class PlantDetailsOne extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(15),
-          child: Image.file(
-            File(plant['image']),
-            height: 250,
-            fit: BoxFit.cover,
-          ),
+          child: SimilarImagesSlideShow(plant['images']),
         ),
         SizedBox(height: 20),
         Text(

@@ -14,6 +14,22 @@ class BotanistReviewsState extends Equatable {
       : status = BotanistReviewsStatus.loading,
         reviews = [];
 
+  BotanistReview? get alreadyPostedReview {
+    try {
+      return reviews.firstWhere((review) => review.author!.uid == FirebaseAuth.instance.currentUser!.uid);
+    } on StateError {
+      return null;
+    }
+  }
+
+  String get reviewsAverage {
+    int sum = 0;
+    for (var review in reviews) {
+      sum += review.stars;
+    }
+    return (sum / reviews.length).toStringAsFixed(1);
+  }
+
   BotanistReviewsState copyWith({
     BotanistReviewsStatus? status,
     List<BotanistReview>? reviews,

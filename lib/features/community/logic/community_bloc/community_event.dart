@@ -20,3 +20,14 @@ class CommunitySearchTermUpdated extends CommunityEvent {
 }
 
 class CommunityMyPostsToggled extends CommunityEvent {}
+
+class CommunityPostsApplyFilterPressed extends CommunityEvent {
+  final bool onlyCommentsIsChecked, newestFirst;
+  final String selectedCategory;
+
+  CommunityPostsApplyFilterPressed({
+    required this.onlyCommentsIsChecked,
+    required this.newestFirst,
+    required this.selectedCategory,
+  });
+}

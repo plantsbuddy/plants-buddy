@@ -1,0 +1,12 @@
+.ipynb_checkpoints
+weaver_ant
+vine_flea_beetle
+helicoverpa_caterpillar
+european_earwig
+short_horned_grasshopper_and_locust
+white_grub
+cottony_cushion_scale
+slugs_and_snails
+slugs_and_snails
+pistachio_seed_wasp
+curculio_weevil

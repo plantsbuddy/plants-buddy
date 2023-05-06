@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plants_buddy/core/utils/custom_icons.dart' as custom_icons;
+import 'package:plants_buddy/features/suggestions/logic/suggestions_bloc.dart';
 
 class SuggestionsPage extends StatelessWidget {
   const SuggestionsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final state = context.read<SuggestionsBloc>().state;
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(15),
@@ -37,14 +41,14 @@ class SuggestionsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Random tip',
+                          'General plantation tip',
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                         SizedBox(
                           height: 5,
                         ),
                         Text(
-                          'Water your plants daily to keep them fresh and green',
+                          state.tipOfTheDay,
                           overflow: TextOverflow.clip,
                           style: Theme.of(context).textTheme.caption,
                         ),
@@ -73,7 +77,7 @@ class SuggestionsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '45°C',
+                    '${state.weatherData['temperature']}°C',
                     style: Theme.of(context)
                         .textTheme
                         .displaySmall!
@@ -81,7 +85,7 @@ class SuggestionsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    'Islamabad',
+                    state.weatherData['city'] as String,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
@@ -91,7 +95,7 @@ class SuggestionsPage extends StatelessWidget {
                   Row(
                     children: [
                       Image.network(
-                        'https://openweathermap.org/img/wn/03n.png',
+                        state.weatherData['weather_status_icon'] as String,
                         width: 30,
                       ),
                       SizedBox(width: 10),
@@ -99,14 +103,14 @@ class SuggestionsPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Clouds',
+                            state.weatherData['weather_status_title'] as String,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge!
                                 .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                           ),
                           Text(
-                            'scattered clouds',
+                            state.weatherData['weather_status_description'] as String,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!
@@ -136,7 +140,7 @@ class SuggestionsPage extends StatelessWidget {
                                 .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                           ),
                           Text(
-                            'scattered clouds',
+                            state.weatherData['humidity'] as String,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!
@@ -166,7 +170,7 @@ class SuggestionsPage extends StatelessWidget {
                                 .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                           ),
                           Text(
-                            'scattered clouds',
+                            state.weatherData['wind_speed'] as String,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!
@@ -196,7 +200,7 @@ class SuggestionsPage extends StatelessWidget {
                                 .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                           ),
                           Text(
-                            'scattered clouds',
+                            state.weatherData['precipitation'] as String,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!
@@ -217,7 +221,7 @@ class SuggestionsPage extends StatelessWidget {
               ),
             ),
             ListView(
-              children: ['', '']
+              children: state.weatherBasedSuggestions
                   .map(
                     (suggestion) => Container(
                       width: double.infinity,
@@ -236,7 +240,7 @@ class SuggestionsPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        'asas',
+                        suggestion,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.black54),
                       ),
                     ),
@@ -256,17 +260,17 @@ class SuggestionsPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 5, bottom: 10),
               child: Text(
-                'Weather at your location is dry, here is a list of drought tolerant plants that could grow well in this weather',
+                state.currentWeatherPlantsType,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black54),
               ),
             ),
             Wrap(
-              children: ['']
+              children: state.weatherBasedPlantSuggestions
                   .map(
                     (plant) => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: Chip(
-                        label: Text('Plant'),
+                        label: Text(plant),
                         side: BorderSide(color: Theme.of(context).colorScheme.primaryContainer),
                       ),
                     ),

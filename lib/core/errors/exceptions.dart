@@ -51,6 +51,7 @@ class InvalidCardNumberException implements Exception {}
 // class AppointmentTimeNotSelectedException implements Exception {}
 
 // class BotanistReviewBodyEmptyException implements Exception {}
+// class BotanistReviewAlreadyPostedException implements Exception {}
 
 // class EmptyMessageBodyException implements Exception {}
 

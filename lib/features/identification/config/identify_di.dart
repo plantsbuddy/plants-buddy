@@ -14,9 +14,10 @@ void init() {
 void _initUseCases() {
   sl.registerLazySingleton<CaptureImageFromCamera>(() => CaptureImageFromCamera());
   sl.registerLazySingleton<DownloadImageFromUrl>(() => DownloadImageFromUrl());
-  sl.registerLazySingleton<GetPlantDetails>(() => GetPlantDetails(sl()));
+  sl.registerLazySingleton<GetIdentificationHistory>(() => GetIdentificationHistory(sl()));
   sl.registerLazySingleton<PerformIdentification>(() => PerformIdentification(sl()));
   sl.registerLazySingleton<PickImageFromGallery>(() => PickImageFromGallery());
+  sl.registerLazySingleton<SaveIdentificationForHistory>(() => SaveIdentificationForHistory(sl()));
 }
 
 void _initRepositories() {

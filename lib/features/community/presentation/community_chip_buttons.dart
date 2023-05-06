@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../logic/community_bloc/community_bloc.dart';
+import 'community_posts_filter_sheet.dart';
 
 class CommunityChipButtons extends StatelessWidget {
   const CommunityChipButtons({Key? key}) : super(key: key);
@@ -31,7 +32,14 @@ class CommunityChipButtons extends StatelessWidget {
                   foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
                   backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                 ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0)),
-                onPressed: () {},
+                onPressed: () => showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<CommunityBloc>(),
+                    child: CommunityPostsFilterSheet(),
+                  ),
+                ),
                 label: Text('Filters'),
                 icon: Icon(Icons.filter_list_outlined),
               ),

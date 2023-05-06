@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:plants_buddy/core/errors/exceptions.dart';
 
@@ -28,6 +29,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     on<CommunityMyPostsToggled>(onCommunityMyPostsToggled);
     on<CommunitySearchTermUpdated>(onCommunitySearchTermUpdated);
     on<CommunityDeletePostPressed>(onCommunityDeletePostPressed);
+    on<CommunityPostsApplyFilterPressed>(onCommunityPostsApplyFilterPressed);
   }
 
   Future<FutureOr<void>> onCommunityPostsInitialize(_, Emitter<CommunityState> emit) async {
@@ -65,8 +67,16 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     }
   }
 
-  Future<FutureOr<void>> onCommunityDeletePostPressed(
-      CommunityDeletePostPressed event, Emitter<CommunityState> emit) async {
+  Future<FutureOr<void>> onCommunityDeletePostPressed(CommunityDeletePostPressed event, _) async {
     await _deleteCommunityPost(event.id);
+  }
+
+  FutureOr<void> onCommunityPostsApplyFilterPressed(
+      CommunityPostsApplyFilterPressed event, Emitter<CommunityState> emit) {
+    emit(state.copyWith(
+      onlyCommentsIsChecked: event.onlyCommentsIsChecked,
+      selectedCategory: event.selectedCategory,
+      newestFirst: event.newestFirst,
+    ));
   }
 }

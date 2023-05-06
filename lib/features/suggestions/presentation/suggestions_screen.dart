@@ -25,7 +25,7 @@ class _SuggestionsScreenState extends State<SuggestionsScreen> {
         builder: (context, state) {
           switch (state.status) {
             case SuggestionsStatus.loading:
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
 
             case SuggestionsStatus.loaded:
               return currentPage == 0 ? SuggestionsPage() : GuidesPage();

@@ -134,7 +134,7 @@ class _UpdateProfileSheetState extends State<UpdateProfileSheet> {
 
   Future<void> pickProfilePicture() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 60);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
 
     if (image != null) {
       setState(() {

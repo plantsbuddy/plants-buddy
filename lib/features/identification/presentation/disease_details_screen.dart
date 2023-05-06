@@ -1,10 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-
-import 'detail_pages/plant_one.dart';
-import 'detail_pages/plant_three.dart';
-import 'detail_pages/plant_two.dart';
+import 'package:plants_buddy/features/identification/presentation/similar_images_slideshow.dart';
 
 class DiseaseDetailsScreen extends StatelessWidget {
   const DiseaseDetailsScreen(this.disease, {Key? key}) : super(key: key);
@@ -17,7 +12,7 @@ class DiseaseDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Disease Details'),
+        title: Text('${disease.keys.contains('disease_class') ? 'Disease' : 'Pest'} Details'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -27,11 +22,7 @@ class DiseaseDetailsScreen extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: Image.file(
-                  File(disease['image']),
-                  height: 250,
-                  fit: BoxFit.cover,
-                ),
+                child: SimilarImagesSlideShow(disease['images']),
               ),
               SizedBox(height: 20),
               Text(
@@ -89,7 +80,7 @@ class DiseaseDetailsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              disease['disease_class'],
+                              disease['disease_class'] ?? disease['pest_class'],
                               style: textThemes.titleMedium,
                             ),
                             Row(

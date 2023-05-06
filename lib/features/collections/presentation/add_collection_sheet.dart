@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import '../logic/add_plant_bloc/add_collection_bloc.dart';
-import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
+import '../logic/add_collection_bloc/add_collection_bloc.dart';
 
 class AddCollectionSheet extends StatefulWidget {
   const AddCollectionSheet({Key? key}) : super(key: key);
@@ -79,33 +78,44 @@ class _AddCollectionSheetState extends State<AddCollectionSheet> {
                   onPressed: () {
                     if (nameController.text.trim().isEmpty) {
                       setState(() => nameError = 'Please input name of collection');
-                    } else if (selectedImage == null) {
+                    } else if (selectedImage == null && bloc.state.originalCollection == null) {
                       setState(() => coverErrorVisible = true);
                     } else {
-                      bloc.add(AddCollectionButtonPressed(cover: selectedImage!.path, name: nameController.text));
+                      bloc.add(AddCollectionButtonPressed(
+                          cover: selectedImage?.path ?? bloc.state.originalCollection!.cover,
+                          name: nameController.text));
+
+                      BuildContext? dialogContext;
 
                       showDialog(
                         context: context,
-                        builder: (_) => Dialog(
-                          backgroundColor: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
-                            child: Row(
-                              children: [
-                                CircularProgressIndicator(),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Text('Creating collection...'),
-                              ],
+                        builder: (_) {
+                          dialogContext = _;
+                          return Dialog(
+                            backgroundColor: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+                              child: Row(
+                                children: [
+                                  CircularProgressIndicator(),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Text(
+                                      '${bloc.state.originalCollection == null ? 'Creating' : 'Updating'} collection...'),
+                                ],
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       );
 
                       Future.delayed(
-                        Duration(milliseconds: 1500),
-                        () => Navigator.of(context).popUntil((route) => route.settings.name == app_routes.home),
+                        Duration(milliseconds: 2500),
+                        () {
+                          Navigator.of(context).pop();
+                          Navigator.of(dialogContext!).pop();
+                        },
                       );
                     }
                   },
@@ -125,7 +135,7 @@ class _AddCollectionSheetState extends State<AddCollectionSheet> {
 
   Future<void> pickCoverPicture() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 60);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
 
     if (image != null) {
       setState(() {
@@ -145,15 +155,22 @@ class _AddCollectionSheetState extends State<AddCollectionSheet> {
               height: 150,
               width: 150,
             )
-          : Container(
-              color: Colors.grey[300],
-              padding: EdgeInsets.all(50),
-              child: Icon(
-                Icons.image,
-                size: 50,
-                color: Colors.grey[600],
-              ),
-            ),
+          : (bloc.state.originalCollection == null
+              ? Container(
+                  color: Colors.grey[300],
+                  padding: EdgeInsets.all(50),
+                  child: Icon(
+                    Icons.image,
+                    size: 50,
+                    color: Colors.grey[600],
+                  ),
+                )
+              : Image.network(
+                  bloc.state.originalCollection!.cover,
+                  fit: BoxFit.cover,
+                  height: 150,
+                  width: 150,
+                )),
     );
   }
 

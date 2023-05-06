@@ -9,7 +9,6 @@ import 'package:meta/meta.dart';
 import 'package:plants_buddy/core/errors/exceptions.dart';
 import 'package:plants_buddy/features/community/domain/entities/community_post.dart';
 import 'package:plants_buddy/features/community/domain/usecases/community_usecases.dart';
-import 'package:plants_buddy/features/community/logic/community_bloc/community_bloc.dart';
 
 part 'add_community_post_event.dart';
 
@@ -27,6 +26,7 @@ class AddCommunityPostBloc extends Bloc<AddCommunityPostEvent, AddCommunityPostS
     on<AddCommunityPostRemoveImagePressed>(onAddCommunityPostRemoveImagePressed);
     on<AddCommunityPostTitleChanged>(onAddCommunityPostTitleChanged);
     on<AddCommunityPostDescriptionChanged>(onAddCommunityPostDescriptionChanged);
+    on<AddCommunityPostImageChanged>(onAddCommunityPostImageChanged);
   }
 
   Future<FutureOr<void>> onCommunityAddPost(AddCommunityPostPressed event, Emitter<AddCommunityPostState> emit) async {
@@ -66,7 +66,7 @@ class AddCommunityPostBloc extends Bloc<AddCommunityPostEvent, AddCommunityPostS
   Future<FutureOr<void>> onAddCommunityPostAttachImagePressed(
       AddCommunityPostAttachImagePressed event, Emitter<AddCommunityPostState> emit) async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 60);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
 
     emit(state.copyWith(image: () => File(image!.path).absolute.path));
   }
@@ -83,5 +83,10 @@ class AddCommunityPostBloc extends Bloc<AddCommunityPostEvent, AddCommunityPostS
   FutureOr<void> onAddCommunityPostDescriptionChanged(
       AddCommunityPostDescriptionChanged event, Emitter<AddCommunityPostState> emit) {
     emit(state.copyWith(description: event.description));
+  }
+
+  FutureOr<void> onAddCommunityPostImageChanged(
+      AddCommunityPostImageChanged event, Emitter<AddCommunityPostState> emit) {
+    emit(state.copyWith(image: () => event.image));
   }
 }

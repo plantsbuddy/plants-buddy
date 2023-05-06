@@ -21,7 +21,7 @@ class CommunityDataSource implements CommunityRepository {
 
   @override
   Future<Stream<List<CommunityPost>>> getCommunityPostsStream() async {
-    _postsCollection.snapshots().listen(
+    _postsCollection.orderBy('postedAt', descending: false).snapshots().listen(
       (documents) async {
         List<CommunityPost> posts = [];
 

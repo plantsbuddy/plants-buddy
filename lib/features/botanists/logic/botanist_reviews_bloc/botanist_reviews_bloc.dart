@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
 import '../../../authentication/domain/entities/botanist.dart';
@@ -28,7 +29,10 @@ class BotanistReviewsBloc extends Bloc<BotanistReviewsEvent, BotanistReviewsStat
 
     await emit.forEach(
       botanistReviewsStream,
-      onData: (botanistReviews) => state.copyWith(reviews: botanistReviews),
+      onData: (botanistReviews) => state.copyWith(
+        reviews: botanistReviews,
+        status: BotanistReviewsStatus.loaded,
+      ),
     );
   }
 

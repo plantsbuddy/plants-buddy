@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:plants_buddy/features/collections/logic/add_collection_bloc/add_plant_bloc.dart';
+import 'package:plants_buddy/features/collections/logic/add_plant_bloc/add_plant_bloc.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
 
 class AddPlantToCollectionScreen extends StatefulWidget {
@@ -64,60 +64,7 @@ class _AddPlantToCollectionScreenState extends State<AddPlantToCollectionScreen>
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
           children: [
-            selectedImage == null
-                ? GestureDetector(
-                    child: Container(
-                      height: 200,
-                      width: double.infinity,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.add_photo_alternate,
-                            size: 40,
-                            color: Colors.grey[600],
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            'Add a picture of plant',
-                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                  color: Colors.grey[600],
-                                ),
-                          ),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onTap: pickPicture,
-                  )
-                : Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.file(
-                          selectedImage!,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(horizontal: 25),
-                            foregroundColor: Theme.of(context).colorScheme.tertiary,
-                            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                          ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0)),
-                          onPressed: pickPicture,
-                          child: Text('Change Picture'),
-                        ),
-                      ),
-                    ],
-                  ),
+            getImageWidget(),
             if (pictureErrorVisible)
               Padding(
                 padding: const EdgeInsets.only(top: 10),
@@ -282,10 +229,11 @@ class _AddPlantToCollectionScreenState extends State<AddPlantToCollectionScreen>
                     setState(() => lightConditionsError = 'Please input light conditions of plant');
                   } else if (_soilDrainageController.text.trim().isEmpty) {
                     setState(() => soilDrainageError = 'Please input soil drainage');
-                  } else if (selectedImage == null) {
+                  } else if (selectedImage == null && bloc.state.originalPlant == null) {
                     setState(() => pictureErrorVisible = true);
                   } else {
                     bloc.add(AddPlantSubmitButtonPressed(
+                      image: selectedImage?.path ?? bloc.state.originalPlant!.details['images'][0],
                       commonNames: _commonNamesController.text,
                       scientificName: _scientificNameController.text,
                       leafColor: _leafColorController.text,
@@ -297,28 +245,35 @@ class _AddPlantToCollectionScreenState extends State<AddPlantToCollectionScreen>
                       soilDrainage: _soilDrainageController.text,
                     ));
 
+                    BuildContext? dialogContext;
+
                     showDialog(
-                      context: context,
-                      builder: (_) => Dialog(
-                        backgroundColor: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
-                          child: Row(
-                            children: [
-                              CircularProgressIndicator(),
-                              SizedBox(
-                                width: 20,
+                        context: context,
+                        builder: (_) {
+                          dialogContext = _;
+                          return Dialog(
+                            backgroundColor: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+                              child: Row(
+                                children: [
+                                  CircularProgressIndicator(),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Text('${bloc.state.originalPlant == null ? 'Adding' : 'Updating'} plant...'),
+                                ],
                               ),
-                              Text('Adding plant to collection...'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
+                            ),
+                          );
+                        });
 
                     Future.delayed(
-                      Duration(milliseconds: 1500),
-                      () => Navigator.of(context).popUntil((route) => route.settings.name == app_routes.home),
+                      Duration(milliseconds: 2500),
+                      () {
+                        Navigator.of(context).pop();
+                        Navigator.of(dialogContext!).pop();
+                      },
                     );
                   }
                 },
@@ -335,9 +290,72 @@ class _AddPlantToCollectionScreenState extends State<AddPlantToCollectionScreen>
     );
   }
 
+  Widget getImageWidget() {
+    return selectedImage != null || bloc.state.originalPlant?.details['images'][0] != null
+        ? Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: selectedImage != null
+                    ? Image.file(
+                        selectedImage!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      )
+                    : Image.network(
+                        bloc.state.originalPlant!.details['images'][0],
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
+              ),
+              SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 25),
+                    foregroundColor: Theme.of(context).colorScheme.tertiary,
+                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0)),
+                  onPressed: pickPicture,
+                  child: Text('Change Picture'),
+                ),
+              ),
+            ],
+          )
+        : GestureDetector(
+            child: Container(
+              height: 200,
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.add_photo_alternate,
+                    size: 40,
+                    color: Colors.grey[600],
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Add a picture of plant',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                  ),
+                ],
+              ),
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onTap: pickPicture,
+          );
+  }
+
   Future<void> pickPicture() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 60);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
 
     if (image != null) {
       setState(() {

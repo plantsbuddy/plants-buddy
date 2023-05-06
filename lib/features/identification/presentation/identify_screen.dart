@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
 import 'package:plants_buddy/features/identification/presentation/pages/page_identify.dart';
 
-import '../logic/identification_bloc.dart';
+import '../logic/identification_bloc/identification_bloc.dart';
 import 'identification_results_screen.dart';
 
 class IdentifyScreen extends StatelessWidget {

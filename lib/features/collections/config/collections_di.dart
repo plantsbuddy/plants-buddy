@@ -12,11 +12,12 @@ void init() {
 }
 
 void _initUseCases() {
-  sl.registerLazySingleton<AddCollection>(() => AddCollection(sl()));
+  sl.registerLazySingleton<UpdateCollection>(() => UpdateCollection(sl()));
   sl.registerLazySingleton<DeleteCollection>(() => DeleteCollection(sl()));
   sl.registerLazySingleton<GetCollectionsStream>(() => GetCollectionsStream(sl()));
   sl.registerLazySingleton<GetCollectionPlantsStream>(() => GetCollectionPlantsStream(sl()));
-  sl.registerLazySingleton<AddPlantToCollection>(() => AddPlantToCollection(sl()));
+  sl.registerLazySingleton<UpdatePlantInCollection>(() => UpdatePlantInCollection(sl()));
+  sl.registerLazySingleton<DeletePlantFromCollection>(() => DeletePlantFromCollection(sl()));
 }
 
 void _initRepositories() {

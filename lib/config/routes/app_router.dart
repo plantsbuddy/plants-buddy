@@ -12,6 +12,10 @@ import 'package:plants_buddy/features/botanists/config/reviews_route.dart' as re
 import 'package:plants_buddy/features/identification/config/identify_route.dart' as identification;
 import 'package:plants_buddy/features/identification/config/identification_results_route.dart'
     as identification_results;
+import 'package:plants_buddy/features/identification/config/identification_history_route.dart'
+    as identification_history;
+import 'package:plants_buddy/features/identification/config/history_identification_results_route.dart'
+as history_identification_results;
 import 'package:plants_buddy/features/identification/config/plant_details_route.dart' as plant_details;
 import 'package:plants_buddy/features/identification/config/disease_details_route.dart' as disease_details;
 import 'package:plants_buddy/features/chat/config/chat_route.dart' as chat;
@@ -59,8 +63,15 @@ class AppRouter {
       case app_routes.identify:
         return identification.route(settings.arguments);
 
+      case app_routes.identificationHistory:
+        return identification_history.route();
+
       case app_routes.identificationResults:
         return identification_results.route(settings.arguments);
+
+
+      case app_routes.historyIdentificationResults:
+        return history_identification_results.route(settings.arguments);
 
       case app_routes.plantDetails:
         return plant_details.route(settings.arguments);
@@ -87,7 +98,7 @@ class AppRouter {
         return add_plant_to_collection.route(settings.arguments);
 
       case app_routes.suggestions:
-        return suggestions.route();
+        return suggestions.route(settings.arguments);
 
       case app_routes.fullGuide:
         return full_guide.route(settings.arguments);

@@ -7,8 +7,10 @@ class PostCategoriesList extends StatelessWidget {
 
   final _categories = const [
     'Question',
+    'Identification Request',
     'Suggestion',
-    'Other',
+    'News',
+    'Discussion',
   ];
 
   @override

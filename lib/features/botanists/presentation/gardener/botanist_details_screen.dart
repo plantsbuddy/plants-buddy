@@ -272,20 +272,7 @@ class BotanistDetailsScreen extends StatelessWidget {
                                 'Reviews ',
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ),
-                              Text(
-                                '(45)',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
                               Spacer(),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orangeAccent,
-                              ),
-                              Text(
-                                '4.5',
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                              SizedBox(width: 10),
                               Icon(
                                 Icons.arrow_forward_ios,
                                 color: Colors.grey,

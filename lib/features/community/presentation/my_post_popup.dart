@@ -12,8 +12,7 @@ class MyPostPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
-      itemBuilder: (context) =>
-      [
+      itemBuilder: (context) => [
         PopupMenuItem(
           value: 1,
           child: Row(
@@ -56,7 +55,7 @@ class MyPostPopup extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onSelected: (option) {
         if (option == 1) {
-          Navigator.of(context).pushNamed(routes.addCommunityPost, arguments: _post);
+          Navigator.of(context).pushNamed(routes.addCommunityPost, arguments: {'post': _post});
         } else if (option == 2) {
           showDialog(
             context: context,
@@ -79,10 +78,7 @@ class MyPostPopup extends StatelessWidget {
                       );
                     },
                     child: Text('Delete'),
-                    style: TextButton.styleFrom(foregroundColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .error),
+                    style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
                   ),
                 ],
               );

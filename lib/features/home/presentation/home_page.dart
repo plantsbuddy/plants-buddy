@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as app_routes;
 import 'package:plants_buddy/core/utils/custom_icons.dart' as custom_icons;
-import 'package:plants_buddy/features/identification/logic/identification_bloc.dart';
+import 'package:plants_buddy/features/identification/logic/identification_bloc/identification_bloc.dart';
+
+import '../../suggestions/logic/suggestions_bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -43,12 +46,24 @@ class HomePage extends StatelessWidget {
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 3,
                       ),
-                      Text(
-                        'Water your plants daily to keep them fresh and green',
-                        overflow: TextOverflow.clip,
-                        style: Theme.of(context).textTheme.caption,
+                      BlocBuilder<SuggestionsBloc, SuggestionsState>(
+                        buildWhen: (previous, current) =>
+                            current.tipOfTheDayLoaded && previous.tipOfTheDay != current.tipOfTheDay,
+                        builder: (context, state) {
+                          return state.tipOfTheDayLoaded
+                              ? Text(
+                                  state.tipOfTheDay,
+                                  overflow: TextOverflow.clip,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                )
+                              : SizedBox(
+                                  height: 15,
+                                  width: 15,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                );
+                        },
                       ),
                     ],
                   ),
@@ -67,7 +82,8 @@ class HomePage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: GestureDetector(
-                  onTap: () => Navigator.of(context).pushNamed(app_routes.identify, arguments: IdentificationType.plant),
+                  onTap: () =>
+                      Navigator.of(context).pushNamed(app_routes.identify, arguments: IdentificationType.plant),
                   child: Column(
                     children: [
                       Container(
@@ -93,7 +109,8 @@ class HomePage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: GestureDetector(
-                  onTap: () => Navigator.of(context).pushNamed(app_routes.identify, arguments: IdentificationType.disease),
+                  onTap: () =>
+                      Navigator.of(context).pushNamed(app_routes.identify, arguments: IdentificationType.disease),
                   child: Column(
                     children: [
                       Container(
@@ -151,25 +168,28 @@ class HomePage extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(color: Color(0xCCEF9A9A), borderRadius: BorderRadius.circular(15)),
-                      padding: EdgeInsets.all(20),
-                      child: Image.asset(
-                        custom_icons.history,
-                        width: 40,
+                child: GestureDetector(
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(color: Color(0xCCEF9A9A), borderRadius: BorderRadius.circular(15)),
+                        padding: EdgeInsets.all(20),
+                        child: Image.asset(
+                          custom_icons.history,
+                          width: 40,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Identification\nHistory',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black54, fontSize: 13),
-                    ),
-                  ],
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Identification\nHistory',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black54, fontSize: 13),
+                      ),
+                    ],
+                  ),
+                  onTap: () => Navigator.of(context).pushNamed(app_routes.identificationHistory),
                 ),
               ),
             ],

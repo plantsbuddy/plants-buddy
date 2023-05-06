@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '../../../authentication/domain/entities/user.dart';
+import '../../../community/domain/entities/user.dart';
 
 class BotanistReview extends Equatable {
   final User? author;

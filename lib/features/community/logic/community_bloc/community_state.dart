@@ -4,43 +4,83 @@ enum CommunityStatus { loading, loaded, notFound }
 
 class CommunityState extends Equatable {
   final bool showOnlyMyPosts;
-  final List<CommunityPost> posts;
-
-  //final List<CommunityPost> myPosts;
+  final List<CommunityPost> _posts;
   final String? searchTerm;
+
+  final bool onlyCommentsIsChecked;
+  final bool newestFirst;
+  final String selectedCategory;
 
   final CommunityStatus status;
 
   const CommunityState.initial()
-      : posts = const [],
-        //  myPosts = const [],
+      : _posts = const [],
         status = CommunityStatus.loading,
         searchTerm = null,
-        showOnlyMyPosts = false;
+        showOnlyMyPosts = false,
+        onlyCommentsIsChecked = false,
+        newestFirst = true,
+        selectedCategory = 'All';
 
   const CommunityState({
-    required this.posts,
-    //  required this.myPosts,
+    required List<CommunityPost> posts,
     required this.status,
     required this.showOnlyMyPosts,
     required this.searchTerm,
-  });
+    required this.onlyCommentsIsChecked,
+    required this.newestFirst,
+    required this.selectedCategory,
+  }) : _posts = posts;
+
+  List<CommunityPost> get posts {
+    final List<CommunityPost> posts = _posts.where((post) {
+      bool pass = true;
+
+      if (onlyCommentsIsChecked) {
+        pass = post.commentsCount! > 0;
+      }
+
+      if (selectedCategory != 'All') {
+        if (post.category == null) {
+          pass = true;
+        } else {
+          pass = post.category == selectedCategory;
+        }
+      }
+
+      return pass;
+    }).toList();
+
+    return newestFirst ? posts : posts.reversed.toList();
+  }
 
   CommunityState copyWith({
     List<CommunityPost>? posts,
-   // List<CommunityPost>? myPosts,
     CommunityStatus? status,
     bool? showOnlyMyPosts,
     String? Function()? searchTerm,
+    bool? onlyCommentsIsChecked,
+    bool? newestFirst,
+    String? selectedCategory,
   }) =>
       CommunityState(
-        posts: posts ?? this.posts,
-        //    myPosts: myPosts ?? this.myPosts,
+        posts: posts ?? _posts,
         status: status ?? this.status,
         showOnlyMyPosts: showOnlyMyPosts ?? this.showOnlyMyPosts,
         searchTerm: searchTerm == null ? this.searchTerm : searchTerm(),
+        newestFirst: newestFirst ?? this.newestFirst,
+        onlyCommentsIsChecked: onlyCommentsIsChecked ?? this.onlyCommentsIsChecked,
+        selectedCategory: selectedCategory ?? this.selectedCategory,
       );
 
   @override
-  List<Object?> get props => [posts, status, showOnlyMyPosts, searchTerm];
+  List<Object?> get props => [
+        _posts,
+        status,
+        showOnlyMyPosts,
+        searchTerm,
+        newestFirst,
+        onlyCommentsIsChecked,
+        selectedCategory,
+      ];
 }
