@@ -1,5 +1,4 @@
 import 'package:plants_buddy/core/errors/exceptions.dart';
-import 'package:plants_buddy/features/shared_preferences/domain/repositories/shared_preferences_repository.dart';
 
 import '../../entities/gardener.dart';
 import '../../repositories/authentication_repository.dart';

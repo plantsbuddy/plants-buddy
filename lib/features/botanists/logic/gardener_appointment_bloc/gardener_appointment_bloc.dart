@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:plants_buddy/core/errors/exceptions.dart';
 import '../../../authentication/domain/entities/botanist.dart';
 import '../../../authentication/domain/entities/user.dart';
 import '../../domain/entities/appointment.dart';
@@ -22,6 +21,7 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
   final GetBotanists _getBotanists;
   final GetSentAppointmentRequestsStream _getSentAppointmentRequestsStream;
   final MarkAppointmentAsCompleted _markAppointmentAsCompleted;
+  final ReportBotanist _reportBotanist;
 
   GardenerAppointmentBloc(
     this._getBotanists,
@@ -29,6 +29,7 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
     this._sendAppointmentRequest,
     this._cancelAppointmentRequest,
     this._markAppointmentAsCompleted,
+    this._reportBotanist,
   ) : super(GardenerAppointmentState.initial()) {
     on<GardenerCancelAppointmentRequest>(onGardenerCancelAppointmentRequest);
     on<GardenerSendAppointmentRequest>(onGardenerSendAppointmentRequest);
@@ -36,6 +37,7 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
     on<GardenerGetBotanists>(onGardenerGetBotanists);
     on<GardenerDeleteAppointmentRequest>(onGardenerDeleteAppointmentRequest);
     on<GardenerMarkAppointmentAsCompleted>(onGardenerMarkAppointmentAsCompleted);
+    on<GardenerReportBotanist>(onGardenerReportBotanist);
   }
 
   FutureOr<void> onGardenerInitializeSentAppointmentRequestsStream(
@@ -82,5 +84,9 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
   FutureOr<void> onGardenerMarkAppointmentAsCompleted(
       GardenerMarkAppointmentAsCompleted event, Emitter<GardenerAppointmentState> emit) async {
     await _markAppointmentAsCompleted(event.appointment);
+  }
+
+  FutureOr<void> onGardenerReportBotanist(GardenerReportBotanist event, Emitter<GardenerAppointmentState> emit) async {
+    await _reportBotanist(botanist: event.botanist, reportText: event.reportText);
   }
 }

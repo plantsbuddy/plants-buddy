@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '../../domain/entities/comment.dart';
+import '../../domain/entities/community_post.dart';
 import '../../domain/usecases/community_usecases.dart';
 
 part 'community_post_event.dart';
@@ -14,14 +15,16 @@ part 'community_post_state.dart';
 class CommunityPostBloc extends Bloc<CommunityPostEvent, CommunityPostState> {
   final GetPostCommentsStream _getPostCommentsStream;
   final AddComment _addComment;
+  final ReportCommunityPost _reportCommunityPost;
+  final ReportComment _reportComment;
 
   CommunityPostBloc(
-    String postId,
-    this._getPostCommentsStream,
-    this._addComment,
-  ) : super(CommunityPostState.initial(postId)) {
+      String postId, this._getPostCommentsStream, this._addComment, this._reportCommunityPost, this._reportComment)
+      : super(CommunityPostState.initial(postId)) {
     on<CommunityPostCommentsStreamInitialize>(onCommunityPostCommentsStreamInitialize);
     on<CommunityPostAddComment>(onCommunityPostAddComment);
+    on<CommunityPostReportPost>(onCommunityPostReportPost);
+    on<CommunityPostReportComment>(onCommunityPostReportComment);
   }
 
   Future<FutureOr<void>> onCommunityPostCommentsStreamInitialize(
@@ -41,5 +44,14 @@ class CommunityPostBloc extends Bloc<CommunityPostEvent, CommunityPostState> {
     } on Exception {
       emit(state.copyWith(commentError: () => 'Please '));
     }
+  }
+
+  FutureOr<void> onCommunityPostReportPost(CommunityPostReportPost event, Emitter<CommunityPostState> emit) async {
+    await _reportCommunityPost(post: event.post, reportText: event.reportText);
+  }
+
+  FutureOr<void> onCommunityPostReportComment(
+      CommunityPostReportComment event, Emitter<CommunityPostState> emit) async {
+    await _reportComment(reportText: event.reportText, post: event.post, comment: event.comment);
   }
 }

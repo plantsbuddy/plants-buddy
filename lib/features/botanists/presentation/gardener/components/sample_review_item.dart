@@ -45,6 +45,57 @@ class SampleReviewItem extends StatelessWidget {
                               review.timeAgo,
                               style: TextStyle(color: Colors.black54),
                             ),
+                            GestureDetector(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Icon(Icons.report, size: 17,color: Colors.grey,),
+                              ),
+                              onTap: () =>showDialog(
+                                context: context,
+                                builder: (_) {
+                                  final controller = TextEditingController();
+                                  return AlertDialog(
+                                    title: Text('Report Review'),
+                                    content: TextField(
+                                      autofocus: false,
+                                      controller: controller,
+                                      decoration: InputDecoration(
+                                        labelText: 'Reason for reporting',
+                                        contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.of(context).pop(),
+                                        child: Text('Cancel'),
+                                        style: TextButton.styleFrom(foregroundColor: Theme.of(context).hintColor),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          if (controller.text.trim().isEmpty) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text('Please provide a reason for reporting...'),
+                                                behavior: SnackBarBehavior.floating,
+                                                duration: Duration(milliseconds: 1500),
+                                              ),
+                                            );
+                                          } else {
+                                            // context
+                                            //     .read<IdentificationBloc>()
+                                            //     .add(IdentificationDownloadFromUrlPressed(controller.text.trim()));
+
+                                            Navigator.of(context).pop();
+                                          }
+                                        },
+                                        child: Text('Report'),
+                                        style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.primary),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(height: 2),

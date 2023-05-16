@@ -15,7 +15,7 @@ MaterialPageRoute route(Object? botanist) {
     builder: (_) {
       return BlocProvider<BotanistReviewsBloc>(
         create: (_) =>
-            BotanistReviewsBloc(botanist: botanist, sl(), sl())..add(BotanistReviewsInitializeReviewsStream()),
+            BotanistReviewsBloc(botanist: botanist, sl(), sl(), sl())..add(BotanistReviewsInitializeReviewsStream()),
         child: ReviewsScreen(),
       );
     },

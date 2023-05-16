@@ -17,6 +17,59 @@ class CommunityPostDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Post Details'),
+        actions: [
+          InkWell(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+              child: Text('Report'),
+            ),
+            onTap: () => showDialog(
+              context: context,
+              builder: (_) {
+                final controller = TextEditingController();
+                return AlertDialog(
+                  title: Text('Report Post'),
+                  content: TextField(
+                    autofocus: false,
+                    controller: controller,
+                    decoration: InputDecoration(
+                      labelText: 'Reason for reporting',
+                      contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text('Cancel'),
+                      style: TextButton.styleFrom(foregroundColor: Theme.of(context).hintColor),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        if (controller.text.trim().isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Please provide a reason for reporting...'),
+                              behavior: SnackBarBehavior.floating,
+                              duration: Duration(milliseconds: 1500),
+                            ),
+                          );
+                        } else {
+                          // context
+                          //     .read<IdentificationBloc>()
+                          //     .add(IdentificationDownloadFromUrlPressed(controller.text.trim()));
+
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: Text('Report'),
+                      style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.primary),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [

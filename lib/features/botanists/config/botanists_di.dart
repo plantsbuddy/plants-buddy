@@ -22,6 +22,8 @@ void _initUseCases() {
   sl.registerLazySingleton<RejectAppointmentRequest>(() => RejectAppointmentRequest(sl()));
   sl.registerLazySingleton<SendAppointmentRequest>(() => SendAppointmentRequest(sl()));
   sl.registerLazySingleton<MarkAppointmentAsCompleted>(() => MarkAppointmentAsCompleted(sl()));
+  sl.registerLazySingleton<ReportBotanistReview>(() => ReportBotanistReview(sl()));
+  sl.registerLazySingleton<ReportBotanist>(() => ReportBotanist(sl()));
 }
 
 void _initRepositories() {

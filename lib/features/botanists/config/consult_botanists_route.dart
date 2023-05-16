@@ -16,14 +16,13 @@ MaterialPageRoute route(Object? data) {
   final authenticationBloc = data['authentication_bloc'] as AuthenticationBloc;
   final paymentBloc = data['payment_bloc'] as PaymentBloc;
 
-
   return MaterialPageRoute(
     builder: (_) {
       return MultiBlocProvider(
         providers: [
           BlocProvider<GardenerAppointmentBloc>(
-            create: (_) =>
-                GardenerAppointmentBloc(sl(), sl(), sl(), sl(),sl())..add(GardenerInitializeSentAppointmentRequestsStream()),
+            create: (_) => GardenerAppointmentBloc(sl(), sl(), sl(), sl(), sl(), sl())
+              ..add(GardenerInitializeSentAppointmentRequestsStream()),
             lazy: false,
           ),
           BlocProvider.value(value: authenticationBloc),

@@ -35,6 +35,7 @@ class AuthenticationDataSource implements AuthenticationRepository {
         'type': 'gardener',
         'name': gardener.username,
         'email': gardener.email,
+        'blocked': false,
         'password': gardener.password,
         'pictureUrl': 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png',
       });
@@ -75,6 +76,7 @@ class AuthenticationDataSource implements AuthenticationRepository {
         'city': botanist.city,
         'description': botanist.description,
         'consultation_charges': botanist.consultationCharges,
+        'blocked': false,
       });
 
       await _auth.signOut();

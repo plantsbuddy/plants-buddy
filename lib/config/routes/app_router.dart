@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 
 import 'app_routes.dart' as app_routes;
 
+import 'package:plants_buddy/features/admin/config/admin_home_route.dart' as admin;
 import 'package:plants_buddy/features/authentication/config/authentication_route.dart' as authentication;
 import 'package:plants_buddy/features/home/config/home_route.dart' as home;
 import 'package:plants_buddy/features/botanists/config/attend_gardeners_route.dart' as consult_gardeners;
@@ -15,7 +16,7 @@ import 'package:plants_buddy/features/identification/config/identification_resul
 import 'package:plants_buddy/features/identification/config/identification_history_route.dart'
     as identification_history;
 import 'package:plants_buddy/features/identification/config/history_identification_results_route.dart'
-as history_identification_results;
+    as history_identification_results;
 import 'package:plants_buddy/features/identification/config/plant_details_route.dart' as plant_details;
 import 'package:plants_buddy/features/identification/config/disease_details_route.dart' as disease_details;
 import 'package:plants_buddy/features/chat/config/chat_route.dart' as chat;
@@ -28,6 +29,11 @@ import 'package:plants_buddy/features/collections/config/collection_plants_route
 import 'package:plants_buddy/features/collections/config/add_plant_to_collection_route.dart' as add_plant_to_collection;
 import 'package:plants_buddy/features/suggestions/config/suggestions_route.dart' as suggestions;
 import 'package:plants_buddy/features/suggestions/config/full_guide_route.dart' as full_guide;
+import 'package:plants_buddy/features/admin/config/blocked_users_route.dart' as blocked_users;
+import 'package:plants_buddy/features/admin/config/reported_botanists_route.dart' as reported_botanists;
+import 'package:plants_buddy/features/admin/config/reported_comments_route.dart' as reported_comments;
+import 'package:plants_buddy/features/admin/config/reported_posts_route.dart' as reported_posts;
+import 'package:plants_buddy/features/admin/config/reported_ratings_route.dart' as reported_ratings;
 
 class AppRouter {
   final sl = GetIt.instance;
@@ -36,6 +42,9 @@ class AppRouter {
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case app_routes.adminHome:
+        return admin.route();
+
       case app_routes.authentication:
         return authentication.route();
 
@@ -69,7 +78,6 @@ class AppRouter {
       case app_routes.identificationResults:
         return identification_results.route(settings.arguments);
 
-
       case app_routes.historyIdentificationResults:
         return history_identification_results.route(settings.arguments);
 
@@ -102,6 +110,21 @@ class AppRouter {
 
       case app_routes.fullGuide:
         return full_guide.route(settings.arguments);
+
+      case app_routes.reportedPosts:
+        return reported_posts.route(settings.arguments);
+
+      case app_routes.reportedComments:
+        return reported_comments.route(settings.arguments);
+
+      case app_routes.reportedRatings:
+        return reported_ratings.route(settings.arguments);
+
+      case app_routes.reportedBotanists:
+        return reported_botanists.route(settings.arguments);
+
+      case app_routes.blockedUsers:
+        return blocked_users.route(settings.arguments);
 
       default:
         return home.route();

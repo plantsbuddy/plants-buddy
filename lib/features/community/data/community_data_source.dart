@@ -9,7 +9,7 @@ import 'package:plants_buddy/features/community/domain/repositories/community_re
 import '../domain/entities/comment.dart';
 import '../domain/entities/user.dart';
 
-class CommunityDataSource implements CommunityRepository {
+class CommunityDataSource implements CommunityService {
   final CollectionReference _postsCollection;
   final CollectionReference _usersCollection;
   final StreamController<List<CommunityPost>> _postsController;
@@ -117,6 +117,7 @@ class CommunityDataSource implements CommunityRepository {
         );
 
         Comment comment = Comment(
+          id: document.id,
           author: author,
           body: body,
           postedAt: postedAt,
@@ -193,5 +194,38 @@ class CommunityDataSource implements CommunityRepository {
       'description': description,
     });
     await _uploadImage(postRef: postRef, imagePath: imagePath);
+  }
+
+  @override
+  Future<void> reportComment(
+      {required CommunityPost post, required Comment comment, required String reportText}) async {
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+    final reportedCommentsCollection = FirebaseFirestore.instance.collection('reported_community_comments');
+
+    final reportedCommentDoc = await reportedCommentsCollection.doc(comment.id).get();
+
+    if (!reportedCommentDoc.exists) {
+      reportedCommentsCollection.doc(comment.id).set({
+        'post_id': post.id,
+      });
+    }
+
+    // If user has already reported, then only the report_text will be changed
+    reportedCommentsCollection.doc(comment.id).collection('reporters').doc(currentUserId).set({
+      'report_text': reportText,
+    });
+  }
+
+  @override
+  Future<void> reportCommunityPost({required CommunityPost post, required String reportText}) async {
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+    final reportedPostsCollection = FirebaseFirestore.instance.collection('reported_community_posts');
+
+    // If user has already reported, then only the report_text will be changed
+    reportedPostsCollection.doc(post.id).collection('reporters').doc(currentUserId).set({
+      'report_text': reportText,
+    });
   }
 }

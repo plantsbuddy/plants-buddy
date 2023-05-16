@@ -16,11 +16,13 @@ part 'botanist_reviews_state.dart';
 class BotanistReviewsBloc extends Bloc<BotanistReviewsEvent, BotanistReviewsState> {
   final GetBotanistReviewsStream _getBotanistReviewsStream;
   final PostBotanistReview _postBotanistReview;
+  final ReportBotanistReview _reportBotanistReview;
 
-  BotanistReviewsBloc(this._getBotanistReviewsStream, this._postBotanistReview, {required Botanist botanist})
+  BotanistReviewsBloc(this._getBotanistReviewsStream, this._postBotanistReview,this._reportBotanistReview, {required Botanist botanist})
       : super(BotanistReviewsState.initial(botanist)) {
     on<BotanistReviewsInitializeReviewsStream>(onBotanistReviewsInitializeReviewsStream);
     on<BotanistReviewsPostReview>(onBotanistReviewsPostReview);
+    on<BotanistReviewsReportReview>(onBotanistReviewsReportReview);
   }
 
   Future<FutureOr<void>> onBotanistReviewsInitializeReviewsStream(
@@ -43,5 +45,9 @@ class BotanistReviewsBloc extends Bloc<BotanistReviewsEvent, BotanistReviewsStat
       review: event.review,
       stars: event.stars,
     );
+  }
+
+  FutureOr<void> onBotanistReviewsReportReview(BotanistReviewsReportReview event, Emitter<BotanistReviewsState> emit) async {
+    await _reportBotanistReview(reportText: event.reportText, botanist: event.botanist, review: event.review);
   }
 }

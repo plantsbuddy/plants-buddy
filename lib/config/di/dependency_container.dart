@@ -1,3 +1,4 @@
+import 'package:plants_buddy/features/admin/config/admin_home_di.dart' as admin;
 import 'package:plants_buddy/features/authentication/config/authentication_di.dart' as authentication;
 import 'package:plants_buddy/features/botanists/config/botanists_di.dart' as botanists;
 import 'package:plants_buddy/features/chat/config/chat_di.dart' as chat;
@@ -10,6 +11,7 @@ import 'package:plants_buddy/features/payment/config/payment_di.dart' as payment
 import 'package:plants_buddy/features/suggestions/config/suggestions_di.dart' as suggestions;
 
 Future<void> init() async {
+  admin.init();
   authentication.init();
   botanists.init();
   chat.init();

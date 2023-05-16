@@ -14,7 +14,8 @@ MaterialPageRoute route(Object? post) {
   return MaterialPageRoute(
     builder: (_) {
       return BlocProvider<CommunityPostBloc>(
-        create: (context) => CommunityPostBloc(post.id!, sl(), sl())..add(CommunityPostCommentsStreamInitialize()),
+        create: (context) =>
+            CommunityPostBloc(post.id!, sl(), sl(), sl(), sl())..add(CommunityPostCommentsStreamInitialize()),
         child: CommunityPostDetailsScreen(post),
       );
     },

@@ -10,3 +10,18 @@ class CommunityPostAddComment extends CommunityPostEvent {
 
   CommunityPostAddComment(this.body);
 }
+
+class CommunityPostReportPost extends CommunityPostEvent {
+  final String reportText;
+  final CommunityPost post;
+
+  CommunityPostReportPost({required this.reportText, required this.post});
+}
+
+class CommunityPostReportComment extends CommunityPostEvent {
+  final String reportText;
+  final CommunityPost post;
+  final Comment comment;
+
+  CommunityPostReportComment({required this.reportText, required this.post, required this.comment});
+}

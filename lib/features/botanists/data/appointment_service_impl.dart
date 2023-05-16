@@ -100,6 +100,7 @@ class AppointmentServiceImpl implements AppointmentService {
         );
 
         final review = BotanistReview(
+          id: reviewMap.id,
           author: author,
           review: reviewMap.get('review'),
           time: reviewMap.get('time'),
@@ -211,5 +212,38 @@ class AppointmentServiceImpl implements AppointmentService {
   @override
   Future<void> completeAppointment(Appointment appointment) async {
     await _appointmentsRef.doc(appointment.id).update({'status': 2});
+  }
+
+  @override
+  Future<void> reportBotanist({required Botanist botanist, required String reportText}) async {
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+    final reportedBotanistsCollection = FirebaseFirestore.instance.collection('reported_botanists');
+
+    // If user has already reported, then only the report_text will be changed
+    reportedBotanistsCollection.doc(botanist.uid).collection('reporters').doc(currentUserId).set({
+      'report_text': reportText,
+    });
+  }
+
+  @override
+  Future<void> reportBotanistReview(
+      {required Botanist botanist, required BotanistReview review, required String reportText}) async {
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+    final reportedReviewsCollection = FirebaseFirestore.instance.collection('reported_botanist_reviews');
+
+    final reportedReviewDoc = await reportedReviewsCollection.doc(review.id).get();
+
+    if (!reportedReviewDoc.exists) {
+      reportedReviewsCollection.doc(review.id).set({
+        'botanist_id': botanist.uid,
+      });
+    }
+
+    // If user has already reported, then only the report_text will be changed
+    reportedReviewsCollection.doc(review.id).collection('reporters').doc(currentUserId).set({
+      'report_text': reportText,
+    });
   }
 }

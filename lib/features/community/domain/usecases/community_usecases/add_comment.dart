@@ -6,7 +6,7 @@ import 'package:plants_buddy/features/community/domain/repositories/community_re
 import '../../entities/comment.dart';
 
 class AddComment {
-  final CommunityRepository _communityRepository;
+  final CommunityService _communityRepository;
 
   AddComment(this._communityRepository);
 

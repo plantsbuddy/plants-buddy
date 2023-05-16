@@ -37,7 +37,12 @@ class GardenerSendAppointmentRequest extends GardenerAppointmentEvent {
   });
 }
 
+class GardenerReportBotanist extends GardenerAppointmentEvent {
+  final Botanist botanist;
+  final String reportText;
 
+  GardenerReportBotanist({required this.botanist, required this.reportText});
+}
 
 class GardenerGetBotanists extends GardenerAppointmentEvent {}
 

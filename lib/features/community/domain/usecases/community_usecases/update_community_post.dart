@@ -3,7 +3,7 @@ import 'package:plants_buddy/core/errors/exceptions.dart';
 import '../../repositories/community_repository.dart';
 
 class UpdateCommunityPost {
-  final CommunityRepository _communityRepository;
+  final CommunityService _communityRepository;
 
   UpdateCommunityPost(this._communityRepository);
 

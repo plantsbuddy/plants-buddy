@@ -4,7 +4,7 @@ import '../../entities/community_post.dart';
 import '../../repositories/community_repository.dart';
 
 class SearchCommunityPosts {
-  final CommunityRepository _communityRepository;
+  final CommunityService _communityRepository;
 
   SearchCommunityPosts(this._communityRepository);
 

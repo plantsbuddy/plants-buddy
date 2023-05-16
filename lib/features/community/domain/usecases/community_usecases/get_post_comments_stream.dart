@@ -5,7 +5,7 @@ import 'package:plants_buddy/features/community/domain/entities/community_post.d
 import '../../repositories/community_repository.dart';
 
 class GetPostCommentsStream {
-  final CommunityRepository _communityRepository;
+  final CommunityService _communityRepository;
   GetPostCommentsStream(this._communityRepository);
 
   Future<Stream<List<Comment>>> call(String postId) async {

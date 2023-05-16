@@ -4,7 +4,7 @@ import 'package:plants_buddy/features/community/domain/entities/community_post.d
 import '../../repositories/community_repository.dart';
 
 class GetCommunityPostsStream {
-  final CommunityRepository _communityRepository;
+  final CommunityService _communityRepository;
   GetCommunityPostsStream(this._communityRepository);
 
   Future<Stream<List<CommunityPost>>> call() async {

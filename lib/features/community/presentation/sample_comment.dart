@@ -40,7 +40,58 @@ class SamplePostComment extends StatelessWidget {
                     ),
                     Text(
                       _comment.time,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    GestureDetector(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Icon(Icons.report, size: 17,color: Colors.grey,),
+                      ),
+                      onTap: () =>showDialog(
+                        context: context,
+                        builder: (_) {
+                          final controller = TextEditingController();
+                          return AlertDialog(
+                            title: Text('Report Comment'),
+                            content: TextField(
+                              autofocus: false,
+                              controller: controller,
+                              decoration: InputDecoration(
+                                labelText: 'Reason for reporting',
+                                contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('Cancel'),
+                                style: TextButton.styleFrom(foregroundColor: Theme.of(context).hintColor),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  if (controller.text.trim().isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Please provide a reason for reporting...'),
+                                        behavior: SnackBarBehavior.floating,
+                                        duration: Duration(milliseconds: 1500),
+                                      ),
+                                    );
+                                  } else {
+                                    // context
+                                    //     .read<IdentificationBloc>()
+                                    //     .add(IdentificationDownloadFromUrlPressed(controller.text.trim()));
+
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                                child: Text('Report'),
+                                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.primary),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

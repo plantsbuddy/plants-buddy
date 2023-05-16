@@ -24,4 +24,9 @@ abstract class AppointmentService {
   Future<void> postBotanistReview({required String botanist, required BotanistReview botanistReview});
 
   Future<Stream<List<BotanistReview>>> getBotanistReviews(Botanist botanist);
+
+  Future<void> reportBotanist({required Botanist botanist, required String reportText});
+
+  Future<void> reportBotanistReview(
+      {required Botanist botanist, required BotanistReview review, required String reportText});
 }

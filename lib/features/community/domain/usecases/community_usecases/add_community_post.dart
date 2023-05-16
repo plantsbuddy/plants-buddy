@@ -6,7 +6,7 @@ import 'package:plants_buddy/features/community/domain/entities/community_post.d
 import '../../repositories/community_repository.dart';
 
 class AddCommunityPost {
-  final CommunityRepository _communityRepository;
+  final CommunityService _communityRepository;
 
   AddCommunityPost(this._communityRepository);
 

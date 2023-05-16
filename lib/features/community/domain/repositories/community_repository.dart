@@ -1,7 +1,7 @@
 import '../entities/comment.dart';
 import '../entities/community_post.dart';
 
-abstract class CommunityRepository {
+abstract class CommunityService {
   Future<Stream<List<CommunityPost>>> getCommunityPostsStream();
 
   Future<List<CommunityPost>> getMyCommunityPosts();
@@ -28,4 +28,8 @@ abstract class CommunityRepository {
     String? category,
     String? imagePath,
   });
+
+  Future<void> reportComment({required CommunityPost post, required Comment comment, required String reportText});
+
+  Future<void> reportCommunityPost({required CommunityPost post, required String reportText});
 }

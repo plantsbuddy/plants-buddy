@@ -20,8 +20,10 @@ void _initUseCases() {
   sl.registerLazySingleton<GetMyCommunityPosts>(() => GetMyCommunityPosts(sl()));
   sl.registerLazySingleton<SearchCommunityPosts>(() => SearchCommunityPosts(sl()));
   sl.registerLazySingleton<UpdateCommunityPost>(() => UpdateCommunityPost(sl()));
+  sl.registerLazySingleton<ReportComment>(() => ReportComment(sl()));
+  sl.registerLazySingleton<ReportCommunityPost>(() => ReportCommunityPost(sl()));
 }
 
 void _initRepositories() {
-  sl.registerLazySingleton<CommunityRepository>(() => CommunityDataSource());
+  sl.registerLazySingleton<CommunityService>(() => CommunityDataSource());
 }
