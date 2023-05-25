@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/features/community/domain/entities/community_post.dart';
+import 'package:plants_buddy/features/community/logic/community_post_bloc/community_post_bloc.dart';
 
 import '../logic/community_bloc/community_bloc.dart';
 import 'comments_list.dart';
@@ -36,6 +39,7 @@ class CommunityPostDetailsScreen extends StatelessWidget {
                       labelText: 'Reason for reporting',
                       contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     ),
+                    textCapitalization: TextCapitalization.sentences,
                   ),
                   actions: [
                     TextButton(
@@ -54,11 +58,19 @@ class CommunityPostDetailsScreen extends StatelessWidget {
                             ),
                           );
                         } else {
-                          // context
-                          //     .read<IdentificationBloc>()
-                          //     .add(IdentificationDownloadFromUrlPressed(controller.text.trim()));
+                          context
+                              .read<CommunityPostBloc>()
+                              .add(CommunityPostReportPost(reportText: controller.text, post: _post));
 
                           Navigator.of(context).pop();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Post reported!'),
+                              behavior: SnackBarBehavior.floating,
+                              duration: Duration(milliseconds: 1500),
+                            ),
+                          );
                         }
                       },
                       child: Text('Report'),
@@ -80,11 +92,16 @@ class CommunityPostDetailsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(_post.imageUrl!),
-                    ),
-                    SizedBox(height: 10),
+                    if (_post.imageUrl != null)
+                      Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(_post.imageUrl!),
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                       child: Row(
@@ -167,7 +184,7 @@ class CommunityPostDetailsScreen extends StatelessWidget {
                               ],
                             ),
                             SizedBox(height: 10),
-                            CommentsList(),
+                            CommentsList(_post),
                           ],
                         ),
                       ),

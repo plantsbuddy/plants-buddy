@@ -12,8 +12,8 @@ class VideoCallScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ZegoUIKitPrebuiltCall(
-      appID: 1726328163,
-      appSign: '63d926efed87785da8233ee6ea43c25da886cc704084b062f8c7838824527533',
+      appID: 752059411,
+      appSign: 'd1844344a1f9b8cd0fa930c543c008174d1bed9ea5f8719fdf4de37b73716481',
       userID: currentUser.uid,
       userName: currentUser.username,
       callID: callID,

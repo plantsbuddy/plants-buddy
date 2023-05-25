@@ -10,6 +10,8 @@ import 'package:plants_buddy/features/authentication/domain/entities/gardener.da
 
 import '../domain/entities/user.dart';
 import '../domain/repositories/authentication_repository.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
 class AuthenticationDataSource implements AuthenticationRepository {
   final FirebaseAuth _auth;
@@ -37,7 +39,7 @@ class AuthenticationDataSource implements AuthenticationRepository {
         'email': gardener.email,
         'blocked': false,
         'password': gardener.password,
-        'pictureUrl': 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png',
+        'pictureUrl': 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
       });
 
       await _auth.signOut();
@@ -69,7 +71,7 @@ class AuthenticationDataSource implements AuthenticationRepository {
         'type': 'botanist',
         'name': botanist.username,
         'email': botanist.email,
-        'pictureUrl': 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png',
+        'pictureUrl': 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
         'specialty': botanist.specialty,
         'qualification': botanist.qualification,
         'phone_number': botanist.phoneNumber,
@@ -77,6 +79,7 @@ class AuthenticationDataSource implements AuthenticationRepository {
         'description': botanist.description,
         'consultation_charges': botanist.consultationCharges,
         'blocked': false,
+        'pending_appointments': [],
       });
 
       await _auth.signOut();
@@ -193,7 +196,7 @@ class AuthenticationDataSource implements AuthenticationRepository {
 
       await userRef.update({'pictureUrl': imageUrl});
     } else if (picDeleted && selectedImagePath == null) {
-      await userRef.update({'pictureUrl': 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png'});
+      await userRef.update({'pictureUrl': 'https://cdn-icons-png.flaticon.com/512/149/149071.png'});
     }
 
     await userRef.update({'name': name});
@@ -205,5 +208,6 @@ class AuthenticationDataSource implements AuthenticationRepository {
   @override
   Future<void> logoutUser() async {
     await _auth.signOut();
+    ZegoUIKitPrebuiltCallInvitationService().uninit();
   }
 }

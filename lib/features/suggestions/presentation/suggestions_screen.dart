@@ -22,15 +22,7 @@ class _SuggestionsScreenState extends State<SuggestionsScreen> {
         title: Text(currentPage == 0 ? 'Weather Based Suggestions' : 'Plantation Guides'),
       ),
       body: BlocBuilder<SuggestionsBloc, SuggestionsState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case SuggestionsStatus.loading:
-              return Center(child: CircularProgressIndicator());
-
-            case SuggestionsStatus.loaded:
-              return currentPage == 0 ? SuggestionsPage() : GuidesPage();
-          }
-        },
+        builder: (context, state) => currentPage == 0 ? SuggestionsPage() : GuidesPage(),
       ),
       bottomNavigationBar: NavigationBar(
         destinations: const [

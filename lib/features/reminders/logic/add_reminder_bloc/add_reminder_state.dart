@@ -1,101 +1,113 @@
 part of 'add_reminder_bloc.dart';
 
+enum ReminderPeriod { once, daily, weekly, monthly }
+
 @immutable
 class AddReminderState extends Equatable {
   final String title;
-  final int? hour;
-  final int? minute;
-  final int? dayPeriod;
-  final int? date;
+  final String description;
+  final TimeOfDay? time;
+  final DateTime? date;
   final String? titleError;
+  final String? descriptionError;
   final bool dateError;
   final bool timeError;
+  final bool timePastError;
   final bool dialogShowing;
   final Reminder? originalReminder;
 
-  //final List<String> repetitionDays;
+  final ReminderPeriod repetitionPeriod;
 
   AddReminderState.create()
       : title = '',
-        hour = null,
-        minute = null,
-        dayPeriod = null,
+        description = '',
+        time = null,
         date = null,
         titleError = null,
+        descriptionError = null,
         dateError = false,
         timeError = false,
+        timePastError = false,
         dialogShowing = false,
-        // repetitionDays = [],
+        repetitionPeriod = ReminderPeriod.once,
         originalReminder = null;
 
   AddReminderState.update(Reminder this.originalReminder)
       : title = originalReminder.title,
-        hour = originalReminder.hour,
-        minute = originalReminder.minute,
-        dayPeriod = originalReminder.dayPeriod,
-        date = originalReminder.date,
-        // repetitionDays = originalReminder.repetitionDays,
+        description = originalReminder.description,
+        time = originalReminder.timeOfDay,
+        date = originalReminder.time,
+        repetitionPeriod = originalReminder.repetitionPeriod,
         titleError = null,
+        descriptionError = null,
         dateError = false,
         dialogShowing = false,
+        timePastError = false,
         timeError = false;
 
   const AddReminderState({
     required this.title,
-    required this.hour,
-    required this.minute,
-    required this.dayPeriod,
+    required this.description,
+    required this.time,
     required this.date,
     required this.titleError,
+    required this.descriptionError,
     required this.dateError,
     required this.timeError,
+    required this.timePastError,
     required this.dialogShowing,
-    // required this.repetitionDays,
+    required this.repetitionPeriod,
     this.originalReminder,
   });
 
-  String get formattedDate =>
-      date == null ? 'Select date' : DateFormat('d MMMM, yyyy').format(DateTime.fromMillisecondsSinceEpoch(date!));
+  String get formattedDate => date == null ? 'Select date' : DateFormat('d MMMM, yyyy').format(date!);
 
-  String get formattedTime => hour == null ? 'Select time' : '$hour : $minute ${dayPeriod == 0 ? 'AM' : 'PM'}';
+  String get formattedTime =>
+      time == null
+          ? 'Select time'
+          : DateFormat('h : mm a').format(DateTime(0, 1, 1, time!.hour, time!.minute));
 
   AddReminderState copyWith({
     String? title,
-    int? hour,
-    int? minute,
-    int? dayPeriod,
-    int? date,
+    String? description,
+    TimeOfDay? time,
+    DateTime? date,
     String? Function()? titleError,
+    String? Function()? descriptionError,
     bool? dateError,
     bool? timeError,
+    bool? timePastError,
     bool? dialogShowing,
-    List<String>? repetitionDays,
+    ReminderPeriod? repetitionPeriod,
   }) =>
       AddReminderState(
         title: title ?? this.title,
-        hour: hour ?? this.hour,
-        minute: minute ?? this.minute,
-        dayPeriod: dayPeriod ?? this.dayPeriod,
+        time: time ?? this.time,
+        timePastError: timePastError ?? this.timePastError,
         date: date ?? this.date,
         originalReminder: originalReminder,
         titleError: titleError == null ? this.titleError : titleError(),
         dateError: dateError ?? this.dateError,
         timeError: timeError ?? this.timeError,
         dialogShowing: dialogShowing ?? this.dialogShowing,
-        //    repetitionDays: repetitionDays ?? this.repetitionDays,
+        repetitionPeriod: repetitionPeriod ?? this.repetitionPeriod,
+        description: description ?? this.description,
+        descriptionError: descriptionError == null ? this.descriptionError : descriptionError(),
       );
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         title,
-        hour,
-        minute,
-        dayPeriod,
+        time,
         date,
         titleError,
         dateError,
         timeError,
+        timePastError,
         dialogShowing,
-        //repetitionDays,
+        repetitionPeriod,
+        description,
+        descriptionError,
       ];
 }

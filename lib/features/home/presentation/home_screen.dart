@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,8 +13,21 @@ import 'package:plants_buddy/features/reminders/presentation/reminders_page.dart
 import '../../../core/utils/strings.dart' as strings;
 import 'more_page.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool isBlockedDialogHidden = true;
+
+  @override
+  void initState() {
+    listenForUserBlock(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,5 +104,42 @@ class HomeScreen extends StatelessWidget {
       case BottomNavPages.more:
         break;
     }
+  }
+
+  void listenForUserBlock(BuildContext context) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .snapshots()
+        .listen((snapshot) {
+      final isBlocked = snapshot.get('blocked') as bool;
+
+      if (isBlocked && isBlockedDialogHidden) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) {
+            return AlertDialog(
+              title: Text('You got blocked'),
+              content: Text(
+                  'You have been blocked by an admin from using the app, due to the violation of community guidelines of the app'),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    setState(() => isBlockedDialogHidden = true);
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Okay'),
+                  style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                ),
+              ],
+            );
+          },
+        );
+
+        setState(() => isBlockedDialogHidden = false);
+      }
+    });
   }
 }

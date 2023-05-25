@@ -88,6 +88,7 @@ class _AddPlantToCollectionScreenState extends State<AddPlantToCollectionScreen>
                 hintStyle: Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.grey),
                 contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               ),
+              textCapitalization: TextCapitalization.words,
             ),
             SizedBox(height: 15),
             TextField(
@@ -102,6 +103,7 @@ class _AddPlantToCollectionScreenState extends State<AddPlantToCollectionScreen>
                 ),
                 contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               ),
+              textCapitalization: TextCapitalization.words,
             ),
             SizedBox(height: 15),
             TextField(
@@ -116,6 +118,7 @@ class _AddPlantToCollectionScreenState extends State<AddPlantToCollectionScreen>
                 ),
                 contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               ),
+              textCapitalization: TextCapitalization.words,
             ),
             SizedBox(height: 15),
             TextField(
@@ -355,7 +358,7 @@ class _AddPlantToCollectionScreenState extends State<AddPlantToCollectionScreen>
 
   Future<void> pickPicture() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 10);
 
     if (image != null) {
       setState(() {

@@ -5,5 +5,8 @@ export 'admin_usecases/delete_reported_post.dart';
 export 'admin_usecases/get_reported_comments_stream.dart';
 export 'admin_usecases/get_reported_posts_stream.dart';
 export 'admin_usecases/get_reported_ratings_stream.dart';
+export 'admin_usecases/get_reported_botanists_stream.dart';
+export 'admin_usecases/get_reports.dart';
 export 'admin_usecases/get_blocked_users_stream.dart';
 export 'admin_usecases/unblock_user.dart';
+export 'admin_usecases/ignore_report.dart';

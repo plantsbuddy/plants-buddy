@@ -10,6 +10,7 @@ import 'package:plants_buddy/features/botanists/domain/entities/botanist_review.
 
 import '../../authentication/domain/entities/user.dart';
 import '../../community/domain/entities/user.dart' as community_user;
+import '../domain/entities/appointment_slot.dart';
 import '../domain/repositories/appointment_service.dart';
 
 class AppointmentServiceImpl implements AppointmentService {
@@ -51,17 +52,29 @@ class AppointmentServiceImpl implements AppointmentService {
   }
 
   @override
+  Future<List<int>> getPendingAppointmentsOfBotanist(Botanist botanist) async {
+    final details = await _usersRef.doc(botanist.uid).get();
+
+    return List<int>.from(details.get('pending_appointments'));
+  }
+
+  @override
   Future<void> sendAppointmentRequest(Appointment appointment) async {
     await _appointmentsRef.add({
       'gardener': appointment.gardener.uid,
       'botanist': appointment.botanist.uid,
       'notes': appointment.notes,
-      'hour': appointment.hour,
-      'minute': appointment.minute,
-      'dayPeriod': appointment.dayPeriod,
-      'date': appointment.date,
+      'time': appointment.slot.startingTime,
+      //'date': appointment.date,
       'status': 0,
     });
+
+    final details = await _usersRef.doc(appointment.botanist.uid).get();
+
+    final updatedPendingAppointments = List<int>.from(details.get('pending_appointments'))
+      ..add(appointment.slot.startingTime);
+
+    await _usersRef.doc(appointment.botanist.uid).update({'pending_appointments': updatedPendingAppointments});
   }
 
   @override
@@ -73,6 +86,13 @@ class AppointmentServiceImpl implements AppointmentService {
     // final status = appointmentMap.get('status') as int;
 
     await appointmentRef.update({'status': 3});
+
+    final details = await _usersRef.doc(appointment.botanist.uid).get();
+
+    final updatedPendingAppointments = List<int>.from(details.get('pending_appointments'))
+      ..remove(appointment.slot.startingTime);
+
+    await _usersRef.doc(appointment.botanist.uid).update({'pending_appointments': updatedPendingAppointments});
   }
 
   @override
@@ -83,6 +103,13 @@ class AppointmentServiceImpl implements AppointmentService {
   @override
   Future<void> rejectAppointmentRequest(Appointment appointment) async {
     await _appointmentsRef.doc(appointment.id).update({'status': 4});
+
+    final details = await _usersRef.doc(appointment.botanist.uid).get();
+
+    final updatedPendingAppointments = List<int>.from(details.get('pending_appointments'))
+      ..remove(appointment.slot.startingTime);
+
+    await _usersRef.doc(appointment.botanist.uid).update({'pending_appointments': updatedPendingAppointments});
   }
 
   @override
@@ -191,15 +218,15 @@ class AppointmentServiceImpl implements AppointmentService {
     );
 
     return Appointment(
-      id: appointmentRequestMap.id,
-      gardener: gardener,
-      botanist: botanist,
-      notes: appointmentRequestMap.get('notes') as String,
-      hour: appointmentRequestMap.get('hour') as int,
-      minute: appointmentRequestMap.get('minute') as int,
-      dayPeriod: appointmentRequestMap.get('dayPeriod') as int,
-      date: appointmentRequestMap.get('date') as int,
-      status: AppointmentStatus.values[appointmentRequestMap.get('status') as int],
+        id: appointmentRequestMap.id,
+        gardener: gardener,
+        botanist: botanist,
+        notes: appointmentRequestMap.get('notes') as String,
+        slot: AppointmentSlot(appointmentRequestMap.get('time') as int),
+        //date: appointmentRequestMap.get('date') as int,
+        status: AppointmentStatus.values[appointmentRequestMap.get('status') as int],
+        minutes: (appointmentRequestMap.data() as Map<String, dynamic>).keys.contains('minutes') ? appointmentRequestMap
+            .get('minutes') : null,
     );
   }
 
@@ -210,8 +237,15 @@ class AppointmentServiceImpl implements AppointmentService {
   }
 
   @override
-  Future<void> completeAppointment(Appointment appointment) async {
-    await _appointmentsRef.doc(appointment.id).update({'status': 2});
+  Future<void> completeAppointment({required Appointment appointment, required String minutes}) async {
+    await _appointmentsRef.doc(appointment.id).update({'status': 2, 'minutes': minutes});
+
+    final details = await _usersRef.doc(appointment.botanist.uid).get();
+
+    final updatedPendingAppointments = List<int>.from(details.get('pending_appointments'))
+      ..remove(appointment.slot.startingTime);
+
+    await _usersRef.doc(appointment.botanist.uid).update({'pending_appointments': updatedPendingAppointments});
   }
 
   @override
@@ -220,30 +254,44 @@ class AppointmentServiceImpl implements AppointmentService {
 
     final reportedBotanistsCollection = FirebaseFirestore.instance.collection('reported_botanists');
 
+    await reportedBotanistsCollection.doc(botanist.uid).set({'id': botanist.uid});
+
     // If user has already reported, then only the report_text will be changed
-    reportedBotanistsCollection.doc(botanist.uid).collection('reporters').doc(currentUserId).set({
+    await reportedBotanistsCollection.doc(botanist.uid).collection('reporters').doc(currentUserId).set({
       'report_text': reportText,
+      'time': DateTime
+          .now()
+          .millisecondsSinceEpoch,
     });
   }
 
   @override
   Future<void> reportBotanistReview(
       {required Botanist botanist, required BotanistReview review, required String reportText}) async {
+    // review id is user id of the reviewer
+
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
     final reportedReviewsCollection = FirebaseFirestore.instance.collection('reported_botanist_reviews');
 
-    final reportedReviewDoc = await reportedReviewsCollection.doc(review.id).get();
+    final reportedReviewDocs = await reportedReviewsCollection
+        .where('botanist_id', isEqualTo: botanist.uid)
+        .where('reviewer_id', isEqualTo: review.id)
+        .get();
 
-    if (!reportedReviewDoc.exists) {
-      reportedReviewsCollection.doc(review.id).set({
-        'botanist_id': botanist.uid,
-      });
-    }
+    var reportedReviewDoc = reportedReviewDocs.size == 0
+        ? await reportedReviewsCollection.add({
+      'botanist_id': botanist.uid,
+      'reviewer_id': review.id,
+    })
+        : reportedReviewDocs.docs.first.reference;
 
     // If user has already reported, then only the report_text will be changed
-    reportedReviewsCollection.doc(review.id).collection('reporters').doc(currentUserId).set({
+    await reportedReviewDoc.collection('reporters').doc(currentUserId).set({
       'report_text': reportText,
+      'time': DateTime
+          .now()
+          .millisecondsSinceEpoch,
     });
   }
 }

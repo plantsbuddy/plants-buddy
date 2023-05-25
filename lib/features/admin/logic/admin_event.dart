@@ -5,6 +5,8 @@ abstract class AdminEvent {}
 
 class AdminInitializeReportedPostsStream extends AdminEvent {}
 
+class AdminInitializeReportedBotanistsStream extends AdminEvent {}
+
 class AdminInitializeReportedCommentsStream extends AdminEvent {}
 
 class AdminInitializeReportedRatingsStream extends AdminEvent {}
@@ -39,4 +41,18 @@ class AdminUnblockUser extends AdminEvent {
   final String uid;
 
   AdminUnblockUser(this.uid);
+}
+
+class AdminIgnoreReport extends AdminEvent {
+  final String collectionName;
+  final String docId;
+
+  AdminIgnoreReport({required this.collectionName, required this.docId});
+}
+
+class AdminGetReports extends AdminEvent {
+  final String collection;
+  final String docId;
+
+  AdminGetReports({required this.collection, required this.docId});
 }

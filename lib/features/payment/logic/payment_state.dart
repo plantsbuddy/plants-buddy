@@ -10,6 +10,7 @@ class PaymentState extends Equatable {
   final List<PaymentTransaction> transactions;
   final String? cardNumberError;
   final bool dialogShowing;
+  final Appointment? lastAppointment;
 
   PaymentState({
     required this.status,
@@ -18,6 +19,7 @@ class PaymentState extends Equatable {
     required this.transactions,
     required this.dialogShowing,
     this.cardNumberError,
+    required this.lastAppointment,
   });
 
   PaymentState.initial()
@@ -25,6 +27,7 @@ class PaymentState extends Equatable {
         cardNumber = null,
         dialogShowing = false,
         cardNumberError = null,
+        lastAppointment = null,
         status = PaymentStatus.loading,
         transactions = [];
 
@@ -35,6 +38,7 @@ class PaymentState extends Equatable {
     List<PaymentTransaction>? transactions,
     bool? dialogShowing,
     PaymentStatus? status,
+    Appointment? lastAppointment,
   }) =>
       PaymentState(
         status: status ?? this.status,
@@ -42,9 +46,18 @@ class PaymentState extends Equatable {
         cardNumber: cardNumber ?? this.cardNumber,
         transactions: transactions ?? this.transactions,
         dialogShowing: dialogShowing ?? this.dialogShowing,
+        lastAppointment: lastAppointment ?? this.lastAppointment,
         cardNumberError: cardNumberError == null ? this.cardNumberError : cardNumberError(),
       );
 
   @override
-  List<Object?> get props => [status, balance, cardNumber, transactions, cardNumberError, dialogShowing];
+  List<Object?> get props => [
+        status,
+        balance,
+        cardNumber,
+        transactions,
+        cardNumberError,
+        dialogShowing,
+        lastAppointment,
+      ];
 }

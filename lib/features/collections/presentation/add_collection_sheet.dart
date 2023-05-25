@@ -69,6 +69,8 @@ class _AddCollectionSheetState extends State<AddCollectionSheet> {
                   errorText: nameError,
                   contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 ),
+                textCapitalization: TextCapitalization.words,
+
               ),
               SizedBox(height: 25),
               Container(
@@ -135,7 +137,7 @@ class _AddCollectionSheetState extends State<AddCollectionSheet> {
 
   Future<void> pickCoverPicture() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 10);
 
     if (image != null) {
       setState(() {

@@ -24,8 +24,6 @@ class AddCommunityPost {
       throw EmptyPostDescriptionException();
     }
 
-
-
     // CommunityPost post = CommunityPost(
     //   author: FirebaseAuth.instance.currentUser!.uid,
     //   title: title.trim(),

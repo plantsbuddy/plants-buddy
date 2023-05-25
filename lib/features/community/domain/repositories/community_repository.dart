@@ -2,9 +2,7 @@ import '../entities/comment.dart';
 import '../entities/community_post.dart';
 
 abstract class CommunityService {
-  Future<Stream<List<CommunityPost>>> getCommunityPostsStream();
-
-  Future<List<CommunityPost>> getMyCommunityPosts();
+  Future<Stream<List<CommunityPost>>> getCommunityPostsStream({required bool myPostsOnly});
 
   Future<void> addCommunityPost({
     required String title,

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/features/botanists/presentation/gardener/components/sample_review_item.dart';
@@ -49,7 +50,10 @@ class ReviewsScreen extends StatelessWidget {
                               ),
                             ),
                             ListView.builder(
-                              itemBuilder: (context, index) => SampleReviewItem(state.reviews[index]),
+                              itemBuilder: (context, index) => SampleReviewItem(
+                                review: state.reviews[index],
+                                botanist: state.botanist,
+                              ),
                               itemCount: state.reviews.length,
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               shrinkWrap: true,
@@ -63,17 +67,19 @@ class ReviewsScreen extends StatelessWidget {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => showModalBottomSheet(
-          isScrollControlled: true,
-          context: context,
-          builder: (_) => BlocProvider.value(
-            value: context.read<BotanistReviewsBloc>(),
-            child: WriteAReview(),
-          ),
-        ),
-      ),
+      floatingActionButton: FirebaseAuth.instance.currentUser != null
+          ? FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (_) => BlocProvider.value(
+                  value: context.read<BotanistReviewsBloc>(),
+                  child: WriteAReview(),
+                ),
+              ),
+            )
+          : null,
     );
   }
 }

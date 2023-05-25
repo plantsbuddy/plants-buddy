@@ -11,7 +11,7 @@ MaterialPageRoute route() {
   return MaterialPageRoute(
     builder: (_) {
       return BlocProvider<AdminBloc>(
-        create: (context) => AdminBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()),
+        create: (context) => AdminBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(),sl()),
         child: AdminHomeScreen(),
       );
     },

@@ -17,6 +17,7 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
@@ -38,18 +39,11 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
                     children: [
                       Text(
                         appointment.gardener.username,
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .titleMedium,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Text(
                         appointment.notes,
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(color: Colors.black54),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 10,
                       ),
@@ -77,11 +71,7 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
                     Icon(
                       Icons.calendar_month,
                       size: 20,
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.8),
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
                     ),
                     SizedBox(width: 5),
                     Text(appointment.formattedDate),
@@ -92,11 +82,7 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
                     Icon(
                       Icons.access_time_filled,
                       size: 20,
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.8),
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
                     ),
                     SizedBox(width: 5),
                     Text(appointment.formattedTime),
@@ -115,6 +101,8 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 15),
+            if (appointment.status == AppointmentStatus.completed) _getMinutesWidget(context),
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
@@ -137,56 +125,39 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 25),
-                foregroundColor: Theme
-                    .of(context)
-                    .colorScheme
-                    .error,
-                backgroundColor: Theme
-                    .of(context)
-                    .colorScheme
-                    .errorContainer,
+                foregroundColor: Theme.of(context).colorScheme.error,
+                backgroundColor: Theme.of(context).colorScheme.errorContainer,
               ).copyWith(
                 elevation: ButtonStyleButton.allOrNull(0.0),
               ),
-              onPressed: () =>
-                  showDialog(
-                    context: context,
-                    builder: (_) {
-                      return AlertDialog(
-                        title: Text('Confirm rejection'),
-                        content: Text('Are you sure you want to reject this appointment request?'),
-                        actions: [
-                          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
-                          TextButton(
-                            onPressed: () {
-                              context.read<BotanistAppointmentBloc>().add(BotanistRejectAppointmentRequest(
-                                  appointment));
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('Reject'),
-                            style: TextButton.styleFrom(foregroundColor: Theme
-                                .of(context)
-                                .colorScheme
-                                .error),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (_) {
+                  return AlertDialog(
+                    title: Text('Confirm rejection'),
+                    content: Text('Are you sure you want to reject this appointment request?'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
+                      TextButton(
+                        onPressed: () {
+                          context.read<BotanistAppointmentBloc>().add(BotanistRejectAppointmentRequest(appointment));
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Reject'),
+                        style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                      ),
+                    ],
+                  );
+                },
+              ),
               child: Text('Reject'),
             ),
             SizedBox(width: 15),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 25),
-                foregroundColor: Theme
-                    .of(context)
-                    .colorScheme
-                    .tertiary,
-                backgroundColor: Theme
-                    .of(context)
-                    .colorScheme
-                    .inversePrimary,
+                foregroundColor: Theme.of(context).colorScheme.tertiary,
+                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               ).copyWith(
                 elevation: ButtonStyleButton.allOrNull(0.0),
               ),
@@ -206,75 +177,89 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
           ],
         );
       case AppointmentStatus.scheduled:
-        return ZegoSendCallInvitationButton(
-          isVideoCall: true,
-          invitees: [ZegoUIKitUser(id: appointment.gardener.uid, name: appointment.gardener.username)],
-          resourceID: "zegouikit_call",
-          iconSize: const Size(40, 40),
-          buttonSize: const Size(50, 50),
-          // clickableBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          icon: ButtonIcon(
-            icon: Icon(
-              Icons.videocam_rounded,
-              color: Theme
-                  .of(context)
-                  .colorScheme
-                  .tertiary
-                  .withOpacity(0.8),
-            ),
-            backgroundColor: Theme
-                .of(context)
-                .colorScheme
-                .primaryContainer,
-          ),
-          verticalLayout: false,
-          onPressed: (_, __, ___) {
-            Future.delayed(const Duration(milliseconds: 5000), () =>
-                context.read<BotanistAppointmentBloc>().add(BotanistMarkAppointmentAsCompleted(appointment)));
-          },
-        );
+        return appointment.isDue
+            ? ZegoSendCallInvitationButton(
+                isVideoCall: true,
+                invitees: [ZegoUIKitUser(id: appointment.gardener.uid, name: appointment.gardener.username)],
+                resourceID: "zegouikit_call",
+                iconSize: const Size(40, 40),
+                buttonSize: const Size(50, 50),
+                // clickableBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                icon: ButtonIcon(
+                  icon: Icon(
+                    Icons.videocam_rounded,
+                    color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                ),
+                verticalLayout: false,
+                onPressed: (_, __, ___) {
+                  context.read<PaymentBloc>().add(PaymentChangeLastAppointment(appointment));
+
+                  // Future.delayed(const Duration(milliseconds: 5000), () =>
+                  //     context.read<BotanistAppointmentBloc>().add(BotanistMarkAppointmentAsCompleted(appointment)));
+                },
+              )
+            : GestureDetector(
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  child: Icon(
+                    Icons.videocam_rounded,
+                    size: 26,
+                    color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
+                  ),
+                ),
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (_) {
+                    return AlertDialog(
+                      title: Text('Slot not due'),
+                      content: Text(
+                          'Your appointment slot time is not due yet. You can only start the appointment between ${appointment.formattedTime} and ${appointment.endTimeFormatted} on ${appointment.formattedDate}.'),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Okay')),
+                      ],
+                    );
+                  },
+                ),
+              );
+
       case AppointmentStatus.completed:
       case AppointmentStatus.cancelled:
       case AppointmentStatus.rejected:
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 25),
-            foregroundColor: Theme
-                .of(context)
-                .colorScheme
-                .error,
-            backgroundColor: Theme
-                .of(context)
-                .colorScheme
-                .errorContainer,
+            foregroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ).copyWith(
             elevation: ButtonStyleButton.allOrNull(0.0),
           ),
-          onPressed: () =>
-              showDialog(
-                context: context,
-                builder: (_) {
-                  return AlertDialog(
-                    title: Text('Confirm deletion'),
-                    content: Text('Are you sure you want to delete this appointment request?'),
-                    actions: [
-                      TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
-                      TextButton(
-                        onPressed: () {
-                          context.read<BotanistAppointmentBloc>().add(
-                              BotanistDeleteAppointmentRequestPressed(appointment));
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Delete'),
-                        style: TextButton.styleFrom(foregroundColor: Theme
-                            .of(context)
-                            .colorScheme
-                            .error),
-                      ),
-                    ],
-                  );
-                },
-              ),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text('Confirm deletion'),
+                content: Text('Are you sure you want to delete this appointment request?'),
+                actions: [
+                  TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
+                  TextButton(
+                    onPressed: () {
+                      context.read<BotanistAppointmentBloc>().add(BotanistDeleteAppointmentRequestPressed(appointment));
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Delete'),
+                    style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                  ),
+                ],
+              );
+            },
+          ),
           child: Text('Delete'),
         );
     }
@@ -287,23 +272,11 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
       case AppointmentStatus.scheduled:
         return Colors.orangeAccent;
       case AppointmentStatus.completed:
-        return Theme
-            .of(context)
-            .colorScheme
-            .primary
-            .withOpacity(0.8);
+        return Theme.of(context).colorScheme.primary.withOpacity(0.8);
       case AppointmentStatus.cancelled:
-        return Theme
-            .of(context)
-            .colorScheme
-            .error
-            .withOpacity(0.6);
+        return Theme.of(context).colorScheme.error.withOpacity(0.6);
       case AppointmentStatus.rejected:
-        return Theme
-            .of(context)
-            .colorScheme
-            .error
-            .withOpacity(0.6);
+        return Theme.of(context).colorScheme.error.withOpacity(0.6);
     }
   }
 
@@ -320,5 +293,22 @@ class SampleAppointmentItemBotanist extends StatelessWidget {
       case AppointmentStatus.rejected:
         return 'Rejected';
     }
+  }
+
+  Widget _getMinutesWidget(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Appointment minutes:',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        SizedBox(height: 3),
+        Text(
+          appointment.minutes!.isEmpty ? 'N/A' : appointment.minutes!,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ],
+    );
   }
 }

@@ -41,6 +41,10 @@ class IdentificationServiceImpl implements IdentificationService {
     required String imagePath,
     required List<IdentificationResult> results,
   }) async {
+    if (results.isEmpty) {
+      return;
+    }
+
     var collection = '';
     var firstMatch = '';
 

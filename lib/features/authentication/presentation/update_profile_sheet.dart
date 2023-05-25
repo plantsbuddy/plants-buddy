@@ -100,6 +100,7 @@ class _UpdateProfileSheetState extends State<UpdateProfileSheet> {
                   errorText: nameError,
                   contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 ),
+                textCapitalization: TextCapitalization.words,
               ),
               SizedBox(height: 25),
               Container(
@@ -134,7 +135,7 @@ class _UpdateProfileSheetState extends State<UpdateProfileSheet> {
 
   Future<void> pickProfilePicture() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 10);
 
     if (image != null) {
       setState(() {
@@ -156,7 +157,7 @@ class _UpdateProfileSheetState extends State<UpdateProfileSheet> {
             )
           : Image.network(
               picDeleted
-                  ? 'https://upload.wikimedia.org/wikipedia/commons/3/3a/John_G._Dow.jpg'
+                  ? 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
                   : bloc.state.currentUser!.profilePicture,
               height: 120,
               width: 120,

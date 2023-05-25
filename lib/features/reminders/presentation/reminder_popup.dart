@@ -71,7 +71,7 @@ class ReminderPopup extends StatelessWidget {
                   TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
                   TextButton(
                     onPressed: () {
-                      context.read<RemindersBloc>().add(RemindersDeleteReminderPressed(_reminder.id!));
+                      context.read<RemindersBloc>().add(RemindersDeleteReminderPressed(_reminder));
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

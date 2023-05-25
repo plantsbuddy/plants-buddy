@@ -40,7 +40,11 @@ class ReminderDateNotSelectedException implements Exception {}
 
 class ReminderTimeNotSelectedException implements Exception {}
 
+class ReminderTimeInPastException implements Exception {}
+
 class ReminderTitleNotWrittenException implements Exception {}
+
+class ReminderDescriptionNotWrittenException implements Exception {}
 
 class PaymentDetailsNotAddedException implements Exception {}
 

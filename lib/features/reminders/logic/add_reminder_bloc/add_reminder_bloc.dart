@@ -26,21 +26,19 @@ class AddReminderBloc extends Bloc<AddReminderEvent, AddReminderState> {
     on<AddReminderSelectTimePressed>(onAddReminderSelectTimePressed);
     on<AddReminderTitleChanged>(onAddReminderTitleChanged);
     on<AddReminderButtonPressed>(onAddReminderButtonPressed);
+    on<AddReminderDescriptionChanged>(onAddReminderDescriptionChanged);
+    on<AddReminderPeriodSelected>(onAddReminderPeriodSelected);
   }
 
   FutureOr<void> onAddReminderSelectDatePressed(AddReminderSelectDatePressed event, Emitter<AddReminderState> emit) {
     if (event.selectedDate != null) {
-      emit(state.copyWith(date: event.selectedDate!.millisecondsSinceEpoch));
+      emit(state.copyWith(date: event.selectedDate!));
     }
   }
 
   FutureOr<void> onAddReminderSelectTimePressed(AddReminderSelectTimePressed event, Emitter<AddReminderState> emit) {
     if (event.selectedTime != null) {
-      int hour = event.selectedTime!.hourOfPeriod;
-      int minute = event.selectedTime!.minute;
-      int dayPeriod = event.selectedTime!.period.index;
-
-      emit(state.copyWith(hour: hour, minute: minute, dayPeriod: dayPeriod));
+      emit(state.copyWith(time: event.selectedTime));
     }
   }
 
@@ -48,40 +46,51 @@ class AddReminderBloc extends Bloc<AddReminderEvent, AddReminderState> {
     emit(state.copyWith(title: event.title));
   }
 
+  FutureOr<void> onAddReminderDescriptionChanged(AddReminderDescriptionChanged event, Emitter<AddReminderState> emit) {
+    emit(state.copyWith(description: event.description));
+  }
+
   FutureOr<void> onAddReminderButtonPressed(AddReminderButtonPressed event, Emitter<AddReminderState> emit) async {
-    emit(state.copyWith(dialogShowing: true, titleError: null, dateError: false, timeError: false));
+    emit(state.copyWith(
+        dialogShowing: true, titleError: null, dateError: false, timeError: false, timePastError: false));
 
     try {
       if (state.originalReminder == null) {
         await _addReminder(
           title: state.title,
-          hour: state.hour,
-          minute: state.minute,
-          dayPeriod: state.dayPeriod,
+          description: state.description,
+          timeOfDay: state.time,
           date: state.date,
-          repetitionDays: [],
+          repetitionPeriod: state.repetitionPeriod,
         );
       } else {
         await _updateReminder(
           id: state.originalReminder!.id,
           title: state.title,
-          hour: state.hour,
-          minute: state.minute,
-          dayPeriod: state.dayPeriod,
+          description: state.description,
+          timeOfDay: state.time,
           date: state.date,
-          repetitionDays: [],
+          repetitionPeriod: state.repetitionPeriod,
         );
       }
 
       emit(state.copyWith(dialogShowing: false));
     } on ReminderTitleNotWrittenException {
       emit(state.copyWith(titleError: () => 'Please write a title', dialogShowing: false));
+    } on ReminderDescriptionNotWrittenException {
+      emit(state.copyWith(descriptionError: () => 'Please write a description', dialogShowing: false));
     } on ReminderDateNotSelectedException {
       emit(state.copyWith(dateError: true, dialogShowing: false));
     } on ReminderTimeNotSelectedException {
       emit(state.copyWith(timeError: true, dialogShowing: false));
+    } on ReminderTimeInPastException {
+      emit(state.copyWith(timePastError: true, dialogShowing: false));
     }
 
     //emit(state.copyWith(dialogShowing: false));
+  }
+
+  FutureOr<void> onAddReminderPeriodSelected(AddReminderPeriodSelected event, Emitter<AddReminderState> emit) {
+    emit(state.copyWith(repetitionPeriod: event.reminderPeriod));
   }
 }

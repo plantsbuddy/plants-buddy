@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:plants_buddy/features/suggestions/domain/entities/plantation_guide.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
@@ -8,9 +9,13 @@ import 'package:geolocator/geolocator.dart';
 import '../domain/repositories/suggestions_service.dart';
 
 class SuggestionsServiceImpl implements SuggestionsService {
+  final http.Client client;
+
+  SuggestionsServiceImpl() : client = http.Client();
+
   @override
   Future<List<PlantationGuide>> get plantationGuides async {
-    final apiResponse = await http.get(Uri.parse('http://plants-buddy.herokuapp.com/plantation-guides'));
+    final apiResponse = await client.get(Uri.parse('http://plants-buddy.herokuapp.com/plantation-guides'));
 
     final parsedResponse = jsonDecode(apiResponse.body);
 
@@ -33,9 +38,8 @@ class SuggestionsServiceImpl implements SuggestionsService {
 
   @override
   Future<String> get randomPlantationSuggestion async {
-    final apiResponse = await http.get(Uri.parse('http://plants-buddy.herokuapp.com/random-plantation-suggestion'));
+    final apiResponse = await client.get(Uri.parse('http://plants-buddy.herokuapp.com/random-plantation-suggestion'));
 
-    // final parsedResponse = jsonDecode(apiResponse.body);
     return apiResponse.body;
   }
 
@@ -43,7 +47,7 @@ class SuggestionsServiceImpl implements SuggestionsService {
   Future<List<dynamic>> get weatherBasedSuggestions async {
     final coordinates = await _determinePosition();
 
-    final apiResponse = await http.post(
+    final apiResponse = await client.post(
       Uri.parse('http://plants-buddy.herokuapp.com/weather-based-plantation-suggestions'),
       headers: {'Content-Type': 'application/json'},
       encoding: Encoding.getByName('utf-8'),
@@ -61,7 +65,7 @@ class SuggestionsServiceImpl implements SuggestionsService {
   Future<Map<String, dynamic>> get weatherBasedPlantSuggestions async {
     final coordinates = await _determinePosition();
 
-    final apiResponse = await http.post(
+    final apiResponse = await client.post(
       Uri.parse('http://plants-buddy.herokuapp.com/weather-based-suggested-plants'),
       headers: {'Content-Type': 'application/json'},
       encoding: Encoding.getByName('utf-8'),
@@ -78,7 +82,7 @@ class SuggestionsServiceImpl implements SuggestionsService {
   Future<Map<String, dynamic>> get weatherData async {
     final coordinates = await _determinePosition();
 
-    final apiResponse = await http.post(
+    final apiResponse = await client.post(
       Uri.parse('http://plants-buddy.herokuapp.com/weather-data'),
       headers: {'Content-Type': 'application/json'},
       encoding: Encoding.getByName('utf-8'),
@@ -101,6 +105,8 @@ class SuggestionsServiceImpl implements SuggestionsService {
   }
 
   Future<Map<String, String>> _determinePosition() async {
+    return {"longitude": "73.0479", "latitude": "33.6844"};
+
     bool serviceEnabled;
     LocationPermission permission;
 

@@ -1,3 +1,6 @@
+import '../../../authentication/domain/entities/botanist.dart';
+import '../entities/report.dart';
+
 abstract class AdminService {
   Future<Stream<List<Map<String, dynamic>>>> get reportedPostsStream;
 
@@ -5,7 +8,13 @@ abstract class AdminService {
 
   Future<Stream<List<Map<String, dynamic>>>> get reportedRatingsStream;
 
+  Future<Stream<List<Map<String, dynamic>>>> get reportedBotanistsStream;
+
   Future<Stream<List<Map<String, dynamic>>>> get blockedUsersStream;
+
+  Future<List<Report>> getReports({required String collectionName, required String docId});
+
+  Future<void> ignoreReport({required String collectionName, required String docId});
 
   Future<void> removeCommunityPost(String id);
 

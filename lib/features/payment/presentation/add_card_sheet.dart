@@ -70,8 +70,6 @@ class _AddCardSheetState extends State<AddCardSheet> {
           Navigator.of(context).pop();
           // Future.delayed(const Duration(milliseconds: 200), () => Navigator.of(context).pop());
         }
-
-
       },
       listenWhen: (previous, current) =>
           (previous.cardNumberError != current.cardNumberError) ||
@@ -114,31 +112,33 @@ class _AddCardSheetState extends State<AddCardSheet> {
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'\d|\s')),
                     CustomInputFormatter(inputLength: 16),
-                      LengthLimitingTextInputFormatter(22),
+                    LengthLimitingTextInputFormatter(22),
                   ],
                 ),
                 SizedBox(height: 15),
                 TextField(
-                  controller: _cvcController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    errorText: cvcError,
-                    hintText: 'CVC',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
+                    controller: _cvcController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      errorText: cvcError,
+                      hintText: 'CVC',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                        ),
                       ),
+                      prefixIcon: Icon(
+                        Icons.visibility_outlined,
+                        color: Theme.of(context).hintColor,
+                      ),
+                      fillColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.17),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     ),
-                    prefixIcon: Icon(Icons.visibility_outlined, color: Theme.of(context).hintColor,),
-                    fillColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.17),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  ),
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(3),
-                    ]
-                ),
+                    ]),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 17),
                   child: TextField(
@@ -160,58 +160,56 @@ class _AddCardSheetState extends State<AddCardSheet> {
                       fillColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.17),
                       contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     ),
+                    textCapitalization: TextCapitalization.words,
                   ),
                 ),
                 TextField(
-                  controller: _yearController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    errorText: yearError,
-                    hintText: 'Expiry year',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
+                    controller: _yearController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      errorText: yearError,
+                      hintText: 'Expiry year',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                        ),
                       ),
+                      prefixIcon: Icon(
+                        Icons.calendar_today,
+                        color: Theme.of(context).hintColor,
+                      ),
+                      fillColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.17),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     ),
-                    prefixIcon: Icon(
-                      Icons.calendar_today,
-                      color: Theme.of(context).hintColor,
-                    ),
-                    fillColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.17),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  ),
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(4),
-                    ]
-                ),
+                    ]),
                 SizedBox(height: 15),
                 TextField(
-                  controller: _monthController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    errorText: monthError,
-                    hintText: 'Expiry month',
-                    prefixIcon: Icon(
-                      Icons.calendar_view_month,
-                      color: Theme.of(context).hintColor,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
+                    controller: _monthController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      errorText: monthError,
+                      hintText: 'Expiry month',
+                      prefixIcon: Icon(
+                        Icons.calendar_view_month,
+                        color: Theme.of(context).hintColor,
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                      fillColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.17),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     ),
-                    fillColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.17),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  ),
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(2),
-                    ]
-
-                ),
+                    ]),
                 SizedBox(height: 25),
                 Container(
                   margin: EdgeInsets.all(10),

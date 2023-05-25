@@ -18,7 +18,10 @@ void _initUseCases() {
   sl.registerLazySingleton<GetReportedCommentsStream>(() => GetReportedCommentsStream(sl()));
   sl.registerLazySingleton<GetReportedPostsStream>(() => GetReportedPostsStream(sl()));
   sl.registerLazySingleton<GetReportedRatingsStream>(() => GetReportedRatingsStream(sl()));
+  sl.registerLazySingleton<GetReportedBotanistsStream>(() => GetReportedBotanistsStream(sl()));
   sl.registerLazySingleton<GetBlockedUsersStream>(() => GetBlockedUsersStream(sl()));
+  sl.registerLazySingleton<GetReports>(() => GetReports(sl()));
+  sl.registerLazySingleton<IgnoreReport>(() => IgnoreReport(sl()));
   sl.registerLazySingleton<UnblockUser>(() => UnblockUser(sl()));
 }
 

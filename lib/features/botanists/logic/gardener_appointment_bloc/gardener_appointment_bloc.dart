@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
+import 'package:plants_buddy/features/botanists/domain/entities/appointment_slot.dart';
+import '../../../admin/logic/admin_bloc.dart';
 import '../../../authentication/domain/entities/botanist.dart';
 import '../../../authentication/domain/entities/user.dart';
 import '../../domain/entities/appointment.dart';
@@ -20,24 +23,26 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
   final SendAppointmentRequest _sendAppointmentRequest;
   final GetBotanists _getBotanists;
   final GetSentAppointmentRequestsStream _getSentAppointmentRequestsStream;
-  final MarkAppointmentAsCompleted _markAppointmentAsCompleted;
   final ReportBotanist _reportBotanist;
+  final GetAvailableAppointmentSlots _getAvailableAppointmentSlots;
 
   GardenerAppointmentBloc(
     this._getBotanists,
     this._getSentAppointmentRequestsStream,
     this._sendAppointmentRequest,
     this._cancelAppointmentRequest,
-    this._markAppointmentAsCompleted,
     this._reportBotanist,
+    this._getAvailableAppointmentSlots,
   ) : super(GardenerAppointmentState.initial()) {
     on<GardenerCancelAppointmentRequest>(onGardenerCancelAppointmentRequest);
     on<GardenerSendAppointmentRequest>(onGardenerSendAppointmentRequest);
     on<GardenerInitializeSentAppointmentRequestsStream>(onGardenerInitializeSentAppointmentRequestsStream);
     on<GardenerGetBotanists>(onGardenerGetBotanists);
     on<GardenerDeleteAppointmentRequest>(onGardenerDeleteAppointmentRequest);
-    on<GardenerMarkAppointmentAsCompleted>(onGardenerMarkAppointmentAsCompleted);
     on<GardenerReportBotanist>(onGardenerReportBotanist);
+    on<GardenerAppointmentDateSelected>(onGardenerAppointmentDateSelected);
+    on<GardenerAppointmentSlotSelected>(onGardenerAppointmentSlotSelected);
+    on<GardenerCleanupAppointmentRequest>(onGardenerCleanupAppointmentRequest);
   }
 
   FutureOr<void> onGardenerInitializeSentAppointmentRequestsStream(
@@ -54,15 +59,31 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
     await _cancelAppointmentRequest(event.appointment);
   }
 
+  Future<FutureOr<void>> onGardenerAppointmentDateSelected(
+      GardenerAppointmentDateSelected event, Emitter<GardenerAppointmentState> emit) async {
+    emit(state.copyWith(date: () => event.date, slotsStatus: AdminDataStatus.loading));
+
+    if (event.date != null) {
+      final availableSlots = await _getAvailableAppointmentSlots(botanist: event.botanist, date: event.date!);
+
+      emit(state.copyWith(slotsStatus: AdminDataStatus.loaded, slots: availableSlots, selectedSlotIndex: 0));
+    }
+  }
+
+  FutureOr<void> onGardenerAppointmentSlotSelected(
+      GardenerAppointmentSlotSelected event, Emitter<GardenerAppointmentState> emit) {
+    emit(state.copyWith(selectedSlotIndex: state.slots.indexOf(event.slot)));
+  }
+
   Future<FutureOr<void>> onGardenerSendAppointmentRequest(
       GardenerSendAppointmentRequest event, Emitter<GardenerAppointmentState> emit) async {
     emit(state.copyWith(dialogShowing: true));
 
     await _sendAppointmentRequest(
       botanist: event.botanist,
-      date: event.date,
+      date: state.date!,
       notes: event.notes,
-      time: event.time,
+      slot: state.slots[state.selectedSlotIndex],
       gardener: event.gardener,
     );
 
@@ -81,12 +102,12 @@ class GardenerAppointmentBloc extends Bloc<GardenerAppointmentEvent, GardenerApp
     await _cancelAppointmentRequest(event.appointment);
   }
 
-  FutureOr<void> onGardenerMarkAppointmentAsCompleted(
-      GardenerMarkAppointmentAsCompleted event, Emitter<GardenerAppointmentState> emit) async {
-    await _markAppointmentAsCompleted(event.appointment);
-  }
-
   FutureOr<void> onGardenerReportBotanist(GardenerReportBotanist event, Emitter<GardenerAppointmentState> emit) async {
     await _reportBotanist(botanist: event.botanist, reportText: event.reportText);
+  }
+
+  FutureOr<void> onGardenerCleanupAppointmentRequest(
+      GardenerCleanupAppointmentRequest event, Emitter<GardenerAppointmentState> emit) {
+    emit(state.copyWith(slots: [], slotsStatus: AdminDataStatus.loading, date: () => null));
   }
 }

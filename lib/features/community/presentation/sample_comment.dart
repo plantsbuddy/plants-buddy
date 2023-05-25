@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plants_buddy/features/community/domain/entities/community_post.dart';
 
 import '../domain/entities/comment.dart';
+import '../logic/community_post_bloc/community_post_bloc.dart';
 
 class SamplePostComment extends StatelessWidget {
-  const SamplePostComment(this._comment, {Key? key}) : super(key: key);
+  const SamplePostComment({required this.comment, required this.post, Key? key}) : super(key: key);
 
-  final Comment _comment;
+  final CommunityPost post;
+  final Comment comment;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,7 @@ class SamplePostComment extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(150),
             child: Image.network(
-              'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+              comment.author.pictureUrl,
               height: 30,
               width: 30,
               fit: BoxFit.fitHeight,
@@ -32,22 +36,26 @@ class SamplePostComment extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        _comment.author.name,
+                        comment.author.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                     ),
                     Text(
-                      _comment.time,
+                      comment.time,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     GestureDetector(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8),
-                        child: Icon(Icons.report, size: 17,color: Colors.grey,),
+                        child: Icon(
+                          Icons.report,
+                          size: 17,
+                          color: Colors.grey,
+                        ),
                       ),
-                      onTap: () =>showDialog(
+                      onTap: () => showDialog(
                         context: context,
                         builder: (_) {
                           final controller = TextEditingController();
@@ -60,6 +68,7 @@ class SamplePostComment extends StatelessWidget {
                                 labelText: 'Reason for reporting',
                                 contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               ),
+                              textCapitalization: TextCapitalization.sentences,
                             ),
                             actions: [
                               TextButton(
@@ -78,11 +87,18 @@ class SamplePostComment extends StatelessWidget {
                                       ),
                                     );
                                   } else {
-                                    // context
-                                    //     .read<IdentificationBloc>()
-                                    //     .add(IdentificationDownloadFromUrlPressed(controller.text.trim()));
+                                    context.read<CommunityPostBloc>().add(CommunityPostReportComment(
+                                        reportText: controller.text, post: post, comment: comment));
 
                                     Navigator.of(context).pop();
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Comment reported!'),
+                                        behavior: SnackBarBehavior.floating,
+                                        duration: Duration(milliseconds: 1500),
+                                      ),
+                                    );
                                   }
                                 },
                                 child: Text('Report'),
@@ -96,7 +112,7 @@ class SamplePostComment extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  _comment.body,
+                  comment.body,
                   style: TextStyle(color: Colors.black54),
                 ),
               ],

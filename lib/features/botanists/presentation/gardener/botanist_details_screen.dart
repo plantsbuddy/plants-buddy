@@ -62,6 +62,7 @@ class BotanistDetailsScreen extends StatelessWidget {
                             labelText: 'Reason for reporting',
                             contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           ),
+                          textCapitalization: TextCapitalization.sentences,
                         ),
                         actions: [
                           TextButton(
@@ -80,11 +81,19 @@ class BotanistDetailsScreen extends StatelessWidget {
                                   ),
                                 );
                               } else {
-                                // context
-                                //     .read<IdentificationBloc>()
-                                //     .add(IdentificationDownloadFromUrlPressed(controller.text.trim()));
+                                context
+                                    .read<GardenerAppointmentBloc>()
+                                    .add(GardenerReportBotanist(botanist: botanist, reportText: controller.text));
 
                                 Navigator.of(context).pop();
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Botanist reported!'),
+                                    behavior: SnackBarBehavior.floating,
+                                    duration: Duration(milliseconds: 1500),
+                                  ),
+                                );
                               }
                             },
                             child: Text('Report'),
@@ -373,7 +382,7 @@ class BotanistDetailsScreen extends StatelessWidget {
                         margin: EdgeInsets.only(top: 20, bottom: 10),
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (context.read<PaymentBloc>().state.cardNumber == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -394,7 +403,7 @@ class BotanistDetailsScreen extends StatelessWidget {
                               return;
                             }
 
-                            showModalBottomSheet(
+                            await showModalBottomSheet(
                               isScrollControlled: true,
                               context: context,
                               builder: (_) => MultiBlocProvider(
@@ -409,6 +418,8 @@ class BotanistDetailsScreen extends StatelessWidget {
                                 child: BookAppointmentSheet(botanist),
                               ),
                             );
+
+                            context.read<GardenerAppointmentBloc>().add(GardenerCleanupAppointmentRequest());
                           },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 13),

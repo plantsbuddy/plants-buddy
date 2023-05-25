@@ -17,7 +17,6 @@ void _initUseCases() {
   sl.registerLazySingleton<DeleteCommunityPost>(() => DeleteCommunityPost(sl()));
   sl.registerLazySingleton<GetCommunityPostsStream>(() => GetCommunityPostsStream(sl()));
   sl.registerLazySingleton<GetPostCommentsStream>(() => GetPostCommentsStream(sl()));
-  sl.registerLazySingleton<GetMyCommunityPosts>(() => GetMyCommunityPosts(sl()));
   sl.registerLazySingleton<SearchCommunityPosts>(() => SearchCommunityPosts(sl()));
   sl.registerLazySingleton<UpdateCommunityPost>(() => UpdateCommunityPost(sl()));
   sl.registerLazySingleton<ReportComment>(() => ReportComment(sl()));

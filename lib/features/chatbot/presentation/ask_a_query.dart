@@ -36,7 +36,7 @@ class _WriteAMessage extends State<AskAQuery> {
           Expanded(
             child: Container(
               margin: EdgeInsets.only(left: 10),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.grey[200]),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.grey[200]),
               child: TextField(
                 textCapitalization: TextCapitalization.sentences,
                 style: TextStyle(
@@ -52,6 +52,8 @@ class _WriteAMessage extends State<AskAQuery> {
                   isDense: true,
                 ),
                 controller: _controller,
+                maxLines: 4,
+                minLines: 1,
               ),
             ),
           ),
@@ -85,19 +87,33 @@ class _WriteAMessage extends State<AskAQuery> {
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: _speechToText.isNotListening ? _startListening : _stopListening,
-            child: Icon(
-              _speechToText.isNotListening ? Icons.mic : Icons.stop,
-              color: Colors.white,
-              size: 20,
-            ),
-            style: ElevatedButton.styleFrom(
-              shape: CircleBorder(),
-              padding: EdgeInsets.all(10),
-              backgroundColor: Theme.of(context).colorScheme.secondary, // <-- Button color
-            ),
-          ),
+          _speechToText.isNotListening
+              ? ElevatedButton(
+                  onPressed: _speechToText.isNotListening ? _startListening : _stopListening,
+                  child: Icon(
+                    Icons.mic,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(10),
+                    backgroundColor: Theme.of(context).colorScheme.secondary, // <-- Button color
+                  ),
+                )
+              : ElevatedButton(
+                  onPressed: _speechToText.isNotListening ? _startListening : _stopListening,
+                  child: Icon(
+                    Icons.stop_rounded,
+                    color: Theme.of(context).colorScheme.error.withOpacity(0.7),
+                    size: 20,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(10),
+                    backgroundColor: Theme.of(context).colorScheme.errorContainer, // <-- Button color
+                  ),
+                ),
         ],
       ),
     );

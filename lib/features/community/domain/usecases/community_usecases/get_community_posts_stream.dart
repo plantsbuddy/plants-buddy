@@ -5,9 +5,10 @@ import '../../repositories/community_repository.dart';
 
 class GetCommunityPostsStream {
   final CommunityService _communityRepository;
+
   GetCommunityPostsStream(this._communityRepository);
 
-  Future<Stream<List<CommunityPost>>> call() async {
-    return await _communityRepository.getCommunityPostsStream();
+  Future<Stream<List<CommunityPost>>> call({required bool myPostsOnly}) async {
+    return await _communityRepository.getCommunityPostsStream(myPostsOnly: myPostsOnly);
   }
 }

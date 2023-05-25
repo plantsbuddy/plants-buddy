@@ -5,19 +5,25 @@ enum SuggestionsStatus { loading, loaded }
 @immutable
 class SuggestionsState extends Equatable {
   final List<PlantationGuide> plantationGuides;
-  final SuggestionsStatus status;
+  final SuggestionsStatus plantationGuidesStatus;
   final Map<String, dynamic> weatherData;
+  final SuggestionsStatus weatherDataStatus;
   final List<dynamic> weatherBasedSuggestions;
+  final SuggestionsStatus weatherBasedSuggestionsStatus;
   final List<dynamic> weatherBasedPlantSuggestions;
+  final SuggestionsStatus weatherBasedPlantSuggestionsStatus;
   final String currentWeatherPlantsType;
   final String tipOfTheDay;
   final bool tipOfTheDayLoaded;
 
   SuggestionsState.initial()
-      : status = SuggestionsStatus.loading,
+      : plantationGuidesStatus = SuggestionsStatus.loading,
         weatherData = {},
+        weatherDataStatus = SuggestionsStatus.loading,
         weatherBasedSuggestions = [],
+        weatherBasedSuggestionsStatus = SuggestionsStatus.loading,
         weatherBasedPlantSuggestions = [],
+        weatherBasedPlantSuggestionsStatus = SuggestionsStatus.loading,
         currentWeatherPlantsType = '',
         tipOfTheDay = '',
         tipOfTheDayLoaded = false,
@@ -25,7 +31,10 @@ class SuggestionsState extends Equatable {
 
   const SuggestionsState({
     required this.plantationGuides,
-    required this.status,
+    required this.plantationGuidesStatus,
+    required this.weatherDataStatus,
+    required this.weatherBasedSuggestionsStatus,
+    required this.weatherBasedPlantSuggestionsStatus,
     required this.weatherData,
     required this.tipOfTheDay,
     required this.weatherBasedSuggestions,
@@ -37,16 +46,24 @@ class SuggestionsState extends Equatable {
   SuggestionsState copyWith({
     bool? tipOfTheDayLoaded,
     List<PlantationGuide>? plantationGuides,
+    SuggestionsStatus? plantationGuidesStatus,
     SuggestionsStatus? status,
     Map<String, dynamic>? weatherData,
+    SuggestionsStatus? weatherDataStatus,
     List<dynamic>? weatherBasedSuggestions,
+    SuggestionsStatus? weatherBasedSuggestionsStatus,
     List<dynamic>? weatherBasedPlantSuggestions,
+    SuggestionsStatus? weatherBasedPlantSuggestionsStatus,
     String? currentWeatherPlantsType,
     String? tipOfTheDay,
   }) =>
       SuggestionsState(
         plantationGuides: plantationGuides ?? this.plantationGuides,
-        status: status ?? this.status,
+        plantationGuidesStatus: plantationGuidesStatus ?? this.plantationGuidesStatus,
+        weatherDataStatus: weatherDataStatus ?? this.weatherDataStatus,
+        weatherBasedSuggestionsStatus: weatherBasedSuggestionsStatus ?? this.weatherBasedSuggestionsStatus,
+        weatherBasedPlantSuggestionsStatus:
+            weatherBasedPlantSuggestionsStatus ?? this.weatherBasedPlantSuggestionsStatus,
         weatherData: weatherData ?? this.weatherData,
         tipOfTheDay: tipOfTheDay ?? this.tipOfTheDay,
         weatherBasedSuggestions: weatherBasedSuggestions ?? this.weatherBasedSuggestions,
@@ -57,11 +74,14 @@ class SuggestionsState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
+        weatherDataStatus,
         tipOfTheDay,
         plantationGuides,
+        plantationGuidesStatus,
         weatherBasedPlantSuggestions,
+        weatherBasedSuggestionsStatus,
         weatherBasedSuggestions,
+        weatherBasedPlantSuggestionsStatus,
         weatherData,
         currentWeatherPlantsType,
         tipOfTheDayLoaded,

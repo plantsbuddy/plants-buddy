@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:plants_buddy/features/identification/domain/entities/identification_result.dart';
 import 'package:plants_buddy/features/identification/domain/repositories/identification_service.dart';
 import 'package:tflite/tflite.dart';
@@ -29,7 +27,7 @@ class PerformIdentification {
     final List? predictions = await Tflite.runModelOnImage(
       path: imagePath,
       numResults: 6,
-      threshold: 0.05,
+      threshold: identificationType == IdentificationType.pest ? 0.35 : 0.40,
       imageMean: 127.5,
       imageStd: 127.5,
     );

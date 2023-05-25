@@ -21,3 +21,5 @@ const String reportedComments = 'assets/icons/reported_comments.png';
 const String reportedRatings = 'assets/icons/reported_ratings.png';
 const String reportedBotanists = 'assets/icons/reported_botanists.png';
 const String blockedUsers = 'assets/icons/blocked_users.png';
+const String noReports = 'assets/icons/no_reports.png';
+const String identificationFailed = 'assets/icons/identification_failed.png';

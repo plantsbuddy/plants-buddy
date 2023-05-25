@@ -1,10 +1,10 @@
 import 'dart:developer';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/features/reminders/logic/add_reminder_bloc/add_reminder_bloc.dart';
-
-import 'repetition_days_dialog.dart';
+import 'package:plants_buddy/features/reminders/logic/reminders_bloc/reminders_bloc.dart';
 
 class AddReminderScreen extends StatefulWidget {
   const AddReminderScreen({Key? key}) : super(key: key);
@@ -51,6 +51,8 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
               error = 'Please select a date';
             } else if (state.timeError) {
               error = 'Please select a time';
+            } else if (state.timePastError) {
+              error = 'Selected time must be in future';
             }
 
             if (error != null) {
@@ -80,16 +82,20 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
           TextEditingController titleController = TextEditingController.fromValue(
               TextEditingValue(text: state.title, selection: TextSelection.collapsed(offset: state.title.length)));
 
+          TextEditingController descriptionController = TextEditingController.fromValue(TextEditingValue(
+              text: state.description, selection: TextSelection.collapsed(offset: state.description.length)));
+
           titleController
               .addListener(() => context.read<AddReminderBloc>().add(AddReminderTitleChanged(titleController.text)));
+          descriptionController.addListener(
+              () => context.read<AddReminderBloc>().add(AddReminderDescriptionChanged(descriptionController.text)));
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 10,
-                ),
+                SizedBox(height: 10),
                 TextField(
                   controller: titleController,
                   decoration: InputDecoration(
@@ -97,50 +103,41 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                     errorText: state.titleError,
                     contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   ),
+                  textCapitalization: TextCapitalization.sentences,
                 ),
-                GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        child: Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.repeat,
-                                      color: Colors.grey[800],
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      'Repeat reminder',
-                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black54),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  'Only once',
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                              ],
-                            ),
-                            Spacer(),
-                            Icon(Icons.arrow_drop_down_outlined),
-                          ],
-                        ),
-                      ),
-                    ),
+                SizedBox(height: 20),
+                TextField(
+                  controller: descriptionController,
+                  decoration: InputDecoration(
+                    labelText: 'Description',
+                    errorText: state.descriptionError,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   ),
-                  onTap: () {
-                    // showDialog(context: context, builder: (context) {
-                    //   return RepetitionDaysDialog();
-                    // },);
-                  },
+                  maxLines: 4,
+                  minLines: 1,
+                  textCapitalization: TextCapitalization.sentences,
                 ),
+                SizedBox(height: 25),
+                Wrap(
+                  runSpacing: 5,
+                  spacing: 10,
+                  crossAxisAlignment: WrapCrossAlignment.start,
+                  runAlignment: WrapAlignment.start,
+                  alignment: WrapAlignment.start,
+                  children: ReminderPeriod.values
+                      .map((period) => GestureDetector(
+                            child: Chip(
+                              backgroundColor: state.repetitionPeriod == period
+                                  ? Theme.of(context).colorScheme.inversePrimary
+                                  : null,
+                              label: Text(period.toString().split('.')[1].capitalize),
+                            ),
+                            onTap: () =>
+                                setState(() => context.read<AddReminderBloc>().add(AddReminderPeriodSelected(period))),
+                          ))
+                      .toList(),
+                ),
+                SizedBox(height: 25),
                 GestureDetector(
                   child: SizedBox(
                     width: double.infinity,
@@ -155,12 +152,16 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                               children: [
                                 Icon(
                                   Icons.calendar_month,
-                                  color: Colors.grey[800],
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  size: 20,
                                 ),
                                 SizedBox(width: 10),
                                 Text(
                                   'Date',
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black54),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(color: Theme.of(context).colorScheme.secondary),
                                 ),
                               ],
                             ),
@@ -169,7 +170,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                             ),
                             Text(
                               state.formattedDate,
-                              style: Theme.of(context).textTheme.titleLarge,
+                              style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ],
                         ),
@@ -178,8 +179,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                   ),
                   onTap: () async {
                     final selectedDate = await showDatePicker(
-                      initialDate:
-                          state.date == null ? DateTime.now() : DateTime.fromMillisecondsSinceEpoch(state.date!),
+                      initialDate: state.date == null ? DateTime.now() : state.date!,
                       firstDate: DateTime.now(),
                       lastDate: DateTime(2024),
                       context: context,
@@ -204,21 +204,23 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                               children: [
                                 Icon(
                                   Icons.access_time,
-                                  color: Colors.grey[800],
+                                  size: 20,
+                                  color: Theme.of(context).colorScheme.secondary,
                                 ),
                                 SizedBox(width: 10),
                                 Text(
                                   'Time',
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black54),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(color: Theme.of(context).colorScheme.secondary),
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 3,
-                            ),
+                            SizedBox(height: 3),
                             Text(
                               state.formattedTime,
-                              style: Theme.of(context).textTheme.titleLarge,
+                              style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ],
                         ),
@@ -227,8 +229,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                   ),
                   onTap: () async {
                     final selectedTime = await showTimePicker(
-                      initialTime:
-                          state.hour == null ? TimeOfDay.now() : TimeOfDay(hour: state.hour!, minute: state.minute!),
+                      initialTime: state.time ?? TimeOfDay.now(),
                       context: context,
                     );
 
@@ -242,6 +243,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       FocusManager.instance.primaryFocus?.unfocus();
+
                       context.read<AddReminderBloc>().add(AddReminderButtonPressed());
                     },
                     style: ElevatedButton.styleFrom(

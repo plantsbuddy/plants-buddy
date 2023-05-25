@@ -1,8 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+import 'package:plants_buddy/features/admin/logic/admin_bloc.dart';
 import 'package:plants_buddy/features/authentication/logic/authentication_bloc.dart';
 import 'package:plants_buddy/features/botanists/logic/gardener_appointment_bloc/gardener_appointment_bloc.dart';
 
@@ -18,8 +16,6 @@ class BookAppointmentSheet extends StatefulWidget {
 }
 
 class _BookAppointmentSheetState extends State<BookAppointmentSheet> {
-  TimeOfDay? _time;
-  DateTime? _date;
   bool errorShowing = false;
 
   late final TextEditingController notesController;
@@ -32,6 +28,8 @@ class _BookAppointmentSheetState extends State<BookAppointmentSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<GardenerAppointmentBloc>().state;
+
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -50,55 +48,70 @@ class _BookAppointmentSheetState extends State<BookAppointmentSheet> {
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.tertiary,
                   backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                ).copyWith(
-                  elevation: ButtonStyleButton.allOrNull(0.0),
-                ),
+                ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0)),
                 icon: Icon(Icons.calendar_month),
-                label: Text(formattedDate),
+                label: Text(state.formattedDate),
                 onPressed: () async {
                   final selectedDate = await showDatePicker(
-                    initialDate: _date ?? DateTime.now(),
+                    initialDate: state.date ?? DateTime.now(),
                     firstDate: DateTime.now(),
-                    lastDate: DateTime(2025),
+                    lastDate: DateTime(2024),
                     context: context,
                   );
 
+                  context
+                      .read<GardenerAppointmentBloc>()
+                      .add(GardenerAppointmentDateSelected(date: selectedDate, botanist: widget.botanist));
+
                   setState(() {
-                    _date = selectedDate;
                     errorShowing = false;
                   });
                 },
               ),
               SizedBox(height: 15),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.tertiary,
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                ).copyWith(
-                  elevation: ButtonStyleButton.allOrNull(0.0),
-                ),
-                icon: Icon(Icons.access_time_filled),
-                label: Text(formattedTime),
-                onPressed: () async {
-                  final selectedTime = await showTimePicker(
-                    // initialTime:
-                    //     state.hour == null ? TimeOfDay.now() : TimeOfDay(hour: state.hour!, minute: state.minute!),
-                    context: context, initialTime: _time ?? TimeOfDay.now(),
-                  );
-
-                  setState(() {
-                    _time = selectedTime;
-                    errorShowing = false;
-                  });
-                },
-              ),
               if (errorShowing)
                 Padding(
                   padding: const EdgeInsets.only(left: 10, top: 15),
                   child: Text(
-                    'Please select a date and time',
+                    'Please select a date',
                     style: TextStyle(color: Theme.of(context).colorScheme.error),
                   ),
+                ),
+              if (state.date != null)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Available appointment slots (24 hours format)',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    SizedBox(height: 10),
+                    state.slotsStatus == AdminDataStatus.loaded
+                        ? (state.slots.isNotEmpty
+                            ? Wrap(
+                                runSpacing: 5,
+                                spacing: 10,
+                                children: state.slots
+                                    .map((slot) => GestureDetector(
+                                          child: Chip(
+                                            backgroundColor: slot == state.slots[state.selectedSlotIndex]
+                                                ? Theme.of(context).colorScheme.inversePrimary
+                                                : null,
+                                            label: Text(slot.text),
+                                            visualDensity: VisualDensity.compact,
+                                          ),
+                                          onTap: () => setState(() => context
+                                              .read<GardenerAppointmentBloc>()
+                                              .add(GardenerAppointmentSlotSelected(slot))),
+                                        ))
+                                    .toList(),
+                              )
+                            : Text(
+                                'No slots available for selected date',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black45),
+                              ))
+                        : CircularProgressIndicator(),
+                  ],
                 ),
               SizedBox(height: 20),
               TextField(
@@ -109,6 +122,7 @@ class _BookAppointmentSheetState extends State<BookAppointmentSheet> {
                 ),
                 maxLines: 4,
                 minLines: 1,
+                textCapitalization: TextCapitalization.sentences,
               ),
               SizedBox(height: 25),
               Container(
@@ -116,7 +130,7 @@ class _BookAppointmentSheetState extends State<BookAppointmentSheet> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_date == null || _time == null) {
+                    if (state.date == null) {
                       setState(() => errorShowing = true);
                     } else {
                       context.read<GardenerAppointmentBloc>().add(
@@ -124,8 +138,6 @@ class _BookAppointmentSheetState extends State<BookAppointmentSheet> {
                               notes: notesController.text,
                               botanist: widget.botanist,
                               gardener: context.read<AuthenticationBloc>().state.currentUser!,
-                              time: _time!,
-                              date: _date!,
                             ),
                           );
 
@@ -145,12 +157,6 @@ class _BookAppointmentSheetState extends State<BookAppointmentSheet> {
       ),
     );
   }
-
-  String get formattedDate => _date == null ? 'DD/MM/YYYY' : DateFormat('d MMMM, yyyy ').format(_date!);
-
-  String get formattedTime => _time == null
-      ? 'HH : MM : A'
-      : '${_time!.hourOfPeriod} : ${_time!.minute} ${_time!.period == DayPeriod.am ? 'AM' : 'PM'}';
 
   @override
   void dispose() {

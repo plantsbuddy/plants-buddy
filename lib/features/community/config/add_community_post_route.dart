@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -14,6 +16,7 @@ MaterialPageRoute route(Object? data) {
 
   if (data != null && data.containsKey('image')) {
     bloc.add(AddCommunityPostImageChanged(data['image']));
+    bloc.add(AddCommunityPostCategoryToggled('Identification Request'));
   }
 
   return MaterialPageRoute(

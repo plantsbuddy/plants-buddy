@@ -84,7 +84,7 @@ class _PageSignupBotanistState extends State<PageSignupBotanist> {
               TextField(
                 autofocus: false,
                 controller: descriptionController,
-                textCapitalization: TextCapitalization.words,
+                textCapitalization: TextCapitalization.sentences,
                 maxLines: 4,
                 minLines: 1,
                 decoration: InputDecoration(

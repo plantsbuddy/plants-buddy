@@ -7,6 +7,7 @@ class AddCommunityPostState extends Equatable {
   final String? titleError;
   final String? descriptionError;
   final String? image;
+  final bool imageAttached;
   final String? category;
   final bool dialogShowing;
   final CommunityPost? originalPost;
@@ -19,6 +20,7 @@ class AddCommunityPostState extends Equatable {
         image = null,
         originalPost = null,
         dialogShowing = false,
+        imageAttached = false,
         category = null;
 
   AddCommunityPostState.update(CommunityPost this.originalPost)
@@ -27,6 +29,7 @@ class AddCommunityPostState extends Equatable {
         titleError = null,
         descriptionError = null,
         image = null,
+        imageAttached = originalPost.imageUrl != null,
         dialogShowing = false,
         category = originalPost.category;
 
@@ -34,6 +37,7 @@ class AddCommunityPostState extends Equatable {
     required this.title,
     required this.description,
     required this.dialogShowing,
+    required this.imageAttached,
     this.titleError,
     this.descriptionError,
     this.category,
@@ -49,6 +53,7 @@ class AddCommunityPostState extends Equatable {
     String? Function()? category,
     String? Function()? image,
     bool? dialogShowing,
+    bool? imageAttached,
   }) =>
       AddCommunityPostState(
         title: title ?? this.title,
@@ -59,6 +64,7 @@ class AddCommunityPostState extends Equatable {
         image: image == null ? this.image : image(),
         originalPost: originalPost,
         dialogShowing: dialogShowing ?? this.dialogShowing,
+        imageAttached: imageAttached ?? this.imageAttached,
       );
 
   @override
@@ -70,5 +76,6 @@ class AddCommunityPostState extends Equatable {
         category,
         image,
         dialogShowing,
+        imageAttached,
       ];
 }

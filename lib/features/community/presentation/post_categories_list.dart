@@ -15,20 +15,23 @@ class PostCategoriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 70,
-      child: BlocBuilder<AddCommunityPostBloc, AddCommunityPostState>(
-        builder: (context, state) {
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              bool isSelected = state.category == _categories[index];
-              return _SampleCategory(category: _categories[index], isSelected: isSelected);
-            },
-            shrinkWrap: true,
-            itemCount: _categories.length,
-            scrollDirection: Axis.horizontal,
-          );
-        },
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: SizedBox(
+        height: 70,
+        child: BlocBuilder<AddCommunityPostBloc, AddCommunityPostState>(
+          builder: (context, state) {
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                bool isSelected = state.category == _categories[index];
+                return _SampleCategory(category: _categories[index], isSelected: isSelected);
+              },
+              shrinkWrap: true,
+              itemCount: _categories.length,
+              scrollDirection: Axis.horizontal,
+            );
+          },
+        ),
       ),
     );
   }

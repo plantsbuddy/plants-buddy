@@ -33,6 +33,7 @@ class CommunitySearchBox extends StatelessWidget {
                   fillColor: Colors.transparent,
                   isDense: true,
                 ),
+                textCapitalization: TextCapitalization.sentences,
                 onChanged: ((value) => context.read<CommunityBloc>().add(CommunitySearchTermUpdated(value))),
               ),
             ),

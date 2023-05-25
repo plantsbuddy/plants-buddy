@@ -6,7 +6,7 @@ abstract class RemindersEvent {}
 class RemindersStreamInitialize extends RemindersEvent {}
 
 class RemindersDeleteReminderPressed extends RemindersEvent {
-  final String reminderId;
+  final Reminder reminder;
 
-  RemindersDeleteReminderPressed(this.reminderId);
+  RemindersDeleteReminderPressed(this.reminder);
 }

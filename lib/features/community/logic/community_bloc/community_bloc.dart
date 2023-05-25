@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:plants_buddy/core/errors/exceptions.dart';
@@ -15,13 +16,11 @@ part 'community_state.dart';
 
 class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   final GetCommunityPostsStream _getCommunityPostsStream;
-  final GetMyCommunityPosts _getMyCommunityPosts;
   final SearchCommunityPosts _searchCommunityPosts;
   final DeleteCommunityPost _deleteCommunityPost;
 
   CommunityBloc(
     this._getCommunityPostsStream,
-    this._getMyCommunityPosts,
     this._searchCommunityPosts,
     this._deleteCommunityPost,
   ) : super(CommunityState.initial()) {
@@ -34,8 +33,12 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
   Future<FutureOr<void>> onCommunityPostsInitialize(_, Emitter<CommunityState> emit) async {
     await emit.forEach<List<CommunityPost>>(
-      await _getCommunityPostsStream(),
+      await _getCommunityPostsStream(myPostsOnly: state.showOnlyMyPosts),
       onData: (posts) {
+        posts = state.showOnlyMyPosts
+            ? posts.where((post) => post.author.uid == FirebaseAuth.instance.currentUser!.uid).toList()
+            : posts;
+
         return state.copyWith(posts: posts, status: CommunityStatus.loaded);
       },
     );
@@ -45,13 +48,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     emit(state.copyWith(
         status: CommunityStatus.loading, showOnlyMyPosts: !state.showOnlyMyPosts)); //, showOnlyMyPosts: true));
 
-    if (state.showOnlyMyPosts) {
-      // State is already set to showOnlyMyPosts
-      final myPosts = await _getMyCommunityPosts();
-      emit(state.copyWith(status: CommunityStatus.loaded, posts: myPosts));
-    } else {
       add(CommunityPostsStreamInitialize());
-    }
   }
 
   Future<FutureOr<void>> onCommunitySearchTermUpdated(

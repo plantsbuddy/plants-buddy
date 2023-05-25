@@ -19,8 +19,12 @@ class BotanistAppointmentState extends Equatable {
   List<Appointment> get pendingAppointments =>
       receivedAppointments.where((request) => request.status == AppointmentStatus.pending).toList();
 
-  List<Appointment> get scheduledAppointments =>
-      receivedAppointments.where((request) => request.status == AppointmentStatus.scheduled).toList();
+  List<Appointment> get scheduledAppointments => receivedAppointments
+      .where((request) =>
+          (request.status == AppointmentStatus.scheduled) &&
+          DateTime.now()
+              .isBefore(DateTime.fromMillisecondsSinceEpoch(request.slot.startingTime).add(Duration(hours: 1))))
+      .toList();
 
   List<Appointment> get completedAppointments => receivedAppointments
       .where((request) =>

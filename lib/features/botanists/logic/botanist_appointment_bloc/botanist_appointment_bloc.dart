@@ -16,20 +16,17 @@ class BotanistAppointmentBloc extends Bloc<BotanistAppointmentEvent, BotanistApp
   final ApproveAppointmentRequest _approveAppointmentRequest;
   final RejectAppointmentRequest _rejectAppointmentRequest;
   final CancelAppointmentRequest _cancelAppointmentRequest;
-  final MarkAppointmentAsCompleted _markAppointmentAsCompleted;
 
   BotanistAppointmentBloc(
     this._getReceivedAppointmentRequestsStream,
     this._approveAppointmentRequest,
     this._rejectAppointmentRequest,
     this._cancelAppointmentRequest,
-    this._markAppointmentAsCompleted,
   ) : super(BotanistAppointmentState.initial()) {
     on<BotanistInitializeReceivedAppointmentRequestsStream>(onBotanistInitializeReceivedAppointmentRequestsStream);
     on<BotanistApproveAppointmentRequest>(onBotanistApproveAppointmentRequest);
     on<BotanistRejectAppointmentRequest>(onBotanistRejectAppointmentRequest);
     on<BotanistDeleteAppointmentRequestPressed>(onBotanistDeleteAppointmentRequestPressed);
-    on<BotanistMarkAppointmentAsCompleted>(onBotanistMarkAppointmentAsCompleted);
   }
 
   Future<FutureOr<void>> onBotanistInitializeReceivedAppointmentRequestsStream(
@@ -56,10 +53,5 @@ class BotanistAppointmentBloc extends Bloc<BotanistAppointmentEvent, BotanistApp
   FutureOr<void> onBotanistDeleteAppointmentRequestPressed(
       BotanistDeleteAppointmentRequestPressed event, Emitter<BotanistAppointmentState> emit) async {
     await _cancelAppointmentRequest(event.appointment);
-  }
-
-  FutureOr<void> onBotanistMarkAppointmentAsCompleted(
-      BotanistMarkAppointmentAsCompleted event, Emitter<BotanistAppointmentState> emit) async {
-    await _markAppointmentAsCompleted(event.appointment);
   }
 }

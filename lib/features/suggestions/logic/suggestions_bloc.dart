@@ -40,18 +40,35 @@ class SuggestionsBloc extends Bloc<SuggestionsEvent, SuggestionsState> {
   }
 
   FutureOr<void> onSuggestionsInitializeGuides(_, Emitter<SuggestionsState> emit) async {
-    final plantationGuides = await _getPlantationGuides();
     final weatherData = await _getWeatherData();
-    final weatherBasedSuggestions = await _getWeatherBasedSuggestions();
-    final weatherBasedPlantSuggestions = await _getWeatherBasedPlantSuggestions();
+    emit(
+      state.copyWith(
+        weatherData: weatherData,
+        weatherDataStatus: SuggestionsStatus.loaded,
+      ),
+    );
 
+    final weatherBasedSuggestions = await _getWeatherBasedSuggestions();
+    emit(
+      state.copyWith(
+        weatherBasedSuggestions: weatherBasedSuggestions,
+        weatherBasedSuggestionsStatus: SuggestionsStatus.loaded,
+      ),
+    );
+
+    final weatherBasedPlantSuggestions = await _getWeatherBasedPlantSuggestions();
     emit(state.copyWith(
-      status: SuggestionsStatus.loaded,
-      plantationGuides: plantationGuides,
-      weatherData: weatherData,
       weatherBasedPlantSuggestions: weatherBasedPlantSuggestions['plants'],
       currentWeatherPlantsType: weatherBasedPlantSuggestions['weather_type'],
-      weatherBasedSuggestions: weatherBasedSuggestions,
+      weatherBasedPlantSuggestionsStatus: SuggestionsStatus.loaded,
     ));
+
+    final plantationGuides = await _getPlantationGuides();
+    emit(
+      state.copyWith(
+        plantationGuides: plantationGuides,
+        plantationGuidesStatus: SuggestionsStatus.loaded,
+      ),
+    );
   }
 }

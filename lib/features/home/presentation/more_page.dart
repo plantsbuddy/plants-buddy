@@ -49,7 +49,7 @@ class MorePage extends StatelessWidget {
                       ),
                       Text(
                         context.select((AuthenticationBloc bloc) => bloc.state.currentUser!.email),
-                        style: TextStyle(color: Theme.of(context).dividerColor.withOpacity(0.5)),
+                        style: TextStyle(color: Colors.black26),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

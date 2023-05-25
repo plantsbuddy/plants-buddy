@@ -36,6 +36,6 @@ class RemindersBloc extends Bloc<RemindersEvent, RemindersState> {
 
   Future<FutureOr<void>> onRemindersDeleteReminderPressed(
       RemindersDeleteReminderPressed event, Emitter<RemindersState> emit) async {
-    await _deleteReminder(event.reminderId);
+    await _deleteReminder(event.reminder.id);
   }
 }

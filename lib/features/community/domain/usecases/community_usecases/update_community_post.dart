@@ -13,6 +13,7 @@ class UpdateCommunityPost {
     required String description,
     String? category,
     String? imagePath,
+    required bool imageAttached,
   }) async {
     if (title.trim().isEmpty) {
       throw EmptyPostTitleException();
@@ -27,7 +28,7 @@ class UpdateCommunityPost {
       title: title.trim(),
       description: description.trim(),
       category: category,
-      imagePath: imagePath,
+      imagePath: imageAttached ? imagePath : null,
     );
   }
 }

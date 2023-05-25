@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '../../authentication/domain/entities/botanist.dart';
+import '../domain/entities/report.dart';
 import '../domain/usecases/admin_usecases.dart';
 
 part 'admin_event.dart';
@@ -18,7 +20,10 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   final GetReportedCommentsStream _getReportedCommentsStream;
   final GetReportedPostsStream _getReportedPostsStream;
   final GetReportedRatingsStream _getReportedRatingsStream;
+  final GetReportedBotanistsStream _getReportedBotanistsStream;
   final GetBlockedUsersStream _getBlockedUsersStream;
+  final GetReports _getReports;
+  final IgnoreReport _ignoreReport;
   final UnblockUser _unblockUser;
 
   AdminBloc(
@@ -29,18 +34,24 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     this._getReportedCommentsStream,
     this._getReportedPostsStream,
     this._getReportedRatingsStream,
+    this._getReportedBotanistsStream,
     this._getBlockedUsersStream,
     this._unblockUser,
+    this._getReports,
+    this._ignoreReport,
   ) : super(AdminState()) {
     on<AdminBlockUser>(onAdminBlockUser);
     on<AdminInitializeReportedPostsStream>(onAdminInitializeReportedPostsStream);
     on<AdminInitializeReportedCommentsStream>(onAdminInitializeReportedCommentsStream);
     on<AdminInitializeReportedRatingsStream>(onAdminInitializeReportedRatingsStream);
     on<AdminInitializeBlockedUsersStream>(onAdminInitializeBlockedUsersStream);
+    on<AdminInitializeReportedBotanistsStream>(onAdminInitializeReportedBotanistsStream);
     on<AdminDeletePost>(onAdminDeletePost);
     on<AdminDeleteComment>(onAdminDeleteComment);
     on<AdminDeleteRating>(onAdminDeleteRating);
     on<AdminUnblockUser>(onAdminUnblockUser);
+    on<AdminIgnoreReport>(onAdminIgnoreReport);
+    on<AdminGetReports>(onAdminGetReports);
   }
 
   FutureOr<void> onAdminBlockUser(AdminBlockUser event, Emitter<AdminState> emit) async {
@@ -51,7 +62,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       AdminInitializeReportedPostsStream event, Emitter<AdminState> emit) async {
     final reportedPostsStream = await _getReportedPostsStream();
 
-    emit.forEach(
+    await emit.forEach(
       reportedPostsStream,
       onData: (reportedPosts) =>
           state.copyWith(reportedPosts: reportedPosts, reportedPostsStatus: AdminDataStatus.loaded),
@@ -62,7 +73,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       AdminInitializeReportedCommentsStream event, Emitter<AdminState> emit) async {
     final reportedCommentsStream = await _getReportedCommentsStream();
 
-    emit.forEach(
+    await emit.forEach(
       reportedCommentsStream,
       onData: (reportedComments) =>
           state.copyWith(reportedComments: reportedComments, reportedCommentsStatus: AdminDataStatus.loaded),
@@ -73,7 +84,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       AdminInitializeReportedRatingsStream event, Emitter<AdminState> emit) async {
     final reportedRatingsStream = await _getReportedRatingsStream();
 
-    emit.forEach(
+    await emit.forEach(
       reportedRatingsStream,
       onData: (reportedRatings) =>
           state.copyWith(reportedRatings: reportedRatings, reportedRatingsStatus: AdminDataStatus.loaded),
@@ -84,9 +95,20 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       AdminInitializeBlockedUsersStream event, Emitter<AdminState> emit) async {
     final blockedUsersStream = await _getBlockedUsersStream();
 
-    emit.forEach(
+    await emit.forEach(
       blockedUsersStream,
       onData: (blockedUsers) => state.copyWith(blockedUsers: blockedUsers, blockedUsersStatus: AdminDataStatus.loaded),
+    );
+  }
+
+  FutureOr<void> onAdminInitializeReportedBotanistsStream(
+      AdminInitializeReportedBotanistsStream event, Emitter<AdminState> emit) async {
+    final reportedBotanistsStream = await _getReportedBotanistsStream();
+
+    await emit.forEach(
+      reportedBotanistsStream,
+      onData: (reportedBotanists) =>
+          state.copyWith(reportedBotanists: reportedBotanists, reportedBotanistsStatus: AdminDataStatus.loaded),
     );
   }
 
@@ -104,5 +126,17 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
 
   FutureOr<void> onAdminUnblockUser(AdminUnblockUser event, Emitter<AdminState> emit) async {
     await _unblockUser(event.uid);
+  }
+
+  FutureOr<void> onAdminIgnoreReport(AdminIgnoreReport event, Emitter<AdminState> emit) async {
+    await _ignoreReport(collectionName: event.collectionName, docId: event.docId);
+  }
+
+  FutureOr<void> onAdminGetReports(AdminGetReports event, Emitter<AdminState> emit) async {
+    emit(state.copyWith(reportsStatus: AdminDataStatus.loading, reports: []));
+
+    final reports = await _getReports(collectionName: event.collection, docId: event.docId);
+
+    emit(state.copyWith(reports: reports, reportsStatus: AdminDataStatus.loaded));
   }
 }

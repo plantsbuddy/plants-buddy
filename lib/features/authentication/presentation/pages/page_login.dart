@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:plants_buddy/config/routes/app_routes.dart' as routes;
 
 import 'package:flutter/material.dart';
@@ -74,12 +75,80 @@ class _PageLoginState extends State<PageLogin> {
               ),
               ElevatedButton(
                 child: Text('LOGIN'),
-                onPressed: () => context.read<AuthenticationBloc>().add(
-                      AuthenticationLoginPressed(
-                        email: emailController.text,
-                        password: passwordController.text,
-                      ),
-                    ),
+                onPressed: () async {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        backgroundColor: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+                          child: Row(
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text('Logging in...'),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+
+                  if (emailController.text.trim().isNotEmpty) {
+                    final snapshots = await FirebaseFirestore.instance
+                        .collection('users')
+                        .where('email', isEqualTo: emailController.text.trim())
+                        .get();
+
+                    if (snapshots.size != 0) {
+                      final isBlocked = snapshots.docs.first.get('blocked') as bool;
+
+                      if (isBlocked) {
+                        Navigator.of(context).pop();
+
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) {
+                            return AlertDialog(
+                              title: Text('You are blocked'),
+                              content: Text(
+                                  'You have been blocked by an admin from using the app, due to the violation of community guidelines of the app'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Okay'),
+                                  style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        context.read<AuthenticationBloc>().add(
+                              AuthenticationLoginPressed(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              ),
+                            );
+                      }
+                    }
+                  } else {
+                    Navigator.of(context).pop();
+
+                    context.read<AuthenticationBloc>().add(
+                          AuthenticationLoginPressed(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          ),
+                        );
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   backgroundColor: Theme.of(context).colorScheme.primary,

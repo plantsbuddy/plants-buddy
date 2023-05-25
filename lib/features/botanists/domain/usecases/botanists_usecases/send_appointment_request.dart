@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plants_buddy/features/botanists/domain/entities/appointment_slot.dart';
 
 import '../../../../authentication/domain/entities/user.dart';
 import '../../entities/appointment.dart';
@@ -11,7 +12,7 @@ class SendAppointmentRequest {
 
   Future<void> call({
     required String notes,
-    required TimeOfDay time,
+    required AppointmentSlot slot,
     required DateTime date,
     required User gardener,
     required User botanist,
@@ -20,10 +21,8 @@ class SendAppointmentRequest {
       botanist: botanist,
       gardener: gardener,
       notes: notes.trim(),
-      hour: time.hourOfPeriod,
-      minute: time.minute,
-      dayPeriod: DayPeriod.values.indexOf(time.period),
-      date: date.millisecondsSinceEpoch,
+      slot: slot,
+      //date: date.millisecondsSinceEpoch,
     );
 
     await _appointmentService.sendAppointmentRequest(appointmentRequest);

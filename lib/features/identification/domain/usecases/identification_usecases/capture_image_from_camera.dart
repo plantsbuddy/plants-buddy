@@ -6,7 +6,7 @@ class CaptureImageFromCamera {
   Future<String?> call() async {
     final ImagePicker picker = ImagePicker();
 
-    final XFile? image = await picker.pickImage(source: ImageSource.camera, imageQuality: 40);
+    final XFile? image = await picker.pickImage(source: ImageSource.camera, imageQuality: 10);
 
     return image?.path;
   }

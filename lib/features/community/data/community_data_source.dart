@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,7 +21,7 @@ class CommunityDataSource implements CommunityService {
         _postsController = StreamController<List<CommunityPost>>.broadcast();
 
   @override
-  Future<Stream<List<CommunityPost>>> getCommunityPostsStream() async {
+  Future<Stream<List<CommunityPost>>> getCommunityPostsStream({required bool myPostsOnly}) async {
     _postsCollection.orderBy('postedAt', descending: false).snapshots().listen(
       (documents) async {
         List<CommunityPost> posts = [];
@@ -34,23 +35,6 @@ class CommunityDataSource implements CommunityService {
     );
 
     return _postsController.stream.asBroadcastStream();
-  }
-
-  @override
-  Future<List<CommunityPost>> getMyCommunityPosts() async {
-    final myPostsDocuments = await _postsCollection
-        .where(
-          'author',
-          isEqualTo: FirebaseAuth.instance.currentUser!.uid,
-        )
-        .get();
-    List<CommunityPost> myPosts = [];
-
-    for (var postDocument in myPostsDocuments.docs) {
-      myPosts.add(await _createPostFromDocument(postDocument));
-    }
-
-    return myPosts;
   }
 
   @override
@@ -113,7 +97,7 @@ class CommunityDataSource implements CommunityService {
         User author = User(
           uid: authorUid,
           name: userDetailsRef.get('name') as String,
-          pictureUrl: userDetailsRef.get('pictureUrl'),
+          pictureUrl: userDetailsRef.get('pictureUrl') as String,
         );
 
         Comment comment = Comment(
@@ -137,15 +121,17 @@ class CommunityDataSource implements CommunityService {
     final title = postDocument.get('title') as String;
     final category = postDocument.get('category') as String?;
     final description = postDocument.get('description') as String;
-    final imageUrl = postDocument.get('imageUrl') as String?;
+    final imageUrl = (postDocument.data() as Map<String, dynamic>).containsKey('imageUrl')
+        ? postDocument.get('imageUrl') as String?
+        : null;
     final postedAt = postDocument.get('postedAt') as int;
 
-    final postDetailsRef = await _usersCollection.doc(authorUid).get();
+    final postAuthorDetailsRef = await _usersCollection.doc(authorUid).get();
 
     User author = User(
       uid: authorUid,
-      name: postDetailsRef.get('name') as String,
-      pictureUrl: postDetailsRef.get('pictureUrl') as String,
+      name: postAuthorDetailsRef.get('name') as String,
+      pictureUrl: postAuthorDetailsRef.get('pictureUrl') as String,
     );
 
     final comments = await _postsCollection.doc(postDocument.id).collection('comments').get();
@@ -172,27 +158,33 @@ class CommunityDataSource implements CommunityService {
       final imageUrl = await imageRef.getDownloadURL();
 
       await postRef.update({'imageUrl': imageUrl});
+    } else {
+      await postRef.update({'imageUrl': FieldValue.delete()});
     }
   }
 
   @override
   Future<void> deleteCommunityPost(String postId) async {
     await _postsCollection.doc(postId).delete();
+
+    await FirebaseFirestore.instance.collection('reported_community_posts').doc(postId).delete();
   }
 
   @override
-  Future<void> updateCommunityPost(
-      {required String postId,
-      required String title,
-      required String description,
-      String? category,
-      String? imagePath}) async {
+  Future<void> updateCommunityPost({
+    required String postId,
+    required String title,
+    required String description,
+    String? category,
+    String? imagePath,
+  }) async {
     final postRef = _postsCollection.doc(postId);
     await postRef.update({
       'title': title,
       'category': category,
       'description': description,
     });
+
     await _uploadImage(postRef: postRef, imagePath: imagePath);
   }
 
@@ -206,14 +198,21 @@ class CommunityDataSource implements CommunityService {
     final reportedCommentDoc = await reportedCommentsCollection.doc(comment.id).get();
 
     if (!reportedCommentDoc.exists) {
-      reportedCommentsCollection.doc(comment.id).set({
+      reportedCommentsCollection.add({
         'post_id': post.id,
+        'comment_id': comment.id,
       });
     }
 
+    final commentReportDoc = await reportedCommentsCollection
+        .where('comment_id', isEqualTo: comment.id)
+        .where('post_id', isEqualTo: post.id)
+        .get();
+
     // If user has already reported, then only the report_text will be changed
-    reportedCommentsCollection.doc(comment.id).collection('reporters').doc(currentUserId).set({
+    reportedCommentsCollection.doc(commentReportDoc.docs.first.id).collection('reporters').doc(currentUserId).set({
       'report_text': reportText,
+      'time': DateTime.now().millisecondsSinceEpoch,
     });
   }
 
@@ -223,9 +222,12 @@ class CommunityDataSource implements CommunityService {
 
     final reportedPostsCollection = FirebaseFirestore.instance.collection('reported_community_posts');
 
+    reportedPostsCollection.doc(post.id).set({'id': post.id});
+
     // If user has already reported, then only the report_text will be changed
     reportedPostsCollection.doc(post.id).collection('reporters').doc(currentUserId).set({
       'report_text': reportText,
+      'time': DateTime.now().millisecondsSinceEpoch,
     });
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_buddy/features/community/logic/add_community_post_bloc/add_community_post_bloc.dart';
 
-import 'add_an_image.dart';
+import 'community_post_image.dart';
 import 'post_categories_list.dart';
 
 class AddCommunityPostScreen extends StatelessWidget {
@@ -12,9 +12,11 @@ class AddCommunityPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final originalPost = context.select((AddCommunityPostBloc bloc) => bloc.state.originalPost);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Post'),
+        title: Text(originalPost != null ? 'Update Post' : 'Add Post'),
       ),
       body: BlocConsumer<AddCommunityPostBloc, AddCommunityPostState>(
         listener: (context, state) {
@@ -74,7 +76,7 @@ class AddCommunityPostScreen extends StatelessWidget {
                       errorText: state.titleError,
                       contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     ),
-                  ),
+                                      ),
                   PostCategoriesList(),
                   TextField(
                     textCapitalization: TextCapitalization.sentences,
@@ -86,8 +88,9 @@ class AddCommunityPostScreen extends StatelessWidget {
                       errorText: state.descriptionError,
                       contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     ),
+
                   ),
-                  AddAnImage(),
+                  CommunityPostImage(),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

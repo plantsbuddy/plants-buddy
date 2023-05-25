@@ -9,12 +9,13 @@ class FullGuideScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('Plantation Guide'),),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 30),
+              padding: const EdgeInsets.only(left: 17,right:17, bottom: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -77,7 +78,7 @@ class FullGuideScreen extends StatelessWidget {
                               style: Theme.of(context).textTheme.titleLarge,
                             );
                           } else if (entry.key.contains('ul')) {
-                            final list = entry.value as List<String>;
+                            final list = entry.value as List<dynamic>;
                             return Column(
                               children: list.map((item) {
                                 return Padding(

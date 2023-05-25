@@ -23,6 +23,18 @@ class PaymentAddCardPressed extends PaymentEvent {
   });
 }
 
+class PaymentChangeLastAppointment extends PaymentEvent {
+  final Appointment appointment;
+
+  PaymentChangeLastAppointment(this.appointment);
+}
+
+class PaymentMarkAppointmentAsCompleted extends PaymentEvent {
+  final String minutes;
+
+  PaymentMarkAppointmentAsCompleted(this.minutes);
+}
+
 class PaymentPerformConsultationPayment extends PaymentEvent {
   final String botanist;
   final String gardener;

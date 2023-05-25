@@ -47,6 +47,7 @@ class AddCommunityPostBloc extends Bloc<AddCommunityPostEvent, AddCommunityPostS
           description: state.description,
           category: state.category,
           imagePath: state.image,
+          imageAttached: state.imageAttached,
         );
       }
 
@@ -66,13 +67,15 @@ class AddCommunityPostBloc extends Bloc<AddCommunityPostEvent, AddCommunityPostS
   Future<FutureOr<void>> onAddCommunityPostAttachImagePressed(
       AddCommunityPostAttachImagePressed event, Emitter<AddCommunityPostState> emit) async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 10);
 
-    emit(state.copyWith(image: () => File(image!.path).absolute.path));
+    if(image!=null) {
+      emit(state.copyWith(image: () => File(image.path).absolute.path, imageAttached: true));
+    }
   }
 
   FutureOr<void> onAddCommunityPostRemoveImagePressed(_, Emitter<AddCommunityPostState> emit) {
-    emit(state.copyWith(image: () => null));
+    emit(state.copyWith(imageAttached: false));
   }
 
   FutureOr<void> onAddCommunityPostTitleChanged(
@@ -87,6 +90,6 @@ class AddCommunityPostBloc extends Bloc<AddCommunityPostEvent, AddCommunityPostS
 
   FutureOr<void> onAddCommunityPostImageChanged(
       AddCommunityPostImageChanged event, Emitter<AddCommunityPostState> emit) {
-    emit(state.copyWith(image: () => event.image));
+    emit(state.copyWith(image: () => event.image, imageAttached: true));
   }
 }

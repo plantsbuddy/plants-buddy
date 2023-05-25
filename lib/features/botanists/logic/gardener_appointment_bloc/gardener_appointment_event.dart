@@ -23,19 +23,30 @@ class GardenerDeleteAppointmentRequest extends GardenerAppointmentEvent {
 
 class GardenerSendAppointmentRequest extends GardenerAppointmentEvent {
   final String notes;
-  final User botanist;
+  final Botanist botanist;
   final User gardener;
-  final TimeOfDay time;
-  final DateTime date;
 
   GardenerSendAppointmentRequest({
     required this.notes,
-    required this.botanist,
     required this.gardener,
-    required this.time,
-    required this.date,
+    required this.botanist,
   });
 }
+
+class GardenerAppointmentDateSelected extends GardenerAppointmentEvent {
+  final Botanist botanist;
+  final DateTime? date;
+
+  GardenerAppointmentDateSelected({required this.date, required this.botanist});
+}
+
+class GardenerAppointmentSlotSelected extends GardenerAppointmentEvent {
+  final AppointmentSlot slot;
+
+  GardenerAppointmentSlotSelected(this.slot);
+}
+
+class GardenerCleanupAppointmentRequest extends GardenerAppointmentEvent {}
 
 class GardenerReportBotanist extends GardenerAppointmentEvent {
   final Botanist botanist;

@@ -15,6 +15,7 @@ void _initUseCases() {
   sl.registerLazySingleton<GetPaymentDetailsStream>(() => GetPaymentDetailsStream(sl()));
   sl.registerLazySingleton<GetTransactionHistory>(() => GetTransactionHistory(sl()));
   sl.registerLazySingleton<PerformConsultationTransaction>(() => PerformConsultationTransaction(sl()));
+  sl.registerLazySingleton<MarkAppointmentAsCompleted>(() => MarkAppointmentAsCompleted(sl()));
 }
 
 void _initRepositories() {

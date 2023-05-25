@@ -2,10 +2,14 @@ import 'package:plants_buddy/features/authentication/domain/entities/botanist.da
 import 'package:plants_buddy/features/botanists/domain/entities/appointment.dart';
 import 'package:plants_buddy/features/botanists/domain/entities/botanist_review.dart';
 
+import '../entities/appointment_slot.dart';
+
 abstract class AppointmentService {
   Future<Stream<List<Appointment>>> getSentAppointmentRequestsStream();
 
   Future<Stream<List<Appointment>>> getReceivedAppointmentRequests();
+
+  Future<List<int>> getPendingAppointmentsOfBotanist(Botanist botanist);
 
   Future<void> sendAppointmentRequest(Appointment appointment);
 
@@ -17,7 +21,7 @@ abstract class AppointmentService {
 
   Future<void> deleteAppointmentRequest(Appointment appointment);
 
-  Future<void> completeAppointment(Appointment appointment);
+  Future<void> completeAppointment({required Appointment appointment, required String minutes});
 
   Future<List<Botanist>> getBotanists();
 
